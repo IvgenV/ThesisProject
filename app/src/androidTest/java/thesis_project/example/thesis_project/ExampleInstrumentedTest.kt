@@ -1,4 +1,4 @@
-package com.example.thesis_project
+package thesis_project.example.thesis_project
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

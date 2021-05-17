@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/fragment1">
+
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="thesis_project.presentation.ui.Fragment1"
+        android:label="Fragment1" />
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="thesis_project.presentation.ui.Fragment2"
+        android:label="Fragment2" />
+</navigation>
