@@ -1,51 +1,35 @@
 package thesis_project.data.cloud
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.await
-import thesis_project.Rate
-import thesis_project.RateList
+import thesis_project.Dependencies.apiService
+import thesis_project.data.data_base.Rate
 import thesis_project.domain.repository.ExchangeRatesBelarusBankRepository
 
-class RateCallback : Callback<RateList>, ExchangeRatesBelarusBankRepository {
+class RateCallback : ExchangeRatesBelarusBankRepository {
 
-    var apiService = Cloud.apiService
-    var rate = RateList()
-
-    override  fun getRateMinsk(): Call<List<Rate>> {
-        return apiService.getRateMinsk()
+    override suspend fun getRateMinsk(): List<Rate> {
+        var list = listOf<Rate>()
+        withContext(Dispatchers.IO){
+            if(apiService.getRateMinsk().isSuccessful){
+                list = apiService.getRateMinsk().body()?: listOf()
+            }
+        }
+        return list
     }
 
-    override fun getRateBrest(): Call<List<Rate>> {
-       /* val call = apiService.getRateMinsk()
-        if(call.isSuccessful){
-
+    override suspend fun getRateBrest(): List<Rate> {
+        var list = listOf<Rate>()
+        withContext(Dispatchers.IO){
+            if(apiService.getRateBrest().isSuccessful){
+                list = apiService.getRateMinsk().body()?: listOf()
+            }
         }
-        return list*/
-        return apiService.getRateBrest()
+        return list
     }
 
     override fun getRuble(): List<String> {
         return listOf()
     }
-
-    override fun onResponse(call: Call<RateList>, response: Response<RateList>) {
-        if (response.isSuccessful) {
-            rate = response.body()?: RateList()
-            Log.d("RESPNSETAG", "onResponse sucess!!")
-        } else
-            Log.d("RESPNSETAG", "onResponse fail!!")
-    }
-
-    override fun onFailure(call: Call<RateList>, t: Throwable) {
-        Log.d("RESPNSETAG", "onFailure")
-        t.printStackTrace()
-    }
-
 
 }

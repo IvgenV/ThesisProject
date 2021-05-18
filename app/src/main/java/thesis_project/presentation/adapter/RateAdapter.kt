@@ -7,8 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.Rate
-import thesis_project.RateList
+import thesis_project.data.data_base.Rate
 
 class RateAdapter: ListAdapter<Rate,
         RateAdapter.ViewHolder>(RateCompareCallback()) {

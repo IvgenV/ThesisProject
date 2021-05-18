@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
@@ -16,16 +17,15 @@ class Fragment2: Fragment() {
     lateinit var viewModel: ViewModel
     val adapter = RateAdapter()
     lateinit var rateList:RecyclerView
+    lateinit var swipe:SwipeRefreshLayout
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        viewModel.init()
+        viewModel.update()
 
-        /*viewModel.getDollar().observe(viewLifecycleOwner,{
-            adapter.setData(it)
-        })*/
+
     }
 
     override fun onCreateView(
@@ -58,7 +58,7 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            viewModel.getListDollgar().observe(viewLifecycleOwner,{
+            viewModel.getDbList().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
             Toast.makeText(requireContext(),"Get Fro DB!",Toast.LENGTH_SHORT).show()

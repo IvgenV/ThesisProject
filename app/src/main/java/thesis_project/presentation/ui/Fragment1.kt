@@ -38,11 +38,8 @@ class Fragment1:Fragment() {
         text1.setOnClickListener {
             navigation.navigate(R.id.fragment2)
         }
-        button.setOnClickListener {
-            viewmodel.getDollar().observe(viewLifecycleOwner,{
-                text1.text = it.toString()
-            })
-        }
+
+
 
 
 

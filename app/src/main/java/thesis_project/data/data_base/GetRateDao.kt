@@ -1,4 +1,4 @@
-package thesis_project.data.db
+package thesis_project.data.data_base.db
 
 interface GetRateDao {
 
