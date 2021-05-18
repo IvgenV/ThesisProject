@@ -14,18 +14,26 @@ class RateData(context:Context) {
 
     private val rateDao = db.getRateDao()
 
-    suspend fun getMinskRate():List<Rate> {
+    suspend fun getRateList():List<Rate> {
         var list: List<Rate>
         withContext(Dispatchers.IO){
-            list = rateDao.getMinskRate()
+            list = rateDao.getRate()
         }
         return list
     }
 
-    suspend fun addRateList(rateMinskList: List<Rate>){
+    suspend fun addRateMinsk(rateMinskList: List<Rate>){
 
         withContext(Dispatchers.IO){
             rateDao.insertListMinsk(rateMinskList)
+        }
+
+    }
+
+    suspend fun addRateBrest(rateBrestList: List<Rate>){
+
+        withContext(Dispatchers.IO){
+            rateDao.insertListBrest(rateBrestList)
         }
 
     }

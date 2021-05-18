@@ -12,6 +12,9 @@ interface RateDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertListMinsk(rateMinskList: List<Rate>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertListBrest(rateBrestList: List<Rate>)
+
     @Query("Select * from Rate")
-    fun getMinskRate():List<Rate>
+    fun getRate():List<Rate>
 }

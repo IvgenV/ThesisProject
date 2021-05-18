@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import thesis_project.Dependencies
-import thesis_project.RateList
 import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
 import thesis_project.App
 import thesis_project.data.data_base.Rate
@@ -16,25 +15,30 @@ import thesis_project.data.data_base.db.RateData
 class ViewModel : ViewModel() {
 
     val exchange: ExchangeRatesBelarusBankUseCase by lazy { Dependencies.getExchangeRateBelarusBankUseCase() }
-    var listEuro = MutableLiveData<RateList>()
-    var listDollar = MutableLiveData<RateList>()
-    var listFromDb = MutableLiveData<List<Rate>>()
+    var listBrest = MutableLiveData<List<Rate>>()
+    var listMinsk = MutableLiveData<List<Rate>>()
     var rateData = RateData(App.instance)
-
-
 
     fun update() {
         viewModelScope.launch {
-            rateData.addRateList(exchange.getRateMinsk())
+            rateData.addRateMinsk(exchange.getRateMinsk())
         }
     }
 
-
-    fun getDbList(): LiveData<List<Rate>> {
+    fun getMinskList():LiveData<List<Rate>>{
         viewModelScope.launch {
-            listFromDb.value = rateData.getMinskRate()
+            rateData.addRateMinsk(exchange.getRateMinsk())
+            listMinsk.value = rateData.getRateList()
         }
-        return listFromDb
+        return listMinsk
+    }
+
+    fun getBrestList():LiveData<List<Rate>>{
+        viewModelScope.launch {
+            rateData.addRateBrest(exchange.getRateBrest())
+            listBrest.value = rateData.getRateList()
+        }
+        return listBrest
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
+import thesis_project.data.data_base.Rate
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
 
@@ -23,8 +24,6 @@ class Fragment2: Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        viewModel.update()
-
 
     }
 
@@ -58,10 +57,14 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            viewModel.getDbList().observe(viewLifecycleOwner,{
+            viewModel.getMinskList().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
-            Toast.makeText(requireContext(),"Get Fro DB!",Toast.LENGTH_SHORT).show()
+        }
+        if(id == R.id.euro_setting){
+            viewModel.getBrestList().observe(viewLifecycleOwner,{
+                adapter.setData(it)
+            })
         }
 
         return super.onOptionsItemSelected(item)

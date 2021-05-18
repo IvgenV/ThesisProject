@@ -22,7 +22,7 @@ class RateCallback : ExchangeRatesBelarusBankRepository {
         var list = listOf<Rate>()
         withContext(Dispatchers.IO){
             if(apiService.getRateBrest().isSuccessful){
-                list = apiService.getRateMinsk().body()?: listOf()
+                list = apiService.getRateBrest().body()?: listOf()
             }
         }
         return list
