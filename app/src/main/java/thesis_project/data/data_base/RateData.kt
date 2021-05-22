@@ -38,7 +38,7 @@ class RateData(context:Context) {
         return list
     }
 
-    suspend fun addRateList(rateList: List<Rate>){
+    suspend fun addCountryRate(rateList: List<Rate>){
 
         withContext(Dispatchers.IO){
             rateDao.insertList(rateList)

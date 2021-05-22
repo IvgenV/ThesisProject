@@ -2,14 +2,12 @@ package thesis_project.presentation.ui
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
-import thesis_project.data.data_base.Rate
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
 
@@ -24,7 +22,7 @@ class Fragment2: Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        viewModel.update()
+        viewModel.initial()
 
     }
 

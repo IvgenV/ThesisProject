@@ -7,26 +7,25 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import thesis_project.App
 import thesis_project.Dependencies
-import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.db.RateData
 
 
 class ViewModel : ViewModel() {
 
-    var rateData = RateData(App.instance)
+    var loaclDB = RateData(App.instance)
     ///инициализируем список string для дальнейшего добавления в него
     ///данных только по долларам
-    var rate = MutableLiveData<List<Rate>>()
+    /*var rate = MutableLiveData<List<Rate>>()*/
     var listOfDollar = MutableLiveData(mutableListOf("Default"))
     ////var list = MutableLiveData<MutableList<String>>() почему при такой инициализации
     ///NullPointerException?
 
-    fun update() {
+    fun initial() {
         viewModelScope.launch {
             ///делаем запрос на апишку, получаем данные, записываем их
             //в локальную базу данных
             if(Dependencies.apiService.getRateCountry().isSuccessful){
-                rateData.addRateList(Dependencies.apiService.
+                loaclDB.addCountryRate(Dependencies.apiService.
                 getRateCountry().body()?: listOf())
             }
         }
@@ -42,7 +41,7 @@ class ViewModel : ViewModel() {
             /// проблема в том, что я в listOfDollar не могу добавить вообще ничего
             ///из корутины т.е. если я например напишу listOfDollar.add(something)
             ///в viewModelScope.launch то ничего не добалвяется, если вне то все ок
-             rateData.getRateCountry().forEach {
+             loaclDB.getRateCountry().forEach {
                 if(!listOfDollar.value?.contains(it.usd)!!){
                     listOfDollar.value!!.add(it.usd)
                 }
