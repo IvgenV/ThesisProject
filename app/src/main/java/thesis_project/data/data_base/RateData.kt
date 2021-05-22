@@ -22,18 +22,18 @@ class RateData(context:Context) {
         return list
     }
 
-    suspend fun getRateMinsk():List<Rate>{
-        var list:List<Rate>
-        withContext(Dispatchers.IO){
-            list = rateDao.getRateCity("Минск")
-        }
-        return list
-    }
-
     suspend fun getRateBrest():List<Rate>{
         var list:List<Rate>
         withContext(Dispatchers.IO){
             list = rateDao.getRateCity("Брест")
+        }
+        return list
+    }
+
+    suspend fun getRateMinsk():List<Rate>{
+        var list:List<Rate>
+        withContext(Dispatchers.IO){
+            list = rateDao.getRateCity("Минск")
         }
         return list
     }

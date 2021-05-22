@@ -21,7 +21,7 @@ class RateAdapter: ListAdapter<String,
         holder.rate.text = getItem(position).toString()
     }
 
-    fun setData(data: List<String>){
+    fun setData(data: MutableList<String>){
         submitList(data)
     }
 

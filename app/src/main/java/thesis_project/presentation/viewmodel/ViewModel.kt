@@ -13,14 +13,18 @@ import thesis_project.data.data_base.db.RateData
 
 class ViewModel : ViewModel() {
 
-    var listRate = MutableLiveData<List<Rate>>()
     var rateData = RateData(App.instance)
-    var list = MutableLiveData(mutableListOf("Default"))
+    ///инициализируем список string для дальнейшего добавления в него
+    ///данных только по долларам
+    var rate = MutableLiveData<List<Rate>>()
+    var listOfDollar = MutableLiveData(mutableListOf("Default"))
     ////var list = MutableLiveData<MutableList<String>>() почему при такой инициализации
     ///NullPointerException?
 
     fun update() {
         viewModelScope.launch {
+            ///делаем запрос на апишку, получаем данные, записываем их
+            //в локальную базу данных
             if(Dependencies.apiService.getRateCountry().isSuccessful){
                 rateData.addRateList(Dependencies.apiService.
                 getRateCountry().body()?: listOf())
@@ -28,29 +32,26 @@ class ViewModel : ViewModel() {
         }
     }
 
-
-   /* fun getMinskList(): LiveData<List<Rate>> {
-
-    }*/
-
-    fun getBrestList(): LiveData<List<Rate>> {
-        viewModelScope.launch {
-            listRate.value = rateData.getRateBrest()
-        }
-        return listRate
-    }
-
     fun getCountryRate(): LiveData<MutableList<String>> {
         ////почему возвращает "default"?
+
         viewModelScope.launch {
-            listRate.value = rateData.getRateCountry()
-            listRate.value?.forEach {
-                if(!list.value?.contains(it.usd)!!){
-                    list.value?.add(it.usd)
+            ///перебираем список из бд, смотрим, если в нашем listOfDollar
+            //такого значения (it.usd) нет, то добавляем его
+            //возвращаем сформированный список долларов и сетим его в recyclerview
+            /// проблема в том, что я в listOfDollar не могу добавить вообще ничего
+            ///из корутины т.е. если я например напишу listOfDollar.add(something)
+            ///в viewModelScope.launch то ничего не добалвяется, если вне то все ок
+             rateData.getRateCountry().forEach {
+                if(!listOfDollar.value?.contains(it.usd)!!){
+                    listOfDollar.value!!.add(it.usd)
                 }
             }
+            listOfDollar.value?.add("In corutine")
         }
-        return list
+        listOfDollar.value?.add("Out of Corutine ")
+        return listOfDollar
     }
+
 
 }
