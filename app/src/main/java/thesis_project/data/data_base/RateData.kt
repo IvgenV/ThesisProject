@@ -14,7 +14,7 @@ class RateData(context:Context) {
 
     private val rateDao = db.getRateDao()
 
-    suspend fun getRateList():List<Rate> {
+    suspend fun getRateCountry():List<Rate> {
         var list: List<Rate>
         withContext(Dispatchers.IO){
             list = rateDao.getRate()
@@ -22,18 +22,26 @@ class RateData(context:Context) {
         return list
     }
 
-    suspend fun addRateMinsk(rateMinskList: List<Rate>){
-
+    suspend fun getRateMinsk():List<Rate>{
+        var list:List<Rate>
         withContext(Dispatchers.IO){
-            rateDao.insertListMinsk(rateMinskList)
+            list = rateDao.getRateCity("Минск")
         }
-
+        return list
     }
 
-    suspend fun addRateBrest(rateBrestList: List<Rate>){
+    suspend fun getRateBrest():List<Rate>{
+        var list:List<Rate>
+        withContext(Dispatchers.IO){
+            list = rateDao.getRateCity("Брест")
+        }
+        return list
+    }
+
+    suspend fun addRateList(rateList: List<Rate>){
 
         withContext(Dispatchers.IO){
-            rateDao.insertListBrest(rateBrestList)
+            rateDao.insertList(rateList)
         }
 
     }

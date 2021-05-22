@@ -7,10 +7,7 @@ import thesis_project.data.data_base.Rate
 
 interface APIServiceBelarusBank {
 
-    @GET("kursExchange?city=Минск")
-    suspend fun getRateMinsk():Response<List<Rate>>
-
-    @GET("kursExchange?city=Брест")
-    suspend fun getRateBrest():Response<List<Rate>>
+    @GET("https://belarusbank.by/api/kursExchange")
+    suspend fun getRateCountry():Response<List<Rate>>
 
 }

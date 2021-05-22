@@ -6,14 +6,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.cloud.APIServiceBelarusBank
-import thesis_project.data.cloud.RateCallback
-import thesis_project.domain.entity.ExchangeRateBelarusBankImpl
-import thesis_project.domain.repository.ExchangeRatesBelarusBankRepository
-import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
 
 object Dependencies {
 
-    private val baseUrlRate = "https://belarusbank.by/api/"
+    val baseUrl = "https://belarusbank.by/api/kursExchange/"
 
     private val logininterseption = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -21,16 +17,12 @@ object Dependencies {
 
     private val okHttpClient = OkHttpClient.Builder().addInterceptor(logininterseption).build()
 
-    private val retrofit = Retrofit.Builder().baseUrl(baseUrlRate)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+    private val retrofit = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+        .baseUrl(baseUrl)
         .client(okHttpClient)
         .build()
 
     val apiService = retrofit.create(APIServiceBelarusBank::class.java)
 
-    private val exchangeRateBelarusBank: ExchangeRatesBelarusBankRepository by lazy { RateCallback() }
-
-    fun getExchangeRateBelarusBankUseCase(): ExchangeRatesBelarusBankUseCase =
-        ExchangeRateBelarusBankImpl(exchangeRateBelarusBank)
 
 }

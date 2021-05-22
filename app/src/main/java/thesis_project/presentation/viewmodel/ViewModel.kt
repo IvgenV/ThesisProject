@@ -5,40 +5,52 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import thesis_project.Dependencies
-import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
 import thesis_project.App
+import thesis_project.Dependencies
 import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.db.RateData
 
 
 class ViewModel : ViewModel() {
 
-    val exchange: ExchangeRatesBelarusBankUseCase by lazy { Dependencies.getExchangeRateBelarusBankUseCase() }
-    var listBrest = MutableLiveData<List<Rate>>()
-    var listMinsk = MutableLiveData<List<Rate>>()
+    var listRate = MutableLiveData<List<Rate>>()
     var rateData = RateData(App.instance)
+    var list = MutableLiveData(mutableListOf("Default"))
+    ////var list = MutableLiveData<MutableList<String>>() почему при такой инициализации
+    ///NullPointerException?
 
     fun update() {
         viewModelScope.launch {
-            rateData.addRateMinsk(exchange.getRateMinsk())
+            if(Dependencies.apiService.getRateCountry().isSuccessful){
+                rateData.addRateList(Dependencies.apiService.
+                getRateCountry().body()?: listOf())
+            }
         }
     }
 
-    fun getMinskList():LiveData<List<Rate>>{
+
+   /* fun getMinskList(): LiveData<List<Rate>> {
+
+    }*/
+
+    fun getBrestList(): LiveData<List<Rate>> {
         viewModelScope.launch {
-            rateData.addRateMinsk(exchange.getRateMinsk())
-            listMinsk.value = rateData.getRateList()
+            listRate.value = rateData.getRateBrest()
         }
-        return listMinsk
+        return listRate
     }
 
-    fun getBrestList():LiveData<List<Rate>>{
+    fun getCountryRate(): LiveData<MutableList<String>> {
+        ////почему возвращает "default"?
         viewModelScope.launch {
-            rateData.addRateBrest(exchange.getRateBrest())
-            listBrest.value = rateData.getRateList()
+            listRate.value = rateData.getRateCountry()
+            listRate.value?.forEach {
+                if(!list.value?.contains(it.usd)!!){
+                    list.value?.add(it.usd)
+                }
+            }
         }
-        return listBrest
+        return list
     }
 
 }

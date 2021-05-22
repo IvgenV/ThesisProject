@@ -24,6 +24,7 @@ class Fragment2: Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        viewModel.update()
 
     }
 
@@ -57,15 +58,15 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            viewModel.getMinskList().observe(viewLifecycleOwner,{
+            viewModel.getCountryRate().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
         }
-        if(id == R.id.euro_setting){
+       /* if(id == R.id.euro_setting){
             viewModel.getBrestList().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
-        }
+        }*/
 
         return super.onOptionsItemSelected(item)
     }
