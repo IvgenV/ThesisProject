@@ -56,7 +56,7 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            viewModel.getCountryRate().observe(viewLifecycleOwner,{
+            viewModel.getRate().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
         }

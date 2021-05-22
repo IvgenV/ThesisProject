@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import thesis_project.App
 import thesis_project.Dependencies
+import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.db.RateData
 
 
@@ -16,6 +17,7 @@ class ViewModel : ViewModel() {
     ///инициализируем список string для дальнейшего добавления в него
     ///данных только по долларам
     var listOfDollar = MutableLiveData(mutableListOf("Default"))
+    var rate = MutableLiveData<List<Rate>>()
     ////var listOfDollar = MutableLiveData<MutableList<String>>() почему при такой инициализации
     ///NullPointerException?
 
@@ -49,6 +51,14 @@ class ViewModel : ViewModel() {
         }
         listOfDollar.value?.add("Out of Corutine ")
         return listOfDollar
+    }
+
+    fun getRate():LiveData<List<Rate>>{
+        ///почему вот это работает? Потому что getRateCountry() suspend?
+        viewModelScope.launch {
+            rate.value = loaclDB.getRateCountry()
+        }
+        return rate
     }
 
 
