@@ -16,13 +16,13 @@ class Fragment2: Fragment() {
     lateinit var viewModel: ViewModel
     val adapter = RateAdapter()
     lateinit var rateList:RecyclerView
-    lateinit var swipe:SwipeRefreshLayout
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        viewModel.initial()
+        viewModel.updateCountryRate()
+        /*viewModel.initial()сдесь вроде работает */
 
     }
 
@@ -56,7 +56,8 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            viewModel.getRate().observe(viewLifecycleOwner,{
+            viewModel.getCountryRate().observe(viewLifecycleOwner,{
+                /*viewModel.initial()   сдесь то работает то нет */
                 adapter.setData(it)
             })
         }

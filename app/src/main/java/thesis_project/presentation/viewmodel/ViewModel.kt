@@ -32,7 +32,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun getCountryRate(): LiveData<MutableList<String>> {
+    fun updateCountryRate() {
         ////почему возвращает "default"?
 
         viewModelScope.launch {
@@ -47,9 +47,11 @@ class ViewModel : ViewModel() {
                     listOfDollar.value!!.add(it.usd)
                 }
             }
-            listOfDollar.value?.add("In corutine")
+
         }
-        listOfDollar.value?.add("Out of Corutine ")
+    }
+
+    fun getCountryRate():LiveData<MutableList<String>>{
         return listOfDollar
     }
 

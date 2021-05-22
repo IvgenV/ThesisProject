@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.data.data_base.Rate
 
-class RateAdapter: ListAdapter<Rate,
+class RateAdapter: ListAdapter<String,
         RateAdapter.ViewHolder>(RateCompareCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,7 +21,7 @@ class RateAdapter: ListAdapter<Rate,
         holder.rate.text = getItem(position).toString()
     }
 
-    fun setData(data: List<Rate>){
+    fun setData(data: MutableList<String>){
         submitList(data)
     }
 
