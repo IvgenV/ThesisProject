@@ -15,9 +15,8 @@ class ViewModel : ViewModel() {
     var loaclDB = RateData(App.instance)
     ///инициализируем список string для дальнейшего добавления в него
     ///данных только по долларам
-    /*var rate = MutableLiveData<List<Rate>>()*/
     var listOfDollar = MutableLiveData(mutableListOf("Default"))
-    ////var list = MutableLiveData<MutableList<String>>() почему при такой инициализации
+    ////var listOfDollar = MutableLiveData<MutableList<String>>() почему при такой инициализации
     ///NullPointerException?
 
     fun initial() {
