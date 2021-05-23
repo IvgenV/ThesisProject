@@ -21,8 +21,8 @@ class Fragment2: Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        viewModel.updateCountryRate()
-        /*viewModel.initial()сдесь вроде работает */
+        viewModel.initial()
+
 
     }
 
@@ -56,16 +56,17 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
+            ///почему только со второй попытки работает?
+            viewModel.updateCountryRate()
             viewModel.getCountryRate().observe(viewLifecycleOwner,{
-                /*viewModel.initial()   сдесь то работает то нет */
+                ///viewModel.updateCountryRate() сдес не работает(не упевает?)
                 adapter.setData(it)
             })
         }
-       /* if(id == R.id.euro_setting){
-            viewModel.getBrestList().observe(viewLifecycleOwner,{
-                adapter.setData(it)
-            })
-        }*/
+       /*if(id == R.id.euro_setting){
+           viewModel.listOfDollar.value = listOf("dsdsd")
+           viewModel.updateCountryRate()
+       }*/
 
         return super.onOptionsItemSelected(item)
     }
