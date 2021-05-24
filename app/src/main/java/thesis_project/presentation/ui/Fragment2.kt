@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
@@ -56,17 +55,21 @@ class Fragment2: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(id == R.id.dollar_setting){
-            ///почему только со второй попытки работает?
-            viewModel.updateCountryRate()
-            viewModel.getCountryRate().observe(viewLifecycleOwner,{
-                ///viewModel.updateCountryRate() сдес не работает(не упевает?)
+            if(viewModel.listOfDollar.value == null){
+                viewModel.updateDollarListRate()
+            }
+            viewModel.getCountryRateDollar().observe(viewLifecycleOwner,{
                 adapter.setData(it)
             })
         }
-       /*if(id == R.id.euro_setting){
-           viewModel.listOfDollar.value = listOf("dsdsd")
-           viewModel.updateCountryRate()
-       }*/
+       if(id == R.id.euro_setting){
+           if(viewModel.listOfEuro.value == null){
+               viewModel.updateEuroListRate()
+           }
+           viewModel.getCountryRateEuro().observe(viewLifecycleOwner,{
+               adapter.setData(it)
+           })
+       }
 
         return super.onOptionsItemSelected(item)
     }
