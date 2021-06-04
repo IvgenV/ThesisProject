@@ -13,7 +13,7 @@ interface RateDao {
     fun insertList(rateList: List<Rate>)
 
     @Query("Select * from Rate")
-    fun getRate():List<Rate>
+    fun getRateCountry():List<Rate>
 
     @Query("Select * from Rate WHERE name=:city")
     fun getRateCity(city:String):List<Rate>

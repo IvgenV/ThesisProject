@@ -11,4 +11,12 @@
         android:id="@+id/fragment2"
         android:name="thesis_project.presentation.ui.Fragment2"
         android:label="Fragment2" />
+    <fragment
+        android:id="@+id/fragment3"
+        android:name="thesis_project.presentation.ui.Fragment3"
+        android:label="Fragment3"/>
+    <fragment
+        android:id="@+id/fragment4"
+        android:name="thesis_project.presentation.ui.Fragment4"
+        android:label="Fragment4"/>
 </navigation>

@@ -11,13 +11,13 @@ import androidx.navigation.Navigation
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 
-class Fragment1:Fragment() {
+class Fragment1 : Fragment() {
 
-    lateinit var text1:TextView
-    lateinit var text2:TextView
-    lateinit var text3:TextView
-    lateinit var button:Button
-    lateinit var navigation:NavController
+    lateinit var text1: TextView
+    lateinit var text2: TextView
+    lateinit var text3: TextView
+    lateinit var button: Button
+    lateinit var navigation: NavController
     lateinit var viewmodel: ViewModel
 
 
@@ -26,7 +26,7 @@ class Fragment1:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment1,container,false)
+        return inflater.inflate(R.layout.fragment1, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -34,13 +34,9 @@ class Fragment1:Fragment() {
 
         viewmodel = ViewModelProvider(this).get(ViewModel::class.java)
 
-
         text1.setOnClickListener {
             navigation.navigate(R.id.fragment2)
         }
-
-
-
 
 
     }
