@@ -10,12 +10,12 @@ import thesis_project.data.data_base.Rate
 interface RateDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertList(rateList: List<Rate>)
+    fun insertList(rateList: List<Data>)
 
-    @Query("Select * from Rate")
-    fun getRateCountry():List<Rate>
+    @Query("Select * from Data")
+    fun getRateCountry():List<Data>
 
-    @Query("Select * from Rate WHERE name=:city")
-    fun getRateCity(city:String):List<Rate>
+    @Query("Select * from Data WHERE name=:city")
+    fun getRateCity(city:String):List<Data>
 
 }

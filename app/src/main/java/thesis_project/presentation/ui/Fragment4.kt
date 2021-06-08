@@ -5,20 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import thesis_project.presentation.viewmodel.ViewModel
 
 class Fragment4: Fragment(),OnMapReadyCallback {
 
     lateinit var mapView:MapView
     lateinit var googleMap: GoogleMap
+    lateinit var viewModel:ViewModel
+    var latLng: LatLng = LatLng(53.83965386903869, 27.57576296414777)
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        arguments?.getString("filial")?.let { viewModel.createGps(it) }
+        viewModel.getGps().observe(viewLifecycleOwner,{
+            latLng = it
+        })
 
 
     }
@@ -42,11 +51,11 @@ class Fragment4: Fragment(),OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val sydney = LatLng(53.836560, 27.573748)
+        val bank = latLng
         googleMap.addMarker(
             MarkerOptions()
-                .position(sydney)
+                .position(bank)
                 .title("BelarusBank №511/383"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,18f))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bank,18f))
     }
 }

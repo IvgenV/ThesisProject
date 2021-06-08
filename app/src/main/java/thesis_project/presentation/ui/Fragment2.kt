@@ -23,11 +23,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
-import thesis_project.presentation.adapter.ItemClickListener
+import thesis_project.presentation.adapter.ToFragment3
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
 
-class Fragment2 : Fragment(), ILocationListener, ItemClickListener {
+class Fragment2 : Fragment(), ILocationListener, ToFragment3 {
 
     lateinit var viewModel: ViewModel
     val adapter = RateAdapter()
@@ -46,6 +46,7 @@ class Fragment2 : Fragment(), ILocationListener, ItemClickListener {
     var isNetworkEnabled = false
     var latitude: Double = 0.0
     var longitude: Double = 0.0
+
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             var bol = false
@@ -70,6 +71,11 @@ class Fragment2 : Fragment(), ILocationListener, ItemClickListener {
         rateIn.displayedValues = listRate
         rateOut.displayedValues = listRate
 
+
+        rateIn.setOnValueChangedListener { picker, oldVal, newVal ->
+
+        }
+
         viewModel.initialCountryRate()
         locationTxt = "Belarus"
         locatioRate.text = locationTxt
@@ -90,13 +96,13 @@ class Fragment2 : Fragment(), ILocationListener, ItemClickListener {
                     })
 
                 } else {
-                    viewModel.initialCityRate(rateInput.text.toString())
+                   /* viewModel.initialCityRate(rateInput.text.toString())
                     locationTxt = rateInput.text.toString()
                     locatioRate.text = locationTxt
                     viewModel.updateDollarListRate(locationTxt)
                     viewModel.getCountryRateDollar().observe(viewLifecycleOwner, {
                         adapter.setData(it)
-                    })
+                    })*/
                 }
             }
             true
@@ -125,7 +131,7 @@ class Fragment2 : Fragment(), ILocationListener, ItemClickListener {
         rateIn = view.findViewById(R.id.rateNumberPickerIn)
         rateOut = view.findViewById(R.id.rateNumberPickerOut)
         navigation = Navigation.findNavController(view)
-        adapter.setListener(this)
+        adapter.setListenerFR2(this)
     }
 
     override fun onLocationChanged(location: Location) {

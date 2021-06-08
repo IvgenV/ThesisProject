@@ -1,6 +1,5 @@
 package thesis_project.presentation.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,8 @@ import com.example.thesis_project.R
 class RateAdapter: ListAdapter<String,
         RateAdapter.ViewHolder>(RateCompareCallback()) {
 
-    private var listener:ItemClickListener?= null
+    private var listenerFR2:ToFragment3? = null
+    private var listenerFR3:ToFragment4? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item,parent,false)
@@ -21,9 +21,11 @@ class RateAdapter: ListAdapter<String,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.rate.text = getItem(position).toString()
-        val rate = getItem(position).toString()
+        val info = getItem(position).toString()
         holder.itemView.setOnClickListener {
-            listener?.onClick(rate)
+            if(listenerFR2!=null){
+                listenerFR2?.onClick(info)
+            }else listenerFR3?.onClick(info)
         }
     }
 
@@ -31,8 +33,12 @@ class RateAdapter: ListAdapter<String,
         submitList(data)
     }
 
-    fun setListener(itemClickListener: ItemClickListener){
-        listener = itemClickListener
+    fun setListenerFR2(toFragment3: ToFragment3){
+        listenerFR2 = toFragment3
+    }
+
+    fun setListenerFR3(toFragment4: ToFragment4){
+        listenerFR3 = toFragment4
     }
 
     inner class ViewHolder(view:View): RecyclerView.ViewHolder(view){

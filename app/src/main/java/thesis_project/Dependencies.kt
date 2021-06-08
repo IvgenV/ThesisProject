@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.cloud.APIServiceBelarusBank
+import thesis_project.data.data_base.Filials
 import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.RateDbData
 import thesis_project.data.data_base.db.RateDataBase
@@ -40,11 +41,11 @@ object Dependencies {
     fun getRateDbUseCase(context: Context): RateDbUseCase =
         RateDbUseCaseImpl(getRateDbRepository(context))
 
-    suspend fun getRateCity(city: String): Response<List<Rate>> {
-        return apiService.getRateCity(city)
-    }
-
     suspend fun getCountryRate(): Response<List<Rate>> {
         return apiService.getRateCountry()
+    }
+
+    suspend fun getFilialsCountry(): Response<List<Filials>> {
+        return apiService.getFilialsCountry()
     }
 }
