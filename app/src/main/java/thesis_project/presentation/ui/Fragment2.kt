@@ -1,19 +1,9 @@
 package thesis_project.presentation.ui
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.NumberPicker
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import thesis_project.Constnst
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -21,88 +11,103 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.location.GpsLocation
-import thesis_project.location.ILocationListener
+import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.adapter.ToFragment3
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
 
-class Fragment2 : Fragment(), ILocationListener, ToFragment3 {
+class Fragment2 : Fragment(), ToFragment3 {
 
     lateinit var viewModel: ViewModel
     val adapter = RateAdapter()
     lateinit var rateList: RecyclerView
     lateinit var rateInput: EditText
     lateinit var locatioRate: TextView
-    lateinit var rateIn: NumberPicker
-    lateinit var rateOut: NumberPicker
+    lateinit var rateNP: NumberPicker
+    lateinit var switch: SwitchMaterial
     lateinit var navigation: NavController
     var locationTxt = ""
-    val listRate = arrayOf("USD", "RUB", "EUR", "BUR")
-    private var locationManager: LocationManager? = null
-    private var location: Location? = null
-    private lateinit var gpsLocation: GpsLocation
-    var isGPSEnabled = false
-    var isNetworkEnabled = false
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
+    val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
+    var check = 0
 
-    private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            var bol = false
-            it.entries.forEach {
-                bol = it.value
-            }
-            if (bol) {
-                checkPermission()
-            } else Toast.makeText(requireContext(), "NEED PERMISSION!", Toast.LENGTH_SHORT).show()
-        }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        init()
-
-        rateIn.maxValue = 3
-        rateIn.minValue = 0
-        rateOut.maxValue = 3
-        rateOut.minValue = 0
-        rateIn.displayedValues = listRate
-        rateOut.displayedValues = listRate
 
 
-        rateIn.setOnValueChangedListener { picker, oldVal, newVal ->
-
-        }
-
+        rateNP.maxValue = Constnst.uah
+        rateNP.minValue = Constnst.usd
+        rateNP.displayedValues = listRate
         viewModel.initialCountryRate()
         locationTxt = "Belarus"
         locatioRate.text = locationTxt
-        viewModel.updateDollarListRate(locationTxt)
-        viewModel.getCountryRateDollar().observe(viewLifecycleOwner, {
+        viewModel.createListCurrency(locationTxt, 0, 0)
+        viewModel.getListCurrency().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
+
+        rateNP.setOnValueChangedListener { picker, oldVal, newVal ->
+            if(switch.isChecked){
+                check = 1
+            }
+            if(!switch.isChecked){
+                check = 0
+            }
+            when (newVal) {
+                Constnst.usd -> {
+                    locationTxt = "Belarus"
+                    locatioRate.text = locationTxt
+                    viewModel.createListCurrency(locationTxt, check, newVal)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        adapter.setData(it)
+                    })
+                }
+                Constnst.eur -> {
+                    locationTxt = "Belarus"
+                    locatioRate.text = locationTxt
+                    viewModel.createListCurrency(locationTxt, check, newVal)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        adapter.setData(it)
+                    })
+                }
+                Constnst.rub -> {
+                    locationTxt = "Belarus"
+                    locatioRate.text = locationTxt
+                    viewModel.createListCurrency(locationTxt, check, newVal)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        adapter.setData(it)
+                    })
+                }
+                Constnst.uah -> {
+                    locationTxt = "Belarus"
+                    locatioRate.text = locationTxt
+                    viewModel.createListCurrency(locationTxt, check, newVal)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        adapter.setData(it)
+                    })
+                }
+            }
+        }
 
         rateInput.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 if (rateInput.text?.isEmpty() == true) {
-                    viewModel.initialCountryRate()
                     locationTxt = "Belarus"
                     locatioRate.text = locationTxt
-                    viewModel.updateDollarListRate(locationTxt)
-                    viewModel.getCountryRateDollar().observe(viewLifecycleOwner, {
+                    viewModel.createListCurrency(locationTxt, check, rateNP.value)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
                         adapter.setData(it)
                     })
 
                 } else {
-                   /* viewModel.initialCityRate(rateInput.text.toString())
-                    locationTxt = rateInput.text.toString()
-                    locatioRate.text = locationTxt
-                    viewModel.updateDollarListRate(locationTxt)
-                    viewModel.getCountryRateDollar().observe(viewLifecycleOwner, {
-                        adapter.setData(it)
-                    })*/
+                     locationTxt = rateInput.text.toString()
+                     locatioRate.text = locationTxt
+                     viewModel.createListCurrency(locationTxt,check,rateNP.value)
+                     viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                         adapter.setData(it)
+                     })
                 }
             }
             true
@@ -128,111 +133,17 @@ class Fragment2 : Fragment(), ILocationListener, ToFragment3 {
         rateList.adapter = adapter
         rateInput = view.findViewById(R.id.cityRateInput)
         locatioRate = view.findViewById(R.id.locationRate)
-        rateIn = view.findViewById(R.id.rateNumberPickerIn)
-        rateOut = view.findViewById(R.id.rateNumberPickerOut)
+        rateNP = view.findViewById(R.id.rateNumberPicker)
         navigation = Navigation.findNavController(view)
         adapter.setListenerFR2(this)
-    }
-
-    override fun onLocationChanged(location: Location) {
-
-    }
-
-    fun init() {
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        isNetworkEnabled =
-            locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
-        gpsLocation = GpsLocation()
-        gpsLocation.setLocalListenerInterface(this)
-        checkPermission()
-    }
-
-    fun checkPermission() {
-        if (isGPSEnabled) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestMultiplePermissions.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                )
-            } else {
-                locationManager?.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    1,
-                    1F,
-                    gpsLocation
-                )
-                if (locationManager != null) {
-                    location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                }
-
-                if (location != null) {
-                    latitude = location?.latitude ?: -999.0
-                    longitude = location?.longitude ?: -999.0
-                    Log.d("TAaAAAG", "$latitude $longitude")
-                }
-            }
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find gps!", Toast.LENGTH_SHORT).show()
-        }
-
-        if (isNetworkEnabled) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestMultiplePermissions.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                )
-            } else {
-                locationManager?.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    1,
-                    1f,
-                    gpsLocation
-                )
-                if (locationManager != null) {
-                    location =
-                        locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                }
-                if (location != null) {
-                    latitude = location?.latitude ?: -999.0
-                    longitude = location?.latitude ?: -999.0
-                    Log.d("TAaAAAG", "$latitude $longitude")
-                }
-            }
-
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find Network!", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
-    override fun onDestroy() {
-        locationManager?.removeUpdates(gpsLocation)
-        super.onDestroy()
+        switch = view.findViewById(R.id.rateSwitch)
     }
 
     override fun onClick(rate: String) {
         val bundle = Bundle()
         bundle.putString("rate", rate)
+        bundle.putInt("in_out",check)
+        bundle.putInt("currency",rateNP.value)
         navigation.navigate(R.id.fragment3, bundle)
     }
 }

@@ -16,46 +16,71 @@
 
     <EditText
         android:id="@+id/cityRateInput"
-        android:width="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="24dp"
+        android:width="100dp"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <NumberPicker
-        android:id="@+id/rateNumberPickerIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toStartOf="@id/rateNumberPickerOut"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerRate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
-
-    <NumberPicker
-        android:id="@+id/rateNumberPickerOut"
+        android:id="@+id/rateNumberPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerRate"
-        android:layout_marginEnd="56dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rateNumberPickerIn"
-        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rateSwitch" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerRate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintTop_toBottomOf="@id/rateNumberPickerOut"
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rateNumberPicker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/rateSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/rateNumberPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+
+    <TextView
+        android:id="@+id/rateIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="покупка"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/rateNumberPicker"
+        app:layout_constraintEnd_toStartOf="@+id/rateSwitch"
+        app:layout_constraintHorizontal_bias="0.796"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+
+    <TextView
+        android:id="@+id/rateOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="продажа"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/rateNumberPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.224"
+        app:layout_constraintStart_toEndOf="@+id/rateSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
