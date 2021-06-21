@@ -6,10 +6,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.cloud.APIServiceBelarusBank
+import thesis_project.data.cloud.NewsCallback
 import thesis_project.data.cloud.RateCallback
 import thesis_project.domain.entity.ExchangeRateBelarusBankImpl
+import thesis_project.domain.entity.NewsBelarusBankImpl
 import thesis_project.domain.repository.ExchangeRatesBelarusBankRepository
+import thesis_project.domain.repository.NewsBelarusBankRepository
 import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
+import thesis_project.domain.use_case.NewsBelarusBankUseCase
 
 object Dependencies {
 
@@ -32,5 +36,10 @@ object Dependencies {
 
     fun getExchangeRateBelarusBankUseCase(): ExchangeRatesBelarusBankUseCase =
         ExchangeRateBelarusBankImpl(exchangeRateBelarusBank)
+
+    private val newsBelarusBank:NewsBelarusBankRepository by lazy { NewsCallback() }
+
+    fun getNewsBelarusBankUseCase():NewsBelarusBankUseCase =
+        NewsBelarusBankImpl(newsBelarusBank)
 
 }

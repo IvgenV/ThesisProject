@@ -10,6 +10,9 @@ import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
 import thesis_project.App
 import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.db.RateData
+import thesis_project.data.data_base.news.News
+import thesis_project.data.data_base.news.NewsData
+import thesis_project.domain.use_case.NewsBelarusBankUseCase
 
 
 class ViewModel : ViewModel() {
@@ -18,6 +21,11 @@ class ViewModel : ViewModel() {
     var listBrest = MutableLiveData<List<Rate>>()
     var listMinsk = MutableLiveData<List<Rate>>()
     var rateData = RateData(App.instance)
+
+    //News
+    val news:NewsBelarusBankUseCase by lazy{Dependencies.getNewsBelarusBankUseCase()}
+    var listNews = MutableLiveData<List<News>>()
+    var newsData = NewsData(App.instance)
 
     fun update() {
         viewModelScope.launch {
@@ -41,4 +49,11 @@ class ViewModel : ViewModel() {
         return listBrest
     }
 
+    fun getNews():LiveData<List<News>>{
+        viewModelScope.launch {
+            newsData.addNews(news.getNews())
+            listNews.value= newsData.getNewsList()
+        }
+        return listNews
+    }
 }

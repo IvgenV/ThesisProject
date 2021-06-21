@@ -10,19 +10,24 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
 import thesis_project.data.data_base.Rate
+import thesis_project.data.data_base.news.News
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
+import thesis_project.presentation.adapter.news.NewsAdapter
 
-class Fragment2: Fragment() {
+class News_fragment: Fragment() {
 
     lateinit var viewModel: ViewModel
-    val adapter = RateAdapter()
-    lateinit var rateList:RecyclerView
+    val adapter = NewsAdapter()
+    lateinit var newsList:RecyclerView
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+
+        viewModel.getNews().observe(viewLifecycleOwner,{
+            adapter.setData(it)
+        })
 
     }
 
@@ -31,41 +36,29 @@ class Fragment2: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment2,container,false)
+        return inflater.inflate(R.layout.news_fragment,container,false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rateList = view.findViewById(R.id.recyclerRate)
-        rateList.layoutManager = LinearLayoutManager(requireContext())
-        rateList.adapter = adapter
+        newsList = view.findViewById(R.id.Newsrecycler)
+        newsList.layoutManager = LinearLayoutManager(requireContext())
+        newsList.adapter = adapter
+
+        /*
+        val testNewsList :List<News> = listOf(
+            News("First","Добрый день уважаемый пользователь","https:\\/\\/belarusbank.by\\/site_ru\\/37865\\/intro.jpg","2021-06-15"),
+            News("Second","Сегодня акция","https:\\/\\/belarusbank.by\\/site_ru\\/37860\\/image001_2.jpg","2021-06-14"),
+            News("Therrd","Вчера ты сдал экзамины","https:\\/\\/belarusbank.by\\/site_ru\\/37851\\/intro.jpg","2021-06-10")
+        )
+        adapter.setData(testNewsList)
+        */
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main,menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if(id == R.id.dollar_setting){
-            viewModel.getMinskList().observe(viewLifecycleOwner,{
-                adapter.setData(it)
-            })
-        }
-        if(id == R.id.euro_setting){
-            viewModel.getBrestList().observe(viewLifecycleOwner,{
-                adapter.setData(it)
-            })
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 }
