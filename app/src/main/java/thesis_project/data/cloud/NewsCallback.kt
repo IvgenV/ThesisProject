@@ -1,5 +1,6 @@
 package thesis_project.data.cloud
 
+import android.text.Html
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import thesis_project.Dependencies
@@ -16,7 +17,7 @@ class NewsCallback:NewsBelarusBankRepository {
         }
         for (news in  list)
         {
-           news.html_ru=deleteSymbol.deleteSymbol(news.html_ru)
+           news.html_ru=Html.fromHtml(news.name_ru).toString()
         }
         return list
     }
