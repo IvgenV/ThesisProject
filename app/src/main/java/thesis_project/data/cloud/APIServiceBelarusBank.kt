@@ -19,6 +19,6 @@ interface APIServiceBelarusBank {
     @GET("https://belarusbank.by/api/filials_info")
     suspend fun getFilialsCountry():Response<List<Filials>>
 
-    @GET("news_info?lang=ru")
+    @GET("https://belarusbank.by/api/news_info?lang=ru")
     suspend fun getNews():Response<List<News>>
 }

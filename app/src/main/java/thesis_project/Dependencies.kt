@@ -8,12 +8,16 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.cloud.APIServiceBelarusBank
+import thesis_project.data.cloud.NewsCallback
 import thesis_project.data.data_base.Filials
 import thesis_project.data.data_base.Rate
 import thesis_project.data.data_base.RateDbData
 import thesis_project.data.data_base.db.RateDataBase
+import thesis_project.domain.entity.NewsBelarusBankImpl
 import thesis_project.domain.entity.RateDbUseCaseImpl
+import thesis_project.domain.repository.NewsBelarusBankRepository
 import thesis_project.domain.repository.RateDbRepository
+import thesis_project.domain.use_case.NewsBelarusBankUseCase
 import thesis_project.domain.use_case.RateDbUseCase
 
 object Dependencies {
@@ -48,9 +52,9 @@ object Dependencies {
     suspend fun getFilialsCountry(): Response<List<Filials>> {
         return apiService.getFilialsCountry()
     }
-    private val newsBelarusBank:NewsBelarusBankRepository by lazy { NewsCallback() }
+    private val newsBelarusBank: NewsBelarusBankRepository by lazy { NewsCallback() }
 
-    fun getNewsBelarusBankUseCase():NewsBelarusBankUseCase =
+    fun getNewsBelarusBankUseCase(): NewsBelarusBankUseCase =
         NewsBelarusBankImpl(newsBelarusBank)
 
 }
