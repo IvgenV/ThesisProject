@@ -14,6 +14,9 @@ import thesis_project.Dependencies
 import thesis_project.data.data_base.Data
 import thesis_project.data.data_base.Rate
 import kotlin.math.log
+import thesis_project.data.data_base.news.News
+import thesis_project.data.data_base.news.NewsData
+import thesis_project.domain.use_case.NewsBelarusBankUseCase
 
 
 class ViewModel : ViewModel() {
@@ -22,6 +25,10 @@ class ViewModel : ViewModel() {
     var listOfCurrency = MutableLiveData<List<String>>()
     var listOfFilial = MutableLiveData<List<String>>()
     var latLng = MutableLiveData<LatLng>()
+    //News
+    val news:NewsBelarusBankUseCase by lazy{Dependencies.getNewsBelarusBankUseCase()}
+    var listNews = MutableLiveData<List<News>>()
+    var newsData = NewsData(App.instance)
 
     fun initialCountryRate() {
         viewModelScope.launch {
@@ -327,4 +334,11 @@ class ViewModel : ViewModel() {
         return latLng
     }
 
+    fun getNews():LiveData<List<News>>{
+        viewModelScope.launch {
+            newsData.addNews(news.getNews())
+            listNews.value= newsData.getNewsList()
+        }
+        return listNews
+    }
 }

@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import thesis_project.data.data_base.Filials
 import thesis_project.data.data_base.Rate
+import thesis_project.data.data_base.news.News
 
 interface APIServiceBelarusBank {
 
@@ -18,4 +19,6 @@ interface APIServiceBelarusBank {
     @GET("https://belarusbank.by/api/filials_info")
     suspend fun getFilialsCountry():Response<List<Filials>>
 
+    @GET("news_info?lang=ru")
+    suspend fun getNews():Response<List<News>>
 }

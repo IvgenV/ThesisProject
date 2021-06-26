@@ -24,6 +24,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/newsitem"
+        android:text="Новости"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/button"
         android:layout_marginTop="50dp"

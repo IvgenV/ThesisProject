@@ -48,4 +48,9 @@ object Dependencies {
     suspend fun getFilialsCountry(): Response<List<Filials>> {
         return apiService.getFilialsCountry()
     }
+    private val newsBelarusBank:NewsBelarusBankRepository by lazy { NewsCallback() }
+
+    fun getNewsBelarusBankUseCase():NewsBelarusBankUseCase =
+        NewsBelarusBankImpl(newsBelarusBank)
+
 }
