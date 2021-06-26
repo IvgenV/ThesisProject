@@ -13,11 +13,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import thesis_project.presentation.viewmodel.ViewModel
 
-class Fragment4: Fragment(),OnMapReadyCallback {
+class FragmentMap: Fragment(),OnMapReadyCallback {
 
     lateinit var mapView:MapView
     lateinit var googleMap: GoogleMap
     lateinit var viewModel:ViewModel
+    lateinit var lt:LatLng
+
     var latLng: LatLng = LatLng(53.83965386903869, 27.57576296414777)
 
 
@@ -25,11 +27,6 @@ class Fragment4: Fragment(),OnMapReadyCallback {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        arguments?.getString("filial")?.let { viewModel.createGps(it) }
-        viewModel.getGps().observe(viewLifecycleOwner,{
-            latLng = it
-        })
-
 
     }
 
@@ -52,11 +49,15 @@ class Fragment4: Fragment(),OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val bank = latLng
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(bank)
-                .title("BelarusBank №511/383"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bank,18f))
+        val filial = arguments?.getString("filial")
+        filial?.let { viewModel.createGps(it) }
+        viewModel.getGps().observe(viewLifecycleOwner,{
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(it)
+                    .title("BelarusBank №511/383"))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
+        })
     }
+
 }

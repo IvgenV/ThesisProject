@@ -1,38 +1,35 @@
 package thesis_project.presentation.viewmodel
 
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.launch
-import thesis_project.App
-import thesis_project.Constnst
-import thesis_project.Dependencies
-import thesis_project.data.data_base.Data
-import thesis_project.data.data_base.Rate
-import kotlin.math.log
+import kotlinx.coroutines.*
+import thesis_project.*
+import thesis_project.data.data_base.filials.RateFilialPojo
 
 
 class ViewModel : ViewModel() {
 
-    var localDb = Dependencies.getRateDbUseCase(App.instance)
+    var localRateDb = Dependencies.getRateDbUseCase(App.instance)
+    var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
     var listOfCurrency = MutableLiveData<List<String>>()
     var listOfFilial = MutableLiveData<List<String>>()
+    var listRateFilial = MutableLiveData<List<RateFIlial>>()
     var latLng = MutableLiveData<LatLng>()
 
     fun initialCountryRate() {
         viewModelScope.launch {
-            val callRate = Dependencies.getCountryRate()
-            val callFilials = Dependencies.getFilialsCountry()
+            val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
+            val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
             if (callRate.isSuccessful && callFilials.isSuccessful) {
-                val dataList = mutableListOf<Data>()
+                val dataList = mutableListOf<RateFilialPojo>()
                 callRate.body()?.forEach { rate ->
                     callFilials.body()?.forEach { filial ->
                         if (rate.id == filial.id) {
-                            val data = Data(
+                            val data = RateFilialPojo(
                                 rate.usd_in,
                                 rate.usd_out,
                                 rate.euro_in,
@@ -54,64 +51,64 @@ class ViewModel : ViewModel() {
                         }
                     }
                 }
-                localDb.addListRate(dataList)
-            } else localDb.addListRate(listOf())
+                localRateDb.addListRate(dataList)
+            } else localRateDb.addListRate(listOf())
         }
     }
-
 
     fun createListCurrency(location: String, in_out: Int, currency: Int) {
 
         if (in_out == 0) {
             when (currency) {
-                Constnst.usd -> {
+                Constnsts.usd -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.usd_in }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.usd_in }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.usd_in }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.usd_in }.toSet().toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.eur -> {
+                Constnsts.eur -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.euro_in }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.euro_in }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.euro_in }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.euro_in }.toSet()
+                                    .toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.rub -> {
+                Constnsts.rub -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.rub_in }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.rub_in }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.rub_in }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.rub_in }.toSet().toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.uah -> {
+                Constnsts.uah -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.uah_in }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.uah_in }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.uah_in }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.uah_in }.toSet().toList()
                                     .sortedBy { it }
                         }
                     }
@@ -120,54 +117,58 @@ class ViewModel : ViewModel() {
         }
         if (in_out == 1) {
             when (currency) {
-                Constnst.usd -> {
+                Constnsts.usd -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.usd_out }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.usd_out }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.usd_out }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.usd_out }.toSet()
+                                    .toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.eur -> {
+                Constnsts.eur -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.euro_out }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.euro_out }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.euro_out }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.euro_out }.toSet()
+                                    .toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.rub -> {
+                Constnsts.rub -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.rub_out }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.rub_out }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.rub_out }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.rub_out }.toSet()
+                                    .toList()
                                     .sortedBy { it }
                         }
                     }
                 }
-                Constnst.uah -> {
+                Constnsts.uah -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
-                                localDb.getRateCountry().map { it.uah_out }.toSet().toList()
+                                localRateDb.getRateCountry().map { it.uah_out }.toSet().toList()
                                     .sortedBy { it }
                         } else {
                             listOfCurrency.value =
-                                localDb.getRateCity(location).map { it.uah_out }.toSet().toList()
+                                localRateDb.getRateCity(location).map { it.uah_out }.toSet()
+                                    .toList()
                                     .sortedBy { it }
                         }
                     }
@@ -183,49 +184,43 @@ class ViewModel : ViewModel() {
     }
 
 
-    ///список филиалов в fragment3
     fun createListFilial(rate: String, in_out: Int, currency: Int, location: Location?) {
-        if (rate != "empty" && in_out != -1 && currency != -1) {
+        if (rate != "empty" && in_out != -1 && currency != -1&& location!=null) {
             if (in_out == 0) {
                 when (currency) {
-                    Constnst.usd -> {
+                    Constnsts.usd -> {
                         viewModelScope.launch {
-                            var list = mutableListOf<Data>()
-                            localDb.getRateCountry().forEach { fil ->
-                                if(list.size<10){
-                                    list.add(fil)
-                                }
-                                if(list.size>9){
+                            val list = mutableListOf<RateFIlial>()
+                            localRateDb.getRateCountry().forEach {
+                                if (it.usd_in == rate) {
                                     val loc = Location("")
-                                    var locList: Location
-                                    loc.latitude = fil.latitude.toDouble()
-                                    loc.longitude = fil.longitude.toDouble()
-
-                                    ///сдесь ошибка
-                                    ///java.util.ConcurrentModificationException
-                                    ///at thesis_project.presentation.viewmodel.ViewModel$createListFilial$1.invokeSuspend(ViewModel.kt:331)
-                                    list.forEachIndexed { index, data ->
-                                        locList = Location("")
-                                        locList.latitude = data.latitude.toDouble()
-                                        locList.longitude = data.longitude.toDouble()
-                                        if(location?.distanceTo(loc)?:1f < location?.distanceTo(locList)?:1f){
-                                            list.removeAt(index)
-                                            list.add(fil)
-                                        }
-                                    }
+                                    loc.latitude = it.latitude.toDouble()
+                                    loc.longitude = it.longitude.toDouble()
+                                    val dist = location.distanceTo(loc)
+                                    list.add(RateFIlial(dist, it.filial))
                                 }
                             }
-                            var liftFilial = mutableListOf<String>()
-                            list.forEach {
-                                liftFilial.add(it.filial)
+                            list.sortBy { it.distance }
+                            if (list.size < 15) {
+                                listRateFilial.value = list
+                            } else {
+                                listRateFilial.value = list.take(15)
                             }
-                            listOfFilial.value = liftFilial
                         }
-                    }
-                    Constnst.eur -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
+                                if (it.usd_in == rate) {
+                                    list.add(it.filial)
+                                }
+                            }
+                            listOfFilial.value = list
+                        }
+                    }
+                    Constnsts.eur -> {
+                        viewModelScope.launch {
+                            val list = mutableListOf<String>()
+                            localRateDb.getRateCountry().forEach {
                                 if (it.euro_in == rate) {
                                     list.add(it.filial)
                                 }
@@ -233,10 +228,10 @@ class ViewModel : ViewModel() {
                             listOfFilial.value = list
                         }
                     }
-                    Constnst.rub -> {
+                    Constnsts.rub -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.rub_in == rate) {
                                     list.add(it.filial)
                                 }
@@ -244,10 +239,10 @@ class ViewModel : ViewModel() {
                             listOfFilial.value = list
                         }
                     }
-                    Constnst.uah -> {
+                    Constnsts.uah -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.uah_in == rate) {
                                     list.add(it.filial)
                                 }
@@ -259,10 +254,10 @@ class ViewModel : ViewModel() {
             }
             if (in_out == 1) {
                 when (currency) {
-                    Constnst.usd -> {
+                    Constnsts.usd -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.usd_out == rate) {
                                     list.add(it.filial)
                                 }
@@ -270,10 +265,10 @@ class ViewModel : ViewModel() {
                             listOfFilial.value = list
                         }
                     }
-                    Constnst.eur -> {
+                    Constnsts.eur -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.euro_out == rate) {
                                     list.add(it.filial)
                                 }
@@ -281,10 +276,10 @@ class ViewModel : ViewModel() {
                             listOfFilial.value = list
                         }
                     }
-                    Constnst.rub -> {
+                    Constnsts.rub -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.rub_out == rate) {
                                     list.add(it.filial)
                                 }
@@ -292,10 +287,10 @@ class ViewModel : ViewModel() {
                             listOfFilial.value = list
                         }
                     }
-                    Constnst.uah -> {
+                    Constnsts.uah -> {
                         viewModelScope.launch {
                             val list = mutableListOf<String>()
-                            localDb.getRateCountry().forEach {
+                            localRateDb.getRateCountry().forEach {
                                 if (it.uah_out == rate) {
                                     list.add(it.filial)
                                 }
@@ -308,16 +303,16 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun getFilials(): LiveData<List<String>> {
-        return listOfFilial
+
+    fun getRatFilials(): LiveData<List<RateFIlial>> {
+        return listRateFilial
     }
 
     fun createGps(filial: String) {
         viewModelScope.launch {
-            localDb.getRateCountry().forEach {
+            localRateDb.getRateCountry().forEach {
                 if (it.filial == filial) {
                     latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
-                    Log.d("DSDSD", latLng.value.toString())
                 }
             }
         }
@@ -326,5 +321,6 @@ class ViewModel : ViewModel() {
     fun getGps(): LiveData<LatLng> {
         return latLng
     }
+
 
 }

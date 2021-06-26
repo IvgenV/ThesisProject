@@ -11,7 +11,7 @@ import androidx.navigation.Navigation
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 
-class Fragment1 : Fragment() {
+class FragmentStart : Fragment() {
 
     lateinit var text1: TextView
     lateinit var text2: TextView

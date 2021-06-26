@@ -1,6 +1,6 @@
 package thesis_project.presentation.adapter
 
-interface ToFragment4 {
+interface ToFragmentMap {
 
     fun onClick(filial:String)
 

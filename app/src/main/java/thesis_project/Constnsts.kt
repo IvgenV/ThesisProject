@@ -1,6 +1,6 @@
 package thesis_project
 
-object Constnst {
+object Constnsts {
 
     val usd = 0
     val eur = 1

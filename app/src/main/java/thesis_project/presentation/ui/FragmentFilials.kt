@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,14 +22,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
-import thesis_project.presentation.adapter.RateAdapter
-import thesis_project.presentation.adapter.ToFragment4
+import thesis_project.presentation.adapter.FilialAdapter
+import thesis_project.presentation.adapter.ToFragmentMap
 
-class Fragment3 : Fragment(), ILocationListener, ToFragment4 {
+class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
     lateinit var viewModel: ViewModel
     lateinit var filialList: RecyclerView
-    val adapter = RateAdapter()
+    val adapter = FilialAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
@@ -61,7 +60,7 @@ class Fragment3 : Fragment(), ILocationListener, ToFragment4 {
         in_out = arguments?.getInt("in_out") ?: -1
         currency = arguments?.getInt("currency") ?: -1
         viewModel.createListFilial(rate, in_out, currency, location)
-        viewModel.getFilials().observe(viewLifecycleOwner, {
+        viewModel.getRatFilials().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
     }
@@ -85,7 +84,7 @@ class Fragment3 : Fragment(), ILocationListener, ToFragment4 {
 
     override fun onClick(filial: String) {
         val bundle = Bundle()
-        viewModel.createGps(filial)
+        bundle.putString("filial",filial)
         navigation.navigate(R.id.fragment4, bundle)
     }
 
@@ -128,8 +127,8 @@ class Fragment3 : Fragment(), ILocationListener, ToFragment4 {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    1,
-                    1F,
+                    100,
+                    10F,
                     gpsLocation
                 )
                 if (locationManager != null) {

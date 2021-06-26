@@ -2,7 +2,7 @@ package thesis_project.presentation.ui
 
 import android.os.Bundle
 import android.view.*
-import thesis_project.Constnst
+import thesis_project.Constnsts
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import com.google.android.material.switchmaterial.SwitchMaterial
-import thesis_project.presentation.adapter.ToFragment3
-import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.RateAdapter
+import thesis_project.presentation.adapter.ToFragmentFilials
+import thesis_project.presentation.viewmodel.ViewModel
 
-class Fragment2 : Fragment(), ToFragment3 {
+class FragmentRate : Fragment(), ToFragmentFilials {
 
     lateinit var viewModel: ViewModel
     val adapter = RateAdapter()
@@ -37,8 +37,8 @@ class Fragment2 : Fragment(), ToFragment3 {
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
 
 
-        rateNP.maxValue = Constnst.uah
-        rateNP.minValue = Constnst.usd
+        rateNP.maxValue = Constnsts.uah
+        rateNP.minValue = Constnsts.usd
         rateNP.displayedValues = listRate
         viewModel.initialCountryRate()
         locationTxt = "Belarus"
@@ -56,7 +56,7 @@ class Fragment2 : Fragment(), ToFragment3 {
                 check = 0
             }
             when (newVal) {
-                Constnst.usd -> {
+                Constnsts.usd -> {
                     locationTxt = "Belarus"
                     locatioRate.text = locationTxt
                     viewModel.createListCurrency(locationTxt, check, newVal)
@@ -64,7 +64,7 @@ class Fragment2 : Fragment(), ToFragment3 {
                         adapter.setData(it)
                     })
                 }
-                Constnst.eur -> {
+                Constnsts.eur -> {
                     locationTxt = "Belarus"
                     locatioRate.text = locationTxt
                     viewModel.createListCurrency(locationTxt, check, newVal)
@@ -72,7 +72,7 @@ class Fragment2 : Fragment(), ToFragment3 {
                         adapter.setData(it)
                     })
                 }
-                Constnst.rub -> {
+                Constnsts.rub -> {
                     locationTxt = "Belarus"
                     locatioRate.text = locationTxt
                     viewModel.createListCurrency(locationTxt, check, newVal)
@@ -80,7 +80,7 @@ class Fragment2 : Fragment(), ToFragment3 {
                         adapter.setData(it)
                     })
                 }
-                Constnst.uah -> {
+                Constnsts.uah -> {
                     locationTxt = "Belarus"
                     locatioRate.text = locationTxt
                     viewModel.createListCurrency(locationTxt, check, newVal)
@@ -135,7 +135,7 @@ class Fragment2 : Fragment(), ToFragment3 {
         locatioRate = view.findViewById(R.id.locationRate)
         rateNP = view.findViewById(R.id.rateNumberPicker)
         navigation = Navigation.findNavController(view)
-        adapter.setListenerFR2(this)
+        adapter.setListenerFr2(this)
         switch = view.findViewById(R.id.rateSwitch)
     }
 

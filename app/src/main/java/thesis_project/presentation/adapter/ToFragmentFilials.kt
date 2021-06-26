@@ -1,6 +1,6 @@
 package thesis_project.presentation.adapter
 
-interface ToFragment3 {
+interface ToFragmentFilials {
 
     fun onClick(rate:String)
 
