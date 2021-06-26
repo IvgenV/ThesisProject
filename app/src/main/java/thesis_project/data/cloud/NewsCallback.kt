@@ -15,10 +15,6 @@ class NewsCallback:NewsBelarusBankRepository {
                 list = Dependencies.apiService.getNews().body()?: listOf()
             }
         }
-        for (news in  list)
-        {
-           news.html_ru=Html.fromHtml(news.name_ru).toString()
-        }
         return list
     }
 

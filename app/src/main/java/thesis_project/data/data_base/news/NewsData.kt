@@ -1,6 +1,7 @@
 package thesis_project.data.data_base.news
 
 import android.content.Context
+import android.text.Html
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,6 +21,11 @@ class NewsData(context: Context) {
         return list
     }
     suspend fun addNews(NewsList: List<News>){
+
+        for (news in  NewsList)
+        {
+            news.html_ru= Html.fromHtml(news.html_ru).toString()
+        }
 
         withContext(Dispatchers.IO){
             NewsDao.insertListNews(NewsList)
