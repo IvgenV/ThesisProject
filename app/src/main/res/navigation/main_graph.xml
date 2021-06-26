@@ -5,10 +5,18 @@
 
     <fragment
         android:id="@+id/fragment1"
-        android:name="thesis_project.presentation.ui.Fragment1"
+        android:name="thesis_project.presentation.ui.FragmentStart"
         android:label="Fragment1" />
     <fragment
         android:id="@+id/fragment2"
-        android:name="thesis_project.presentation.ui.Fragment2"
+        android:name="thesis_project.presentation.ui.FragmentRate"
         android:label="Fragment2" />
+    <fragment
+        android:id="@+id/fragment3"
+        android:name="thesis_project.presentation.ui.FragmentFilials"
+        android:label="Fragment3"/>
+    <fragment
+        android:id="@+id/fragment4"
+        android:name="thesis_project.presentation.ui.FragmentMap"
+        android:label="Fragment4"/>
 </navigation>

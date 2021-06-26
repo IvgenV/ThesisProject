@@ -7,25 +7,36 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.data.data_base.Rate
 
-class RateAdapter: ListAdapter<Rate,
+class RateAdapter : ListAdapter<String,
         RateAdapter.ViewHolder>(RateCompareCallback()) {
 
+    private var listener:ToFragmentFilials?=null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rate,parent,false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.rate.text = getItem(position).toString()
+        val info = getItem(position).toString()
+        holder.itemView.setOnClickListener {
+            listener?.onClick(info)
+        }
     }
 
-    fun setData(data: List<Rate>){
+    fun setListenerFr2(toFragmentFilials: ToFragmentFilials){
+        listener = toFragmentFilials
+    }
+
+    fun setData(data:List<String>){
         submitList(data)
     }
 
-    inner class ViewHolder(view:View): RecyclerView.ViewHolder(view){
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rate: TextView = view.findViewById(R.id.itemRate)
     }
+
+
 }

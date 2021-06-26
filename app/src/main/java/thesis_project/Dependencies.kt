@@ -1,36 +1,69 @@
 package thesis_project
 
-import com.google.gson.GsonBuilder
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import thesis_project.data.cloud.APIServiceBelarusBank
-import thesis_project.data.cloud.RateCallback
-import thesis_project.domain.entity.ExchangeRateBelarusBankImpl
-import thesis_project.domain.repository.ExchangeRatesBelarusBankRepository
-import thesis_project.domain.use_case.ExchangeRatesBelarusBankUseCase
+import android.content.Context
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import thesis_project.data.cloud.atm.AtmCloudSource
+import thesis_project.data.cloud.rate.RateCloudSource
+import thesis_project.data.data_base.atm.AtmDbData
+import thesis_project.data.data_base.filials.СoordinatesPojo
+import thesis_project.data.data_base.filials.RateDbData
+import thesis_project.domain.entity.AtmCloudUseCaseImpl
+import thesis_project.domain.entity.AtmDbUseCaseImpl
+import thesis_project.domain.entity.RateCloudUseCaseImpl
+import thesis_project.domain.entity.RateDbUseCaseImpl
+import thesis_project.domain.repository.AtmCloudRepository
+import thesis_project.domain.repository.AtmDbRepository
+import thesis_project.domain.repository.RateCloudRepository
+import thesis_project.domain.repository.RateDbRepository
+import thesis_project.domain.use_case.AtmCloudUseCase
+import thesis_project.domain.use_case.AtmDbUseCase
+import thesis_project.domain.use_case.RateCloudUseCase
+import thesis_project.domain.use_case.RateDbUseCase
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 object Dependencies {
 
-    private val baseUrlRate = "https://belarusbank.by/api/"
-
-    private val logininterseption = HttpLoggingInterceptor().apply {
-        setLevel(HttpLoggingInterceptor.Level.BODY)
+    private fun getRateDbRepository(context: Context): RateDbRepository {
+        return RateDbData(context)
     }
 
-    private val okHttpClient = OkHttpClient.Builder().addInterceptor(logininterseption).build()
+    fun getRateDbUseCase(context: Context): RateDbUseCase =
+        RateDbUseCaseImpl(getRateDbRepository(context))
 
-    private val retrofit = Retrofit.Builder().baseUrl(baseUrlRate)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-        .client(okHttpClient)
-        .build()
+    private fun getAtmDbRepository(context: Context):AtmDbRepository{
+        return AtmDbData(context)
+    }
 
-    val apiService = retrofit.create(APIServiceBelarusBank::class.java)
+    fun getAtmDbUseCase(context: Context): AtmDbUseCase =
+        AtmDbUseCaseImpl(getAtmDbRepository(context))
 
-    private val exchangeRateBelarusBank: ExchangeRatesBelarusBankRepository by lazy { RateCallback() }
 
-    fun getExchangeRateBelarusBankUseCase(): ExchangeRatesBelarusBankUseCase =
-        ExchangeRateBelarusBankImpl(exchangeRateBelarusBank)
+    private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
 
+    fun getRateCloudUseCase():RateCloudUseCase =
+        RateCloudUseCaseImpl(apiRateCloudSource)
+
+    private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource }
+
+    fun getAtmCloudUseCase(): AtmCloudUseCase =
+        AtmCloudUseCaseImpl(apiAtmCloudSource)
+
+    /*suspend fun <T> Call<T>.await():T = suspendCoroutine { cont->
+        enqueue(object : Callback<T>{
+            override fun onResponse(call: Call<T>, response: Response<T>) {
+                if(response.isSuccessful){
+                    cont.resume(response.body()!!)
+                }else cont.resumeWithException(Error("SDsd"))
+            }
+
+            override fun onFailure(call: Call<T>, t: Throwable) {
+                cont.resumeWithException(t)
+            }
+
+        })
+    }*/
 }
