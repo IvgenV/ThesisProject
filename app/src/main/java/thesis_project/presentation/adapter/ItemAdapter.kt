@@ -7,38 +7,38 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.RateFIlial
+import thesis_project.ItemDistance
 
-class FilialAdapter: ListAdapter<RateFIlial,
-        FilialAdapter.ViewHolder>(FilialCompareCallback()) {
+class ItemAdapter: ListAdapter<ItemDistance,
+        ItemAdapter.ViewHolder>(ItemCompareCallback()) {
 
-    private var listenerFR3:ToFragmentMap? = null
+    private var listenerToMap:ToFragmentMap? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_rate_filial,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_item_distance,parent,false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.rate.text = getItem(position).rate
+        holder.item.text = getItem(position).item
         holder.distance.text = getItem(position).distance.toString()
-        val info = getItem(position).rate
+        val info = getItem(position).item
         holder.itemView.setOnClickListener {
-            listenerFR3?.onClick(info)
+            listenerToMap?.onClick(info)
         }
     }
 
-    fun setData(data: List<RateFIlial>){
+    fun setData(data: List<ItemDistance>){
         submitList(data)
     }
 
 
-    fun setListenerFR3(toFragmentMap: ToFragmentMap){
-        listenerFR3 = toFragmentMap
+    fun setListenerToMap(toFragmentMap: ToFragmentMap){
+        listenerToMap = toFragmentMap
     }
 
     inner class ViewHolder(view:View): RecyclerView.ViewHolder(view){
-        val rate: TextView = view.findViewById(R.id.itemFilial)
+        val item: TextView = view.findViewById(R.id.itemFilial)
         val distance:TextView = view.findViewById(R.id.itemDistance)
     }
 

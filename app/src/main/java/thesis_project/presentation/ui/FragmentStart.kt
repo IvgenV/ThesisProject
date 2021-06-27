@@ -27,7 +27,7 @@ class FragmentStart : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment1, container, false)
+        return inflater.inflate(R.layout.fragment_start, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -36,11 +36,11 @@ class FragmentStart : Fragment() {
         viewmodel = ViewModelProvider(this).get(ViewModel::class.java)
 
         text1.setOnClickListener {
-            navigation.navigate(R.id.fragment2)
+            navigation.navigate(R.id.fragment_rate)
         }
 
-        text4.setOnClickListener {
-            navigation.navigate(R.id.news_fragment)
+        text2.setOnClickListener {
+            navigation.navigate(R.id.fragment_atm)
         }
 
     }

@@ -121,7 +121,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment2, container, false)
+        return inflater.inflate(R.layout.fragment_rate, container, false)
     }
 
 
@@ -144,6 +144,6 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         bundle.putString("rate", rate)
         bundle.putInt("in_out",check)
         bundle.putInt("currency",rateNP.value)
-        navigation.navigate(R.id.fragment3, bundle)
+        navigation.navigate(R.id.fragment_filials, bundle)
     }
 }

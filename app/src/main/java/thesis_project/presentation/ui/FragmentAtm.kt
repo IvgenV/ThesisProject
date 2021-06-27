@@ -16,21 +16,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import thesis_project.presentation.viewmodel.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.Support
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
-import thesis_project.sealed.SealedInOut
+import thesis_project.presentation.viewmodel.ViewModel
 
-class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
 
     lateinit var viewModel: ViewModel
-    lateinit var filialList: RecyclerView
+    lateinit var atmList: RecyclerView
     val adapter = ItemAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
@@ -38,10 +36,6 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
     private lateinit var gpsLocation: GpsLocation
     var isGPSEnabled = false
     var isNetworkEnabled = false
-    lateinit var rate: String
-    var in_out = -1
-    var currency: Int = -1
-
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             var bol = false
@@ -55,17 +49,11 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
-        rate = arguments?.getString("rate") ?: "empty"
-        ///in_out = arguments?.getInt("in_out") ?: -1
-        currency = arguments?.getInt("currency") ?: -1
-
-        val inOut = Support.fromSealedInOut(arguments?.getInt("in_out") ?: -1)
-
-        viewModel.createListFilial(rate, inOut, currency, location)
-        viewModel.getRatFilials().observe(viewLifecycleOwner, {
+        viewModel.initialAtm()
+        viewModel.createListAtm(location)
+        viewModel.getAtm().observe(viewLifecycleOwner,{
             adapter.setData(it)
         })
     }
@@ -75,22 +63,16 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_filials, container, false)
+        return inflater.inflate(R.layout.fragment_atm,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filialList = view.findViewById(R.id.filials_recycler)
-        filialList.layoutManager = LinearLayoutManager(requireContext())
-        filialList.adapter = adapter
+        atmList = view.findViewById(R.id.atm_recycler)
+        atmList.layoutManager = LinearLayoutManager(requireContext())
+        atmList.adapter = adapter
         navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
-    }
-
-    override fun onClick(filial: String) {
-        val bundle = Bundle()
-        bundle.putString("filial",filial)
-        navigation.navigate(R.id.fragment_map, bundle)
     }
 
     override fun onDestroy() {
@@ -100,6 +82,12 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onLocationChanged(location: Location) {
 
+    }
+
+    override fun onClick(atm: String) {
+        val bundle = Bundle()
+        bundle.putString("atm",atm)
+        navigation.navigate(R.id.fragment_map, bundle)
     }
 
     fun init() {

@@ -1,9 +1,20 @@
 package thesis_project
 
+import thesis_project.sealed.SealedInOut
+
 object Support {
 
-    fun createListCurrencySupport(location: String, in_out: Int, currency: Int){
-        val st = Double.NaN
-    }
+    fun fromSealedInOut(inOut:Int) =
+        when(inOut){
+            0 ->{
+                SealedInOut.In
+            }
+            1 ->{
+                SealedInOut.Out
+            }
+            else -> {
+                SealedInOut.Error
+            }
+        }
 
 }

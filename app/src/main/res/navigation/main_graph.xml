@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/fragment1">
+    app:startDestination="@id/fragment_start">
 
     <fragment
-        android:id="@+id/fragment1"
+        android:id="@+id/fragment_start"
         android:name="thesis_project.presentation.ui.FragmentStart"
-        android:label="Fragment1" />
+        android:label="FragmentStart" />
     <fragment
-        android:id="@+id/fragment2"
+        android:id="@+id/fragment_rate"
         android:name="thesis_project.presentation.ui.FragmentRate"
-        android:label="Fragment2" />
+        android:label="FragmentRate" />
     <fragment
-        android:id="@+id/fragment3"
+        android:id="@+id/fragment_filials"
         android:name="thesis_project.presentation.ui.FragmentFilials"
-        android:label="Fragment3"/>
+        android:label="FragmentFilials" />
     <fragment
-        android:id="@+id/fragment4"
+        android:id="@+id/fragment_atm"
+        android:name="thesis_project.presentation.ui.FragmentAtm"
+        android:label="FragmentAtm"/>
+    <fragment
+        android:id="@+id/fragment_map"
         android:name="thesis_project.presentation.ui.FragmentMap"
-        android:label="Fragment4"/>
+        android:label="FragmentMap" />
     <fragment
         android:id="@+id/news_fragment"
         android:name="thesis_project.presentation.ui.NewsFragment"

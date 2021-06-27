@@ -1,7 +1,6 @@
 package thesis_project.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,7 @@ class FragmentMap: Fragment(),OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment4,container,false)
+        return inflater.inflate(R.layout.fragment_map,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,14 +49,29 @@ class FragmentMap: Fragment(),OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         val filial = arguments?.getString("filial")
-        filial?.let { viewModel.createGps(it) }
-        viewModel.getGps().observe(viewLifecycleOwner,{
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(it)
-                    .title("BelarusBank №511/383"))
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
-        })
+        val atm = arguments?.getString("atm")
+
+        if(filial != null){
+            filial.let { viewModel.createGpsFilial(it) }
+            viewModel.getGps().observe(viewLifecycleOwner,{
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(it)
+                        .title("FILIAL"))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
+            })
+        }
+
+        if(atm!=null){
+            atm.let { viewModel.createGpsAtm(it) }
+            viewModel.getGps().observe(viewLifecycleOwner,{
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(it)
+                        .title("ATM"))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
+            })
+        }
     }
 
 }
