@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import thesis_project.*
+import thesis_project.data.data_base.atm.AtmPojo
 import thesis_project.data.data_base.filials.RateFilialPojo
+import thesis_project.sealed.SealedInOut
 
 
 class ViewModel : ViewModel() {
@@ -17,7 +19,8 @@ class ViewModel : ViewModel() {
     var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
     var listOfCurrency = MutableLiveData<List<String>>()
     var listOfFilial = MutableLiveData<List<String>>()
-    var listRateFilial = MutableLiveData<List<RateFIlial>>()
+    var listRateFilial = MutableLiveData<List<ItemDistance>>()
+    var listAtm = MutableLiveData<List<ItemDistance>>()
     var latLng = MutableLiveData<LatLng>()
 
     fun initialCountryRate() {
@@ -184,20 +187,20 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun createListFilial(rate: String, in_out: Int, currency: Int, location: Location?) {
-        if (rate != "empty" && in_out != -1 && currency != -1&& location!=null) {
-            if (in_out == 0) {
+    fun createListFilial(rate: String, in_out: SealedInOut, currency: Int, location: Location?) {
+        if (rate != "empty" && in_out != SealedInOut.Error && currency != -1 && location != null) {
+            if (in_out == SealedInOut.In) {
                 when (currency) {
                     Constnsts.usd -> {
                         viewModelScope.launch {
-                            val list = mutableListOf<RateFIlial>()
+                            val list = mutableListOf<ItemDistance>()
                             localRateDb.getRateCountry().forEach {
                                 if (it.usd_in == rate) {
                                     val loc = Location("")
                                     loc.latitude = it.latitude.toDouble()
                                     loc.longitude = it.longitude.toDouble()
                                     val dist = location.distanceTo(loc)
-                                    list.add(RateFIlial(dist, it.filial))
+                                    list.add(ItemDistance(dist, it.filial))
                                 }
                             }
                             list.sortBy { it.distance }
@@ -252,7 +255,7 @@ class ViewModel : ViewModel() {
                     }
                 }
             }
-            if (in_out == 1) {
+            if (in_out == SealedInOut.Out) {
                 when (currency) {
                     Constnsts.usd -> {
                         viewModelScope.launch {
@@ -304,14 +307,61 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun getRatFilials(): LiveData<List<RateFIlial>> {
+    fun getRatFilials(): LiveData<List<ItemDistance>> {
         return listRateFilial
     }
 
-    fun createGps(filial: String) {
+    fun initialAtm() {
+        viewModelScope.launch {
+            val callAtm = Dependencies.getAtmCloudUseCase().getAtmCountry()
+            if (callAtm.isSuccessful) {
+                val list = callAtm.body()
+                list?.let { localAtmDb.addListAtm(it) }
+            } else {
+                localAtmDb.addListAtm(listOf())
+            }
+        }
+    }
+
+    fun createListAtm(location: Location?) {
+        if (location != null) {
+            viewModelScope.launch {
+                var list = mutableListOf<ItemDistance>()
+                localAtmDb.getAtmCountry().forEach {
+                    val loc = Location("")
+                    loc.latitude = it.latitude.toDouble()
+                    loc.longitude = it.longitude.toDouble()
+                    val dist = location.distanceTo(loc)
+                    list.add(ItemDistance(dist, it.id))
+                }
+                list.sortBy { it.distance }
+                if (list.size < 15) {
+                    listAtm.value = list
+                } else {
+                    listAtm.value = list.take(15)
+                }
+            }
+        }
+    }
+
+    fun getAtm(): LiveData<List<ItemDistance>> {
+        return listAtm
+    }
+
+    fun createGpsFilial(filial: String) {
         viewModelScope.launch {
             localRateDb.getRateCountry().forEach {
                 if (it.filial == filial) {
+                    latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                }
+            }
+        }
+    }
+
+    fun createGpsAtm(atm: String) {
+        viewModelScope.launch {
+            localAtmDb.getAtmCountry().forEach {
+                if (it.id == atm) {
                     latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
                 }
             }

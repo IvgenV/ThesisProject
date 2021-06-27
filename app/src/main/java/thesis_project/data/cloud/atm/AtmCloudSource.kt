@@ -11,7 +11,7 @@ import thesis_project.domain.repository.AtmCloudRepository
 
 object AtmCloudSource: AtmCloudRepository {
 
-    private const val baseUrl = "https://belarusbank.by/api/atm"
+    private const val baseUrl = "https://belarusbank.by/api/atm/"
 
     private val loginInterception = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
