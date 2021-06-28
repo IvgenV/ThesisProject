@@ -4,6 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import thesis_project.data.cloud.atm.AtmCloudSource
 import thesis_project.data.cloud.infobox.InfoBoxCloudSource
+import thesis_project.data.cloud.news.NewsCloudSource
 import thesis_project.data.cloud.rate.RateCloudSource
 import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
@@ -71,21 +72,11 @@ object Dependencies {
     fun getNewsCloudUseCase(): NewsCloudUseCase =
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
-    private fun getNewsDbRepository(): NewsDbRepository {
-        return NewsData(App.instance)
+    private fun getNewsDbRepository(context: Context): NewsDbRepository {
+        return NewsData(context)
     }
 
-    fun getNewsDbUseCase(): NewsDbUseCase =
-        NewsDbUseCaseImpl(getNewsDbRepository())
-
-    //SharedPrefenceSwitch
-    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch(App.instance) }
-
-    fun getSharedPreferenceSwitch():SharedPreferencesSwitchRepository = sharedPreferencesSwitch
-
-    ///WorkerNotification
-    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
-
-    fun getMyWorkerController():WorkerControllerUseCase = workerController
+    fun getNewsDbUseCase(context: Context): NewsDbUseCase =
+        NewsDbUseCaseImpl(getNewsDbRepository(context))
 
 }

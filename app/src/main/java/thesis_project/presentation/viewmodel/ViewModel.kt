@@ -21,6 +21,8 @@ import thesis_project.sealed.CurrencyOperation
 import thesis_project.sealed.Locality
 import java.math.BigDecimal
 import java.util.*
+import thesis_project.data.data_base.filials.RateFilialPojo
+import thesis_project.data.data_base.news.News
 
 
 class ViewModel : ViewModel() {
@@ -33,6 +35,9 @@ class ViewModel : ViewModel() {
     var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
     var listInfoBox = MutableLiveData<List<ItemDistance>>()
     var latLng = MutableLiveData<LatLng>()
+    //News
+    var localNewsDb=Dependencies.getNewsDbUseCase(App.instance)
+    var listNews = MutableLiveData<List<News>>()
 
 
     fun toRateFilialData(rate: RateData,coordinates: СoordinatesData):RateFilialData{
@@ -455,6 +460,17 @@ class ViewModel : ViewModel() {
     ///SaveStatusSwitch
     fun addStatusSwitch(key:String,status:Boolean){
             sharedPreferencesSwitch.add(key,status)
+    }
+
+    fun getNews(): LiveData<List<News>>{
+        viewModelScope.launch {
+            val callNews = Dependencies.getNewsCloudUseCase().getNews()
+            if (callNews.isSuccessful){
+                localNewsDb.addNews(callNews.body()?: listOf())
+            }
+            listNews.value=localNewsDb.getNewsList()
+        }
+        return listNews
     }
 
 }
