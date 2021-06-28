@@ -5,22 +5,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import thesis_project.data.cloud.atm.AtmCloudSource
+import thesis_project.data.cloud.news.NewsCloudSource
 import thesis_project.data.cloud.rate.RateCloudSource
 import thesis_project.data.data_base.atm.AtmDbData
 import thesis_project.data.data_base.filials.СoordinatesPojo
 import thesis_project.data.data_base.filials.RateDbData
-import thesis_project.domain.entity.AtmCloudUseCaseImpl
-import thesis_project.domain.entity.AtmDbUseCaseImpl
-import thesis_project.domain.entity.RateCloudUseCaseImpl
-import thesis_project.domain.entity.RateDbUseCaseImpl
-import thesis_project.domain.repository.AtmCloudRepository
-import thesis_project.domain.repository.AtmDbRepository
-import thesis_project.domain.repository.RateCloudRepository
-import thesis_project.domain.repository.RateDbRepository
-import thesis_project.domain.use_case.AtmCloudUseCase
-import thesis_project.domain.use_case.AtmDbUseCase
-import thesis_project.domain.use_case.RateCloudUseCase
-import thesis_project.domain.use_case.RateDbUseCase
+import thesis_project.data.data_base.news.NewsData
+import thesis_project.domain.entity.*
+import thesis_project.domain.repository.*
+import thesis_project.domain.use_case.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -66,4 +59,18 @@ object Dependencies {
 
         })
     }*/
+
+    ///News
+    private val apiNewsCloudSource: NewsCloudRepository by lazy { NewsCloudSource }
+
+    fun getNewsCloudUseCase(): NewsCloudUseCase =
+        NewsCloudUseCaseImpl(apiNewsCloudSource)
+
+    private fun getNewsDbRepository(context: Context): NewsDbRepository {
+        return NewsData(context)
+    }
+
+    fun getNewsDbUseCase(context: Context): NewsDbUseCase =
+        NewsDbUseCaseImpl(getNewsDbRepository(context))
+
 }
