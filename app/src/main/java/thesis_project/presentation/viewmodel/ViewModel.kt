@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import thesis_project.*
 import thesis_project.data.data_base.filials.RateFilialPojo
+import thesis_project.data.data_base.news.News
 
 
 class ViewModel : ViewModel() {
@@ -19,6 +20,9 @@ class ViewModel : ViewModel() {
     var listOfFilial = MutableLiveData<List<String>>()
     var listRateFilial = MutableLiveData<List<RateFIlial>>()
     var latLng = MutableLiveData<LatLng>()
+    //News
+    var localNewsDb=Dependencies.getNewsDbUseCase(App.instance)
+    var listNews = MutableLiveData<List<News>>()
 
     fun initialCountryRate() {
         viewModelScope.launch {
@@ -322,5 +326,15 @@ class ViewModel : ViewModel() {
         return latLng
     }
 
+    fun getNews(): LiveData<List<News>>{
+        viewModelScope.launch {
+            val callNews = Dependencies.getNewsCloudUseCase().getNews()
+            if (callNews.isSuccessful){
+                localNewsDb.addNews(callNews.body()?: listOf())
+            }
+            listNews.value=localNewsDb.getNewsList()
+        }
+        return listNews
+    }
 
 }

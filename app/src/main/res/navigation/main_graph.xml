@@ -19,4 +19,8 @@
         android:id="@+id/fragment4"
         android:name="thesis_project.presentation.ui.FragmentMap"
         android:label="Fragment4"/>
+    <fragment
+        android:id="@+id/news_fragment"
+        android:name="thesis_project.presentation.ui.NewsFragment"
+        android:label="NewsFragment"/>
 </navigation>

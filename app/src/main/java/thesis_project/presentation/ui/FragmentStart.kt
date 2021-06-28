@@ -16,6 +16,7 @@ class FragmentStart : Fragment() {
     lateinit var text1: TextView
     lateinit var text2: TextView
     lateinit var text3: TextView
+    lateinit var text4: TextView
     lateinit var button: Button
     lateinit var navigation: NavController
     lateinit var viewmodel: ViewModel
@@ -38,6 +39,9 @@ class FragmentStart : Fragment() {
             navigation.navigate(R.id.fragment2)
         }
 
+        text4.setOnClickListener {
+            navigation.navigate(R.id.news_fragment)
+        }
 
     }
 
@@ -47,6 +51,7 @@ class FragmentStart : Fragment() {
         text1 = view.findViewById(R.id.firstitem)
         text2 = view.findViewById(R.id.seconditem)
         text3 = view.findViewById(R.id.thirditem)
+        text4 = view.findViewById(R.id.fouritem)
         button = view.findViewById(R.id.button)
         navigation = Navigation.findNavController(view)
     }
