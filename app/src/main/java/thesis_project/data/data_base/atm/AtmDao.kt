@@ -16,6 +16,6 @@ interface AtmDao {
     fun getAtmCountry(): Flow<List<AtmData>>
 
     @Query("Select * from AtmData WHERE city=:city")
-    fun getAtmCity(city:String):List<AtmData>
+    fun getAtmCity(city:String):Flow<List<AtmData>>
 
 }

@@ -87,7 +87,8 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
     }
 
     override fun onLocationChanged(location: Location) {
-
+        viewModel.initialAtm()
+        viewModel.createListAtm(location)
     }
 
     override fun onClick(atm: String) {

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,11 +53,13 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
+
         viewModel.initialInfoBox()
         viewModel.createListInfoBox(location)
         viewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
+
     }
 
     override fun onCreateView(
