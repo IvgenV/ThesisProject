@@ -15,6 +15,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.adapter.RateAdapter
 import thesis_project.presentation.adapter.ToFragmentFilials
 import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.sealed.CurrencyOperation
 
 class FragmentRate : Fragment(), ToFragmentFilials {
 
@@ -28,7 +29,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     lateinit var navigation: NavController
     var locationTxt = ""
     val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
-    var check = 0
+    var check: CurrencyOperation = CurrencyOperation.Buy
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -43,18 +44,18 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         viewModel.initialCountryRate()
         locationTxt = "Belarus"
         locatioRate.text = locationTxt
-        viewModel.createListCurrency(locationTxt, 0, 0)
+        viewModel.createListCurrency(locationTxt, CurrencyOperation.Buy, 0)
         viewModel.getListCurrency().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
 
+
         rateNP.setOnValueChangedListener { picker, oldVal, newVal ->
-            if (switch.isChecked) {
-                check = 1
-            }
-            if (!switch.isChecked) {
-                check = 0
-            }
+
+
+            check = if (switch.isChecked) CurrencyOperation.Sell
+            else CurrencyOperation.Buy
+
             when (newVal) {
                 Constnsts.usd -> {
                     locationTxt = "Belarus"
@@ -142,7 +143,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     override fun onClick(rate: String) {
         val bundle = Bundle()
         bundle.putString("rate", rate)
-        bundle.putInt("in_out", check)
+        bundle.putInt("in_out", check.toValue())
         bundle.putInt("currency", rateNP.value)
         navigation.navigate(R.id.fragment_filials, bundle)
     }

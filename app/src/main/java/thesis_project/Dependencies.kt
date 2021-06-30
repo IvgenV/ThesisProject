@@ -1,6 +1,7 @@
 package thesis_project
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
 import thesis_project.data.cloud.atm.AtmCloudSource
 import thesis_project.data.cloud.infobox.InfoBoxCloudSource
 import thesis_project.data.cloud.rate.RateCloudSource
@@ -39,7 +40,7 @@ object Dependencies {
     fun getRateCloudUseCase():RateCloudUseCase =
         RateCloudUseCaseImpl(apiRateCloudSource)
 
-    private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource }
+    private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource(Dispatchers.IO) }
 
     fun getAtmCloudUseCase(): AtmCloudUseCase =
         AtmCloudUseCaseImpl(apiAtmCloudSource)

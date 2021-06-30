@@ -18,12 +18,8 @@ class AtmDb(context: Context): AtmDbRepository {
         return atmDao.getAtmCountry()
     }
 
-    override suspend fun getAtmCity(city: String): List<AtmData> {
-        val list:List<AtmData>
-        withContext(Dispatchers.IO){
-            list = atmDao.getAtmCity(city)
-        }
-        return list
+    override suspend fun getAtmCity(city: String): Flow<List<AtmData>> {
+        return atmDao.getAtmCity(city)
     }
 
     override suspend fun insertListAtm(atmList: List<AtmData>) {

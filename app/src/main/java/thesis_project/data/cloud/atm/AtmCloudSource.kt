@@ -1,6 +1,10 @@
 package thesis_project.data.cloud.atm
 
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -9,9 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.data_base.atm.AtmData
 import thesis_project.domain.repository.AtmCloudRepository
 
-object AtmCloudSource: AtmCloudRepository {
+class AtmCloudSource(val disp: CoroutineDispatcher): AtmCloudRepository {
 
-    private const val baseUrl = "https://belarusbank.by/api/atm/"
+    private val baseUrl = "https://belarusbank.by/api/atm/"
 
     private val loginInterception = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -28,11 +32,15 @@ object AtmCloudSource: AtmCloudRepository {
     private val atmApiService = retrofit.create(ApiAtmBelarusBank::class.java)
 
     override suspend fun getAtmCountry(): Response<List<AtmData>> {
-        return atmApiService.getAtmCountry()
+        return withContext(disp) {
+            atmApiService.getAtmCountry()
+        }
     }
 
     override suspend fun getAtmCity(city: String): Response<List<AtmData>> {
-        return atmApiService.getAtmCity(city)
+        return withContext(disp){
+            atmApiService.getAtmCity(city)
+        }
     }
 
 

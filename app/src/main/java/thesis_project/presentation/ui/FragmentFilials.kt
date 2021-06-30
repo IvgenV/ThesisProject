@@ -25,6 +25,7 @@ import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
+import thesis_project.sealed.CurrencyOperation
 
 class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
@@ -61,7 +62,7 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
         ///in_out = arguments?.getInt("in_out") ?: -1
         currency = arguments?.getInt("currency") ?: -1
 
-        val inOut = Support.fromSealedInOut(arguments?.getInt("in_out") ?: -1)
+        val inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
 
         viewModel.createListFilial(rate, inOut, currency, location)
         viewModel.getRatFilials().observe(viewLifecycleOwner, {

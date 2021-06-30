@@ -12,7 +12,7 @@ class AtmDbUseCaseImpl(
         return atmDbRepository.getAtmCountry()
     }
 
-    override suspend fun getAtmCity(city: String): List<AtmData> {
+    override suspend fun getAtmCity(city: String): Flow<List<AtmData>> {
         return atmDbRepository.getAtmCity(city)
     }
 
