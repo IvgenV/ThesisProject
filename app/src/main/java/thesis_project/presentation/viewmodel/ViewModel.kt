@@ -1,15 +1,14 @@
 package thesis_project.presentation.viewmodel
 
 import android.location.Location
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
+import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import thesis_project.*
-import thesis_project.data.data_base.atm.AtmPojo
-import thesis_project.data.data_base.filials.RateFilialPojo
+import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.sealed.SealedInOut
 
 
@@ -17,22 +16,26 @@ class ViewModel : ViewModel() {
 
     var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
+    var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
     var listOfCurrency = MutableLiveData<List<String>>()
     var listOfFilial = MutableLiveData<List<String>>()
     var listRateFilial = MutableLiveData<List<ItemDistance>>()
-    var listAtm = MutableLiveData<List<ItemDistance>>()
+    var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
+    var listInfoBOx = MutableLiveData<List<ItemDistance>>()
     var latLng = MutableLiveData<LatLng>()
 
+
+    ///очень долго собирает лист альтернативы?
     fun initialCountryRate() {
         viewModelScope.launch {
             val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
             val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
             if (callRate.isSuccessful && callFilials.isSuccessful) {
-                val dataList = mutableListOf<RateFilialPojo>()
+                val dataList = mutableListOf<RateFilialData>()
                 callRate.body()?.forEach { rate ->
                     callFilials.body()?.forEach { filial ->
                         if (rate.id == filial.id) {
-                            val data = RateFilialPojo(
+                            val data = RateFilialData(
                                 rate.usd_in,
                                 rate.usd_out,
                                 rate.euro_in,
@@ -326,8 +329,47 @@ class ViewModel : ViewModel() {
     fun createListAtm(location: Location?) {
         if (location != null) {
             viewModelScope.launch {
+                val list = mutableListOf<ItemDistance>()
+                localAtmDb.getAtmCountry().collect { atmDataList ->
+                    atmDataList.forEach {
+                        val loc = Location("")
+                        loc.latitude = it.latitude.toDouble()
+                        loc.longitude = it.longitude.toDouble()
+                        val dist = location.distanceTo(loc)
+                        list.add(ItemDistance(dist, it.id))
+                    }
+                    list.sortBy { it.distance }
+                    if (list.size < 15) {
+                        listAtm.value = list
+                    } else {
+                        listAtm.value = list.take(15)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getAtm(): StateFlow<List<ItemDistance>> {
+        return listAtm
+    }
+
+    fun initialInfoBox() {
+        viewModelScope.launch {
+            val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
+            if (callAtm.isSuccessful) {
+                val list = callAtm.body()
+                list?.let { localInfoBoxDb.insertListInfoBox(it) }
+            } else {
+                localInfoBoxDb.insertListInfoBox(listOf())
+            }
+        }
+    }
+
+    fun createListInfoBox(location: Location?) {
+        if (location != null) {
+            viewModelScope.launch {
                 var list = mutableListOf<ItemDistance>()
-                localAtmDb.getAtmCountry().forEach {
+                localInfoBoxDb.getInfoBoxCountry().forEach {
                     val loc = Location("")
                     loc.latitude = it.latitude.toDouble()
                     loc.longitude = it.longitude.toDouble()
@@ -336,16 +378,16 @@ class ViewModel : ViewModel() {
                 }
                 list.sortBy { it.distance }
                 if (list.size < 15) {
-                    listAtm.value = list
+                    listInfoBOx.value = list
                 } else {
-                    listAtm.value = list.take(15)
+                    listInfoBOx.value = list.take(15)
                 }
             }
         }
     }
 
-    fun getAtm(): LiveData<List<ItemDistance>> {
-        return listAtm
+    fun getInfoBox():LiveData<List<ItemDistance>>{
+        return listInfoBOx
     }
 
     fun createGpsFilial(filial: String) {
@@ -360,8 +402,20 @@ class ViewModel : ViewModel() {
 
     fun createGpsAtm(atm: String) {
         viewModelScope.launch {
-            localAtmDb.getAtmCountry().forEach {
-                if (it.id == atm) {
+            localAtmDb.getAtmCountry().collect{ atmDataList ->
+                atmDataList.forEach {
+                    if (it.id == atm) {
+                        latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                    }
+                }
+            }
+        }
+    }
+
+    fun createGpsInfoBOx(infoBox:String){
+        viewModelScope.launch {
+            localInfoBoxDb.getInfoBoxCountry().forEach {
+                if(it.id == infoBox){
                     latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
                 }
             }
@@ -372,5 +426,10 @@ class ViewModel : ViewModel() {
         return latLng
     }
 
+   /* fun <T> Flow<T>.launchWhenStarted(lifecycleCoroutineScope: LifecycleCoroutineScope){
+        lifecycleCoroutineScope.launchWhenStarted {
+            this@launchWhenStarted.collect()
+        }
+    }*/
 
 }

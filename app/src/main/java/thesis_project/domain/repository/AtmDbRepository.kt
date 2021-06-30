@@ -1,11 +1,12 @@
 package thesis_project.domain.repository
 
-import thesis_project.data.data_base.atm.AtmPojo
+import kotlinx.coroutines.flow.Flow
+import thesis_project.data.data_base.atm.AtmData
 
 interface AtmDbRepository {
 
-    suspend fun getAtmCountry():List<AtmPojo>
-    suspend fun getAtmCity(city:String):List<AtmPojo>
-    suspend fun addListAtm(atmList:List<AtmPojo>)
+    suspend fun getAtmCountry(): Flow<List<AtmData>>
+    suspend fun getAtmCity(city:String):List<AtmData>
+    suspend fun insertListAtm(atmList:List<AtmData>)
 
 }

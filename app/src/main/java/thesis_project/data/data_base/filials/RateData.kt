@@ -4,7 +4,7 @@ package thesis_project.data.data_base.filials
 import com.google.gson.annotations.SerializedName
 
 
-data class RatePojo(@SerializedName("USD_in") val usd_in: String,
+data class RateData(@SerializedName("USD_in") val usd_in: String,
                     @SerializedName("USD_out") val usd_out:String,
                     @SerializedName("EUR_in") val euro_in:String,
                     @SerializedName("EUR_out") val euro_out:String,

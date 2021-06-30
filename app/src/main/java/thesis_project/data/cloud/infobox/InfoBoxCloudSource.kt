@@ -1,4 +1,4 @@
-package thesis_project.data.cloud.atm
+package thesis_project.data.cloud.infobox
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -6,12 +6,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import thesis_project.data.data_base.atm.AtmData
-import thesis_project.domain.repository.AtmCloudRepository
+import thesis_project.data.data_base.infobox.InfoBoxData
+import thesis_project.domain.repository.InfoBoxCloudRepository
 
-object AtmCloudSource: AtmCloudRepository {
+object InfoBoxCloudSource: InfoBoxCloudRepository {
 
-    private const val baseUrl = "https://belarusbank.by/api/atm/"
+    private const val baseUrl = "https://belarusbank.by/api/infobox/"
 
     private val loginInterception = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -25,15 +25,14 @@ object AtmCloudSource: AtmCloudRepository {
             .client(okHttpClient)
             .build()
 
-    private val atmApiService = retrofit.create(ApiAtmBelarusBank::class.java)
 
-    override suspend fun getAtmCountry(): Response<List<AtmData>> {
-        return atmApiService.getAtmCountry()
+    private val infoBoxApiService = retrofit.create(ApiInfoBoxBelarusBank::class.java)
+
+    override suspend fun getInfoBoxCountry(): Response<List<InfoBoxData>> {
+        return infoBoxApiService.getInfoBoxCountry()
     }
 
-    override suspend fun getAtmCity(city: String): Response<List<AtmData>> {
-        return atmApiService.getAtmCity(city)
+    override suspend fun getInfoBoxCity(city: String): Response<List<InfoBoxData>> {
+        return infoBoxApiService.getInfoBoxCity(city)
     }
-
-
 }

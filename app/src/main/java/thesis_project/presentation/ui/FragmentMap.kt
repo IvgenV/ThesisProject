@@ -12,15 +12,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import thesis_project.presentation.viewmodel.ViewModel
 
-class FragmentMap: Fragment(),OnMapReadyCallback {
+class FragmentMap : Fragment(), OnMapReadyCallback {
 
-    lateinit var mapView:MapView
+    lateinit var mapView: MapView
     lateinit var googleMap: GoogleMap
-    lateinit var viewModel:ViewModel
-    lateinit var lt:LatLng
-
-    var latLng: LatLng = LatLng(53.83965386903869, 27.57576296414777)
-
+    lateinit var viewModel: ViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -34,7 +30,7 @@ class FragmentMap: Fragment(),OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_map,container,false)
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,26 +46,41 @@ class FragmentMap: Fragment(),OnMapReadyCallback {
         googleMap = map
         val filial = arguments?.getString("filial")
         val atm = arguments?.getString("atm")
+        val infoBOx = arguments?.getString("infoBox")
 
-        if(filial != null){
+        if (filial != null) {
             filial.let { viewModel.createGpsFilial(it) }
-            viewModel.getGps().observe(viewLifecycleOwner,{
+            viewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
-                        .title("FILIAL"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
+                        .title("FILIAL")
+                )
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
             })
         }
 
-        if(atm!=null){
+        if (atm != null) {
             atm.let { viewModel.createGpsAtm(it) }
+            viewModel.getGps().observe(viewLifecycleOwner, {
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(it)
+                        .title("ATM")
+                )
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
+            })
+        }
+
+        if(infoBOx != null){
+            infoBOx.let { viewModel.createGpsInfoBOx(it) }
             viewModel.getGps().observe(viewLifecycleOwner,{
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
-                        .title("ATM"))
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,18f))
+                        .title("InfoBox")
+                )
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
             })
         }
     }

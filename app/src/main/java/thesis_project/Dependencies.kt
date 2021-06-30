@@ -1,46 +1,38 @@
 package thesis_project
 
 import android.content.Context
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import thesis_project.data.cloud.atm.AtmCloudSource
+import thesis_project.data.cloud.infobox.InfoBoxCloudSource
 import thesis_project.data.cloud.rate.RateCloudSource
-import thesis_project.data.data_base.atm.AtmDbData
-import thesis_project.data.data_base.filials.СoordinatesPojo
-import thesis_project.data.data_base.filials.RateDbData
-import thesis_project.domain.entity.AtmCloudUseCaseImpl
-import thesis_project.domain.entity.AtmDbUseCaseImpl
-import thesis_project.domain.entity.RateCloudUseCaseImpl
-import thesis_project.domain.entity.RateDbUseCaseImpl
-import thesis_project.domain.repository.AtmCloudRepository
-import thesis_project.domain.repository.AtmDbRepository
-import thesis_project.domain.repository.RateCloudRepository
-import thesis_project.domain.repository.RateDbRepository
-import thesis_project.domain.use_case.AtmCloudUseCase
-import thesis_project.domain.use_case.AtmDbUseCase
-import thesis_project.domain.use_case.RateCloudUseCase
-import thesis_project.domain.use_case.RateDbUseCase
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import thesis_project.data.data_base.atm.AtmDb
+import thesis_project.data.data_base.filials.RateDb
+import thesis_project.data.data_base.infobox.InfoBoxDb
+import thesis_project.domain.entity.*
+import thesis_project.domain.repository.*
+import thesis_project.domain.use_case.*
 
 object Dependencies {
 
     private fun getRateDbRepository(context: Context): RateDbRepository {
-        return RateDbData(context)
+        return RateDb(context)
     }
 
     fun getRateDbUseCase(context: Context): RateDbUseCase =
         RateDbUseCaseImpl(getRateDbRepository(context))
 
     private fun getAtmDbRepository(context: Context):AtmDbRepository{
-        return AtmDbData(context)
+        return AtmDb(context)
     }
 
     fun getAtmDbUseCase(context: Context): AtmDbUseCase =
         AtmDbUseCaseImpl(getAtmDbRepository(context))
 
+    private fun getInfoBoxDbRepository(context: Context): InfoBoxDbRepository{
+        return InfoBoxDb(context)
+    }
+
+    fun getInfoBoxDbUseCase(context: Context): InfoBoxDbUseCase =
+        InfoBoxDbUseCaseImpl(getInfoBoxDbRepository(context))
 
     private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
 
@@ -51,6 +43,11 @@ object Dependencies {
 
     fun getAtmCloudUseCase(): AtmCloudUseCase =
         AtmCloudUseCaseImpl(apiAtmCloudSource)
+
+    private val apiInfoBoxCloudSource:InfoBoxCloudRepository by lazy { InfoBoxCloudSource }
+
+    fun getInfoBoxCloudUseCase(): InfoBoxCloudUseCase =
+        InfoBoxCloudUseCaseImpl(apiInfoBoxCloudSource)
 
     /*suspend fun <T> Call<T>.await():T = suspendCoroutine { cont->
         enqueue(object : Callback<T>{

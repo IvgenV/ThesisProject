@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class RateFilialPojo(@SerializedName("USD_in") val usd_in: String,
+data class RateFilialData(@SerializedName("USD_in") val usd_in: String,
                           @SerializedName("USD_out") val usd_out:String,
                           @SerializedName("EUR_in") val euro_in:String,
                           @SerializedName("EUR_out") val euro_out:String,

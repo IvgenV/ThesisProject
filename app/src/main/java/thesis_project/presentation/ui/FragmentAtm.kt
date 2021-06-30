@@ -14,14 +14,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
-import thesis_project.presentation.adapter.ItemAdapter
+import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
 
@@ -29,7 +32,7 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
 
     lateinit var viewModel: ViewModel
     lateinit var atmList: RecyclerView
-    val adapter = ItemAdapter()
+    val adapter = ItemDistanceAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
@@ -53,9 +56,12 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
         init()
         viewModel.initialAtm()
         viewModel.createListAtm(location)
-        viewModel.getAtm().observe(viewLifecycleOwner,{
-            adapter.setData(it)
-        })
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getAtm().collect {
+                adapter.setData(it)
+            }
+        }
     }
 
     override fun onCreateView(
