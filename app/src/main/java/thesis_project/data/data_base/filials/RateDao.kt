@@ -1,20 +1,20 @@
 package thesis_project.data.data_base.filials
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface RateDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertListRate(rateList: List<RateFilialPojo>)
+    fun insertListRate(rateList: List<RateFilialData>)
 
-    @Query("Select * from RateFilialPojo")
-    fun getRateCountry():List<RateFilialPojo>
+    @Query("Select * from RateFilialData")
+    fun getRateCountry():List<RateFilialData>
 
-    @Query("Select * from RateFilialPojo WHERE name=:city")
-    fun getRateCity(city:String):List<RateFilialPojo>
+    @Query("Select * from RateFilialData WHERE name=:city")
+    fun getRateCity(city:String):List<RateFilialData>
+
+    @Delete
+    fun deleteRate(rateList:List<RateFilialData>)
 
 }

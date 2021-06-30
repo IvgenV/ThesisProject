@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class AtmPojo(
+data class AtmData(
     @SerializedName("city_type")val cityType:String,
     @SerializedName("city")val city :String,
     @SerializedName("address_type")val addressType :String,

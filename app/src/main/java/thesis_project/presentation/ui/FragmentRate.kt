@@ -49,10 +49,10 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         })
 
         rateNP.setOnValueChangedListener { picker, oldVal, newVal ->
-            if(switch.isChecked){
+            if (switch.isChecked) {
                 check = 1
             }
-            if(!switch.isChecked){
+            if (!switch.isChecked) {
                 check = 0
             }
             when (newVal) {
@@ -102,12 +102,12 @@ class FragmentRate : Fragment(), ToFragmentFilials {
                     })
 
                 } else {
-                     locationTxt = rateInput.text.toString()
-                     locatioRate.text = locationTxt
-                     viewModel.createListCurrency(locationTxt,check,rateNP.value)
-                     viewModel.getListCurrency().observe(viewLifecycleOwner, {
-                         adapter.setData(it)
-                     })
+                    locationTxt = rateInput.text.toString()
+                    locatioRate.text = locationTxt
+                    viewModel.createListCurrency(locationTxt, check, rateNP.value)
+                    viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        adapter.setData(it)
+                    })
                 }
             }
             true
@@ -142,8 +142,8 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     override fun onClick(rate: String) {
         val bundle = Bundle()
         bundle.putString("rate", rate)
-        bundle.putInt("in_out",check)
-        bundle.putInt("currency",rateNP.value)
+        bundle.putInt("in_out", check)
+        bundle.putInt("currency", rateNP.value)
         navigation.navigate(R.id.fragment_filials, bundle)
     }
 }

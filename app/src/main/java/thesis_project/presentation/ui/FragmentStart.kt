@@ -2,7 +2,6 @@ package thesis_project.presentation.ui
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,11 +12,9 @@ import thesis_project.presentation.viewmodel.ViewModel
 
 class FragmentStart : Fragment() {
 
-    lateinit var text1: TextView
-    lateinit var text2: TextView
-    lateinit var text3: TextView
-    lateinit var text4: TextView
-    lateinit var button: Button
+    lateinit var toRate: TextView
+    lateinit var toAtm: TextView
+    lateinit var toInfoBox: TextView
     lateinit var navigation: NavController
     lateinit var viewmodel: ViewModel
 
@@ -35,12 +32,16 @@ class FragmentStart : Fragment() {
 
         viewmodel = ViewModelProvider(this).get(ViewModel::class.java)
 
-        text1.setOnClickListener {
+        toRate.setOnClickListener {
             navigation.navigate(R.id.fragment_rate)
         }
 
-        text2.setOnClickListener {
+        toAtm.setOnClickListener {
             navigation.navigate(R.id.fragment_atm)
+        }
+
+        toInfoBox.setOnClickListener {
+            navigation.navigate(R.id.fragment_infoBox)
         }
 
     }
@@ -48,11 +49,9 @@ class FragmentStart : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        text1 = view.findViewById(R.id.firstitem)
-        text2 = view.findViewById(R.id.seconditem)
-        text3 = view.findViewById(R.id.thirditem)
-        text4 = view.findViewById(R.id.fouritem)
-        button = view.findViewById(R.id.button)
+        toRate = view.findViewById(R.id.filials_start_fragment)
+        toAtm = view.findViewById(R.id.atm_start_fragment)
+        toInfoBox = view.findViewById(R.id.infoBoxes_start_fragment)
         navigation = Navigation.findNavController(view)
     }
 

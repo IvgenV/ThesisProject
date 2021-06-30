@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.ItemDistance
 
-class ItemAdapter: ListAdapter<ItemDistance,
-        ItemAdapter.ViewHolder>(ItemCompareCallback()) {
+class ItemDistanceAdapter: ListAdapter<ItemDistance,
+        ItemDistanceAdapter.ViewHolder>(ItemDistanceCompareCallback()) {
 
     private var listenerToMap:ToFragmentMap? = null
 
