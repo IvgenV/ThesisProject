@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.thesis_project.R
-import okhttp3.internal.notify
 import thesis_project.App
 import thesis_project.Dependencies
 import thesis_project.data.data_base.news.News
@@ -25,7 +24,7 @@ class WorkerNotificationNews(appContext: Context,
     private var notificationManager: NotificationManager? = null
     private val NOTIFY_ID = 1
     private val CHANNEL_ID = "CHANNEL_ID"
-    var localNewsDb= Dependencies.getNewsDbUseCase()
+    var localNewsDb= Dependencies.getNewsDbUseCase(App.instance)
 
 
     override suspend fun doWork(): Result {
@@ -41,7 +40,7 @@ class WorkerNotificationNews(appContext: Context,
         if (listOldNews.get(0).name_ru != listNewNews.get(0).name_ru) {
             ///уведомление
             notificationManager =
-                (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE)) as NotificationManager
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val intent = Intent(applicationContext, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             val pendingIntent = PendingIntent.getActivity(
@@ -59,11 +58,9 @@ class WorkerNotificationNews(appContext: Context,
                     .setContentTitle("БеларусьБанк")
                     .setContentText("У нас есть новости для вас!!!!")
                     .setPriority(PRIORITY_HIGH);
-                createChannelIfNeeded(notificationManager ?: return Result.failure())
-                (notificationManager?: return Result.failure()).notify(
-                    NOTIFY_ID,
-                    notificationBuilder.build()
-                )
+
+            createChannelIfNeeded(notificationManager!!)
+            notificationManager!!.notify(NOTIFY_ID, notificationBuilder.build());
         }
         return Result.success()
     }

@@ -5,18 +5,18 @@ import android.content.Context
 import android.content.SharedPreferences
 import thesis_project.domain.repository.SharedPreferencesSwitchRepository
 
-class SharedPreferencesSwitch(val context: Context):SharedPreferencesSwitchRepository {
+class SharedPreferencesSwitch:SharedPreferencesSwitchRepository {
     private val PREFS_NAME = "kotlincodes"
     private val DEFAULT_VALUE = false
-    val sharedPrefSwitch: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-    override fun add(key: String, status: Boolean) {
+    override suspend fun Add(key: String, status: Boolean,context: Context) {
+        val sharedPrefSwitch: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPrefSwitch.edit()
         editor.putBoolean(key, status)
         editor.apply()
     }
 
-    override fun take(key: String): Boolean {
+    override fun Take(key: String,context: Context): Boolean {
+        val sharedPrefSwitch: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return  sharedPrefSwitch.getBoolean(key,DEFAULT_VALUE)
     }
 

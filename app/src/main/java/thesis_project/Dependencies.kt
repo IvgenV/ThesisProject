@@ -9,6 +9,12 @@ import thesis_project.data.cloud.rate.RateCloudSource
 import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
 import thesis_project.data.data_base.infobox.InfoBoxDb
+import thesis_project.data.data_base.atm.AtmDbData
+import thesis_project.data.data_base.filials.СoordinatesPojo
+import thesis_project.data.data_base.filials.RateDbData
+import thesis_project.data.data_base.news.NewsData
+import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
+import thesis_project.data.worker.WorkerControllerUseCaseImpl
 import thesis_project.domain.entity.*
 import thesis_project.domain.repository.*
 import thesis_project.domain.use_case.*
@@ -79,4 +85,24 @@ object Dependencies {
     fun getNewsDbUseCase(context: Context): NewsDbUseCase =
         NewsDbUseCaseImpl(getNewsDbRepository(context))
 
+    //SharedPrefenceSwitch
+    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch() }
+
+    suspend fun addStatusSwitch(key:String, status:Boolean, context: Context){
+        sharedPreferencesSwitch.Add(key, status, context)
+    }
+
+    fun takeStatusSwitch(key: String,context: Context):Boolean{
+        return sharedPreferencesSwitch.Take(key, context)
+    }
+    ///WorkerNotification
+    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
+
+    suspend fun startNotification(){
+        workerController.StartWorkerNotificationNews()
+    }
+
+    suspend fun stopNotification(){
+        workerController.StopWorkerNotificationNews()
+    }
 }

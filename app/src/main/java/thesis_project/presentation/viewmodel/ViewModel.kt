@@ -459,18 +459,26 @@ class ViewModel : ViewModel() {
 
     ///SaveStatusSwitch
     fun addStatusSwitch(key:String,status:Boolean){
-            sharedPreferencesSwitch.add(key,status)
-    }
-
-    fun getNews(): LiveData<List<News>>{
         viewModelScope.launch {
-            val callNews = Dependencies.getNewsCloudUseCase().getNews()
-            if (callNews.isSuccessful){
-                localNewsDb.addNews(callNews.body()?: listOf())
-            }
-            listNews.value=localNewsDb.getNewsList()
+            Dependencies.addStatusSwitch(key, status, App.instance)
         }
-        return listNews
     }
 
+    fun takeStatusSwitch(key: String):Boolean{
+        return Dependencies.takeStatusSwitch(key,App.instance)
+    }
+
+    ///Worker
+
+    fun startNotificationNews(){
+        viewModelScope.launch {
+            Dependencies.startNotification()
+        }
+    }
+
+    fun stopNotificationNews(){
+        viewModelScope.launch {
+            Dependencies.stopNotification()
+        }
+    }
 }

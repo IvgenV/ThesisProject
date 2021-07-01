@@ -3,6 +3,6 @@ package thesis_project.domain.repository
 import android.content.Context
 
 interface SharedPreferencesSwitchRepository {
-    fun add(key:String,status:Boolean)
-    fun take(key:String):Boolean
+    suspend fun Add(key:String,status:Boolean,context: Context)
+    fun Take(key:String,context: Context):Boolean
 }
