@@ -1,5 +1,7 @@
 package thesis_project.presentation.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -325,7 +327,7 @@ class ViewModel : ViewModel() {
     fun getGps(): LiveData<LatLng> {
         return latLng
     }
-
+    //News
     fun getNews(): LiveData<List<News>>{
         viewModelScope.launch {
             val callNews = Dependencies.getNewsCloudUseCase().getNews()
@@ -337,4 +339,28 @@ class ViewModel : ViewModel() {
         return listNews
     }
 
+    ///SaveStatusSwitch
+    fun addStatusSwitch(key:String,status:Boolean){
+        viewModelScope.launch {
+            Dependencies.addStatusSwitch(key, status, App.instance)
+        }
+    }
+
+    fun takeStatusSwitch(key: String):Boolean{
+        return Dependencies.takeStatusSwitch(key,App.instance)
+    }
+
+    ///Worker
+
+    fun startNotificationNews(){
+        viewModelScope.launch {
+            Dependencies.startNotification()
+        }
+    }
+
+    fun stopNotificationNews(){
+        viewModelScope.launch {
+            Dependencies.stopNotification()
+        }
+    }
 }
