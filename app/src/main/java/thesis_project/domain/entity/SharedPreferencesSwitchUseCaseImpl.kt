@@ -5,11 +5,11 @@ import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 
 class SharedPreferencesSwitchUseCaseImpl(val sharedPreferencesSwitch: SharedPreferencesSwitch):SharedPreferencesSwitchUseCase {
-    override suspend fun Add(key: String, status: Boolean,context: Context) {
-        sharedPreferencesSwitch.Add(key,status,context)
+    override fun add(key: String, status: Boolean) {
+        sharedPreferencesSwitch.add(key,status)
     }
 
-    override fun Take(key: String,context: Context): Boolean {
-        return sharedPreferencesSwitch.Take(key,context)
+    override fun take(key: String): Boolean {
+        return sharedPreferencesSwitch.take(key)
     }
 }

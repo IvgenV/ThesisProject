@@ -23,6 +23,8 @@ import java.math.BigDecimal
 import java.util.*
 import thesis_project.data.data_base.filials.RateFilialPojo
 import thesis_project.data.data_base.news.News
+import thesis_project.domain.repository.SharedPreferencesSwitchRepository
+import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class ViewModel : ViewModel() {
@@ -36,7 +38,7 @@ class ViewModel : ViewModel() {
     var listInfoBox = MutableLiveData<List<ItemDistance>>()
     var latLng = MutableLiveData<LatLng>()
     //News
-    var localNewsDb=Dependencies.getNewsDbUseCase(App.instance)
+    var localNewsDb=Dependencies.getNewsDbUseCase()
     var listNews = MutableLiveData<List<News>>()
 
 
@@ -61,6 +63,8 @@ class ViewModel : ViewModel() {
     }
 
 
+    val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
+    val myWorkerController:WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
     fun initialCountryRate() {
 
         viewModelScope.launch {
@@ -459,26 +463,24 @@ class ViewModel : ViewModel() {
 
     ///SaveStatusSwitch
     fun addStatusSwitch(key:String,status:Boolean){
-        viewModelScope.launch {
-            Dependencies.addStatusSwitch(key, status, App.instance)
-        }
+            sharedPreferencesSwitch.add(key,status)
     }
 
     fun takeStatusSwitch(key: String):Boolean{
-        return Dependencies.takeStatusSwitch(key,App.instance)
+        return sharedPreferencesSwitch.take(key)
     }
 
     ///Worker
 
     fun startNotificationNews(){
         viewModelScope.launch {
-            Dependencies.startNotification()
+            myWorkerController.StartWorkerNotificationNews()
         }
     }
 
     fun stopNotificationNews(){
         viewModelScope.launch {
-            Dependencies.stopNotification()
+            myWorkerController.StopWorkerNotificationNews()
         }
     }
 }

@@ -10,7 +10,6 @@ import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
 import thesis_project.data.data_base.infobox.InfoBoxDb
 import thesis_project.data.data_base.atm.AtmDbData
-import thesis_project.data.data_base.filials.СoordinatesPojo
 import thesis_project.data.data_base.filials.RateDbData
 import thesis_project.data.data_base.news.NewsData
 import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
@@ -78,31 +77,21 @@ object Dependencies {
     fun getNewsCloudUseCase(): NewsCloudUseCase =
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
-    private fun getNewsDbRepository(context: Context): NewsDbRepository {
-        return NewsData(context)
+    private fun getNewsDbRepository(): NewsDbRepository {
+        return NewsData(App.instance)
     }
 
-    fun getNewsDbUseCase(context: Context): NewsDbUseCase =
-        NewsDbUseCaseImpl(getNewsDbRepository(context))
+    fun getNewsDbUseCase(): NewsDbUseCase =
+        NewsDbUseCaseImpl(getNewsDbRepository())
 
     //SharedPrefenceSwitch
-    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch() }
+    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch(App.instance) }
 
-    suspend fun addStatusSwitch(key:String, status:Boolean, context: Context){
-        sharedPreferencesSwitch.Add(key, status, context)
-    }
+    fun getSharedPreferenceSwitch():SharedPreferencesSwitchRepository = sharedPreferencesSwitch
 
-    fun takeStatusSwitch(key: String,context: Context):Boolean{
-        return sharedPreferencesSwitch.Take(key, context)
-    }
     ///WorkerNotification
     private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
 
-    suspend fun startNotification(){
-        workerController.StartWorkerNotificationNews()
-    }
+    fun getMyWorkerController():WorkerControllerUseCase = workerController
 
-    suspend fun stopNotification(){
-        workerController.StopWorkerNotificationNews()
-    }
 }
