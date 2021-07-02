@@ -1,5 +1,7 @@
 package thesis_project.presentation.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +12,8 @@ import kotlinx.coroutines.*
 import thesis_project.*
 import thesis_project.data.data_base.filials.RateFilialPojo
 import thesis_project.data.data_base.news.News
+import thesis_project.domain.repository.SharedPreferencesSwitchRepository
+import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class ViewModel : ViewModel() {
@@ -21,9 +25,10 @@ class ViewModel : ViewModel() {
     var listRateFilial = MutableLiveData<List<RateFIlial>>()
     var latLng = MutableLiveData<LatLng>()
     //News
-    var localNewsDb=Dependencies.getNewsDbUseCase(App.instance)
+    var localNewsDb=Dependencies.getNewsDbUseCase()
     var listNews = MutableLiveData<List<News>>()
-
+    val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
+    val myWorkerController:WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
     fun initialCountryRate() {
         viewModelScope.launch {
             val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
@@ -325,7 +330,7 @@ class ViewModel : ViewModel() {
     fun getGps(): LiveData<LatLng> {
         return latLng
     }
-
+    //News
     fun getNews(): LiveData<List<News>>{
         viewModelScope.launch {
             val callNews = Dependencies.getNewsCloudUseCase().getNews()
@@ -337,4 +342,26 @@ class ViewModel : ViewModel() {
         return listNews
     }
 
+    ///SaveStatusSwitch
+    fun addStatusSwitch(key:String,status:Boolean){
+            sharedPreferencesSwitch.add(key,status)
+    }
+
+    fun takeStatusSwitch(key: String):Boolean{
+        return sharedPreferencesSwitch.take(key)
+    }
+
+    ///Worker
+
+    fun startNotificationNews(){
+        viewModelScope.launch {
+            myWorkerController.StartWorkerNotificationNews()
+        }
+    }
+
+    fun stopNotificationNews(){
+        viewModelScope.launch {
+            myWorkerController.StopWorkerNotificationNews()
+        }
+    }
 }

@@ -2,7 +2,9 @@ package thesis_project.presentation.ui
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Switch
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +20,8 @@ class NewsFragment: Fragment() {
     lateinit var viewModel: ViewModel
     val adapter = NewsAdapter()
     lateinit var newsList:RecyclerView
+    lateinit var switchNotification: Switch
+    val key_switch = "APP_SWITCHNEWS"
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -26,6 +30,8 @@ class NewsFragment: Fragment() {
         viewModel.getNews().observe(viewLifecycleOwner,{
             adapter.setData(it)
         })
+        
+        switchNotification.isChecked=viewModel.takeStatusSwitch(key_switch)
 
     }
 
@@ -44,15 +50,18 @@ class NewsFragment: Fragment() {
         newsList = view.findViewById(R.id.Newsrecycler)
         newsList.layoutManager = LinearLayoutManager(requireContext())
         newsList.adapter = adapter
-
-        /*
-        val testNewsList :List<News> = listOf(
-            News("First","Добрый день уважаемый пользователь","https:\\/\\/belarusbank.by\\/site_ru\\/37865\\/intro.jpg","2021-06-15"),
-            News("Second","Сегодня акция","https:\\/\\/belarusbank.by\\/site_ru\\/37860\\/image001_2.jpg","2021-06-14"),
-            News("Therrd","Вчера ты сдал экзамины","https:\\/\\/belarusbank.by\\/site_ru\\/37851\\/intro.jpg","2021-06-10")
-        )
-        adapter.setData(testNewsList)
-        */
+        
+        switchNotification=view.findViewById(R.id.switch1)
+        
+        switchNotification.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked==true && !viewModel.takeStatusSwitch(key_switch)){
+                viewModel.startNotificationNews()
+            }else if(isChecked==false && viewModel.takeStatusSwitch(key_switch) ){
+                viewModel.stopNotificationNews()
+            }
+            viewModel.addStatusSwitch(key_switch, isChecked)
+        }
+        
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,22 +1,17 @@
 package thesis_project
 
 import android.content.Context
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import thesis_project.data.cloud.atm.AtmCloudSource
 import thesis_project.data.cloud.news.NewsCloudSource
 import thesis_project.data.cloud.rate.RateCloudSource
 import thesis_project.data.data_base.atm.AtmDbData
-import thesis_project.data.data_base.filials.СoordinatesPojo
 import thesis_project.data.data_base.filials.RateDbData
 import thesis_project.data.data_base.news.NewsData
+import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
+import thesis_project.data.worker.WorkerControllerUseCaseImpl
 import thesis_project.domain.entity.*
 import thesis_project.domain.repository.*
 import thesis_project.domain.use_case.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 object Dependencies {
 
@@ -66,11 +61,21 @@ object Dependencies {
     fun getNewsCloudUseCase(): NewsCloudUseCase =
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
-    private fun getNewsDbRepository(context: Context): NewsDbRepository {
-        return NewsData(context)
+    private fun getNewsDbRepository(): NewsDbRepository {
+        return NewsData(App.instance)
     }
 
-    fun getNewsDbUseCase(context: Context): NewsDbUseCase =
-        NewsDbUseCaseImpl(getNewsDbRepository(context))
+    fun getNewsDbUseCase(): NewsDbUseCase =
+        NewsDbUseCaseImpl(getNewsDbRepository())
+
+    //SharedPrefenceSwitch
+    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch(App.instance) }
+
+    fun getSharedPreferenceSwitch():SharedPreferencesSwitchRepository = sharedPreferencesSwitch
+
+    ///WorkerNotification
+    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
+
+    fun getMyWorkerController():WorkerControllerUseCase = workerController
 
 }
