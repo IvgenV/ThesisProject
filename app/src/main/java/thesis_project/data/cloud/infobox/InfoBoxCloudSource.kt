@@ -29,6 +29,7 @@ object InfoBoxCloudSource: InfoBoxCloudRepository {
     private val infoBoxApiService = retrofit.create(ApiInfoBoxBelarusBank::class.java)
 
     override suspend fun getInfoBoxCountry(): Response<List<InfoBoxData>> {
+
         return infoBoxApiService.getInfoBoxCountry()
     }
 

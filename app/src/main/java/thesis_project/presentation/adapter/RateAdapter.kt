@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import java.math.BigDecimal
 
-class RateAdapter : ListAdapter<String,
+class RateAdapter : ListAdapter<Double,
         RateAdapter.ViewHolder>(RateCompareCallback()) {
 
     private var listener:ToFragmentFilials?=null
@@ -30,7 +31,7 @@ class RateAdapter : ListAdapter<String,
         listener = toFragmentFilials
     }
 
-    fun setData(data:List<String>){
+    fun setData(data:List<Double>){
         submitList(data)
     }
 

@@ -10,7 +10,7 @@ class AtmCloudUseCaseImpl(
     val atmCloudRepository: AtmCloudRepository
 ): AtmCloudUseCase {
 
-    override suspend fun getAtmCountry():Response<List<AtmData>> {
+    override suspend fun getAtmCountry():Response<List<AtmData>>{
         return atmCloudRepository.getAtmCountry()
     }
 

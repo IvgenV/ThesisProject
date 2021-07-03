@@ -14,7 +14,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        tools:context="thesis_project.presentation.ui.MainActivity" />
+        tools:context="thesis_project.presentation.ui.start.StartActivity" />
 
     <TextView
         android:id="@+id/textBelowMap"
