@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.*
@@ -31,6 +31,7 @@ class FragmentStart : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewmodel = ViewModelProvider(this).get(ViewModel::class.java)
+
 
         toRate.setOnClickListener {
             navigation.navigate(R.id.fragment_rate)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_graph"
+    app:startDestination="@id/fragment_initialization">
+
+    <fragment
+        android:id="@+id/fragment_initialization"
+        android:name="thesis_project.presentation.ui.login.FragmentInitialization"
+        android:label="FragmentInitialization"/>
+
+</navigation>

@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.Manifest
 import android.content.Context
@@ -20,11 +20,11 @@ import thesis_project.presentation.viewmodel.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import thesis_project.Support
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
+import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 
 class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
@@ -38,9 +38,10 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
     private lateinit var gpsLocation: GpsLocation
     var isGPSEnabled = false
     var isNetworkEnabled = false
-    lateinit var rate: String
-    var in_out = -1
-    var currency: Int = -1
+    var rate: Double = 0.0
+    lateinit var inOut:CurrencyOperation
+    lateinit var currency:Currency
+
 
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -58,11 +59,9 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
-        rate = arguments?.getString("rate") ?: "empty"
-        ///in_out = arguments?.getInt("in_out") ?: -1
-        currency = arguments?.getInt("currency") ?: -1
-
-        val inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
+        rate = arguments?.getString("rate")?.toDouble() ?: -1.0
+        inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
+        currency = Currency.fromValue(arguments?.getInt("currency") ?: -1)
 
         viewModel.createListFilial(rate, inOut, currency, location)
         viewModel.getRatFilials().observe(viewLifecycleOwner, {
@@ -106,14 +105,14 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        isNetworkEnabled =
-            locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
+        isNetworkEnabled = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
         gpsLocation = GpsLocation()
         gpsLocation.setLocalListenerInterface(this)
         checkPermission()
     }
 
     fun checkPermission() {
+
         if (isGPSEnabled) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -132,16 +131,14 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    100,
-                    10F,
+                    1,
+                    1F,
                     gpsLocation
                 )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 }
             }
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find gps!", Toast.LENGTH_SHORT).show()
         }
 
         if (isNetworkEnabled) {
@@ -163,18 +160,16 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
                     1,
-                    1f,
+                    1F,
                     gpsLocation
                 )
                 if (locationManager != null) {
-                    location =
-                        locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    location = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 }
             }
-
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find Network!", Toast.LENGTH_SHORT).show()
         }
+
+
     }
 
 }

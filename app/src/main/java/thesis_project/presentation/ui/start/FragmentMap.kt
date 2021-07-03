@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import thesis_project.presentation.viewmodel.ViewModel
 

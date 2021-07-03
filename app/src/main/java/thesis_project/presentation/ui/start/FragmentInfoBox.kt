@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.Manifest
 import android.content.Context
@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,24 +15,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
 
-class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
+class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
     lateinit var viewModel: ViewModel
-    lateinit var atmList: RecyclerView
+    lateinit var infoBoxList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
@@ -50,18 +48,18 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
             } else Toast.makeText(requireContext(), "NEED PERMISSION!", Toast.LENGTH_SHORT).show()
         }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
-        viewModel.initialAtm()
-        viewModel.createListAtm(location)
+        viewModel.initialInfoBox()
+        viewModel.createListInfoBox(location)
+        viewModel.getInfoBox().observe(viewLifecycleOwner, {
+            adapter.setData(it)
+            Log.d("sdsdsdsdsdsdsd","setData")
+        })
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.getAtm().collect {
-                adapter.setData(it)
-            }
-        }
     }
 
     override fun onCreateView(
@@ -69,14 +67,14 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_atm,container,false)
+        return inflater.inflate(R.layout.fragment_info_box, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        atmList = view.findViewById(R.id.atm_recycler)
-        atmList.layoutManager = LinearLayoutManager(requireContext())
-        atmList.adapter = adapter
+        infoBoxList = view.findViewById(R.id.infoBox_recycler)
+        infoBoxList.layoutManager = LinearLayoutManager(requireContext())
+        infoBoxList.adapter = adapter
         navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
@@ -86,14 +84,14 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
         super.onDestroy()
     }
 
+
     override fun onLocationChanged(location: Location) {
-        viewModel.initialAtm()
-        viewModel.createListAtm(location)
+
     }
 
-    override fun onClick(atm: String) {
+    override fun onClick(infoBox: String) {
         val bundle = Bundle()
-        bundle.putString("atm",atm)
+        bundle.putString("infoBox", infoBox)
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
@@ -101,8 +99,7 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        isNetworkEnabled =
-            locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
+        isNetworkEnabled = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
         gpsLocation = GpsLocation()
         gpsLocation.setLocalListenerInterface(this)
         checkPermission()
@@ -127,16 +124,14 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    100,
-                    10F,
+                    1,
+                    1F,
                     gpsLocation
                 )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 }
             }
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find gps!", Toast.LENGTH_SHORT).show()
         }
 
         if (isNetworkEnabled) {
@@ -158,18 +153,15 @@ class FragmentAtm: Fragment(),ILocationListener,ToFragmentMap {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
                     1,
-                    1f,
+                    1F,
                     gpsLocation
                 )
                 if (locationManager != null) {
-                    location =
-                        locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    location = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 }
             }
-
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find Network!", Toast.LENGTH_SHORT).show()
         }
-    }
 
+
+    }
 }

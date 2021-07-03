@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.Manifest
 import android.content.Context
@@ -6,37 +6,41 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
 
-class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
 
     lateinit var viewModel: ViewModel
-    lateinit var infoBoxList: RecyclerView
+    lateinit var atmList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
+    lateinit var buttonRefresh: Button
     var isGPSEnabled = false
     var isNetworkEnabled = false
+    var bol = false
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             var bol = false
@@ -48,18 +52,22 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             } else Toast.makeText(requireContext(), "NEED PERMISSION!", Toast.LENGTH_SHORT).show()
         }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
+        viewModel.initialAtm()
+        viewModel.createListAtm(location)
 
-        viewModel.initialInfoBox()
-        viewModel.createListInfoBox(location)
-        viewModel.getInfoBox().observe(viewLifecycleOwner, {
-            adapter.setData(it)
-        })
+        buttonRefresh.setOnClickListener {
 
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getAtm().collect {
+                adapter.setData(it)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -67,14 +75,15 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_info_box, container, false)
+        return inflater.inflate(R.layout.fragment_atm, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        infoBoxList = view.findViewById(R.id.infoBox_recycler)
-        infoBoxList.layoutManager = LinearLayoutManager(requireContext())
-        infoBoxList.adapter = adapter
+        atmList = view.findViewById(R.id.atm_recycler)
+        atmList.layoutManager = LinearLayoutManager(requireContext())
+        atmList.adapter = adapter
+        buttonRefresh = view.findViewById(R.id.buttonRefreshAtm)
         navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
@@ -84,14 +93,14 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         super.onDestroy()
     }
 
-
     override fun onLocationChanged(location: Location) {
-
+        /*viewModel.initialAtm()
+        viewModel.createListAtm(location)*/
     }
 
-    override fun onClick(infoBox: String) {
+    override fun onClick(atm: String) {
         val bundle = Bundle()
-        bundle.putString("infoBox", infoBox)
+        bundle.putString("atm", atm)
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
@@ -107,6 +116,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     }
 
     fun checkPermission() {
+
         if (isGPSEnabled) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -133,9 +143,8 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 }
             }
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find gps!", Toast.LENGTH_SHORT).show()
         }
+
 
         if (isNetworkEnabled) {
             if (ActivityCompat.checkSelfPermission(
@@ -155,18 +164,19 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    1,
-                    1f,
+                    100,
+                    10F,
                     gpsLocation
                 )
+
                 if (locationManager != null) {
                     location =
                         locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 }
             }
-
-        } else {
-            Toast.makeText(requireContext(), "Couldnt find Network!", Toast.LENGTH_SHORT).show()
         }
+
+
     }
+
 }

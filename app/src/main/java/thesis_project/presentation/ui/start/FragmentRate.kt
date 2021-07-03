@@ -1,4 +1,4 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.*
@@ -48,6 +48,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         viewModel.getListCurrency().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
+
 
 
         rateNP.setOnValueChangedListener { picker, oldVal, newVal ->

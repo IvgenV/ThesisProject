@@ -5,27 +5,27 @@
 
     <fragment
         android:id="@+id/fragment_start"
-        android:name="thesis_project.presentation.ui.FragmentStart"
+        android:name="thesis_project.presentation.ui.start.FragmentStart"
         android:label="FragmentStart" />
     <fragment
         android:id="@+id/fragment_rate"
-        android:name="thesis_project.presentation.ui.FragmentRate"
+        android:name="thesis_project.presentation.ui.start.FragmentRate"
         android:label="FragmentRate" />
     <fragment
         android:id="@+id/fragment_filials"
-        android:name="thesis_project.presentation.ui.FragmentFilials"
+        android:name="thesis_project.presentation.ui.start.FragmentFilials"
         android:label="FragmentFilials" />
     <fragment
         android:id="@+id/fragment_atm"
-        android:name="thesis_project.presentation.ui.FragmentAtm"
+        android:name="thesis_project.presentation.ui.start.FragmentAtm"
         android:label="FragmentAtm"/>
     <fragment
         android:id="@+id/fragment_infoBox"
-        android:name="thesis_project.presentation.ui.FragmentInfoBox"
+        android:name="thesis_project.presentation.ui.start.FragmentInfoBox"
         android:label="FragmentInfoBox"/>
     <fragment
         android:id="@+id/fragment_map"
-        android:name="thesis_project.presentation.ui.FragmentMap"
+        android:name="thesis_project.presentation.ui.start.FragmentMap"
         android:label="FragmentMap" />
     <fragment
         android:id="@+id/news_fragment"

@@ -4,13 +4,13 @@ sealed class CurrencyOperation{
 
     object Buy:CurrencyOperation()
     object Sell:CurrencyOperation()
-    object Error:CurrencyOperation()
+    object CurrencyOperationError:CurrencyOperation()
 
     fun toValue():Int{
         return when(this){
             Buy -> 0
             Sell -> 1
-            Error -> -1
+            CurrencyOperationError -> -1
         }
     }
 
@@ -19,7 +19,7 @@ sealed class CurrencyOperation{
             return when(value){
                 0 -> Buy
                 1 -> Sell
-                else -> Error
+                else -> CurrencyOperationError
             }
         }
     }
