@@ -15,8 +15,7 @@ class FragmentStart : Fragment() {
     lateinit var toRate: TextView
     lateinit var toAtm: TextView
     lateinit var toInfoBox: TextView
-    lateinit var text4: TextView
-    lateinit var button: Button
+    lateinit var toNews: TextView
     lateinit var navigation: NavController
     lateinit var viewmodel: ViewModel
 
@@ -46,7 +45,7 @@ class FragmentStart : Fragment() {
         toInfoBox.setOnClickListener {
             navigation.navigate(R.id.fragment_infoBox)
         }
-        text4.setOnClickListener {
+        toNews.setOnClickListener {
             navigation.navigate(R.id.news_fragment)
         }
 
@@ -58,8 +57,7 @@ class FragmentStart : Fragment() {
         toRate = view.findViewById(R.id.filials_start_fragment)
         toAtm = view.findViewById(R.id.atm_start_fragment)
         toInfoBox = view.findViewById(R.id.infoBoxes_start_fragment)
-        text4 = view.findViewById(R.id.fouritem)
-        button = view.findViewById(R.id.button)
+        toNews = view.findViewById(R.id.fouritem)
         navigation = Navigation.findNavController(view)
     }
 

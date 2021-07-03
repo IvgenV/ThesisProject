@@ -1,17 +1,13 @@
-package thesis_project.presentation.ui
+package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.*
 import android.widget.Switch
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
-import thesis_project.data.data_base.news.News
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.NewsAdapter
 

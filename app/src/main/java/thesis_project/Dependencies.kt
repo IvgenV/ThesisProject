@@ -1,4 +1,4 @@
-package thesis_project
+ package thesis_project
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -9,8 +9,6 @@ import thesis_project.data.cloud.rate.RateCloudSource
 import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
 import thesis_project.data.data_base.infobox.InfoBoxDb
-import thesis_project.data.data_base.atm.AtmDbData
-import thesis_project.data.data_base.filials.RateDbData
 import thesis_project.data.data_base.news.NewsData
 import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
 import thesis_project.data.worker.WorkerControllerUseCaseImpl

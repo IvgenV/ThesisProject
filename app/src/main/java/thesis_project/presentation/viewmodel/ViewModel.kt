@@ -18,10 +18,7 @@ import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.data.data_base.filials.СoordinatesData
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
-import thesis_project.sealed.Locality
-import java.math.BigDecimal
 import java.util.*
-import thesis_project.data.data_base.filials.RateFilialPojo
 import thesis_project.data.data_base.news.News
 import thesis_project.domain.repository.SharedPreferencesSwitchRepository
 import thesis_project.domain.use_case.WorkerControllerUseCase
@@ -85,7 +82,6 @@ class ViewModel : ViewModel() {
                 }
 
                 localRateDb.addListRate(dataList)
-                Log.d("RateLogs!!!", "sucsess!")
             } else localRateDb.addListRate(listOf())
 
         }
