@@ -1,11 +1,12 @@
 package thesis_project.domain.use_case
 
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
-import thesis_project.data.data_base.atm.AtmPojo
+import thesis_project.data.data_base.atm.AtmData
 
 interface AtmCloudUseCase {
 
-    suspend fun getAtmCountry(): Response<List<AtmPojo>>
-    suspend fun getAtmCity(city: String): Response<List<AtmPojo>>
+    suspend fun getAtmCountry(): Response<List<AtmData>>
+    suspend fun getAtmCity(city: String): Response<List<AtmData>>
 
 }

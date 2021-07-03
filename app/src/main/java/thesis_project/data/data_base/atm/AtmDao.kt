@@ -4,17 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AtmDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertListAtm(atmList:List<AtmPojo>)
+    fun insertListAtm(atmList:List<AtmData>)
 
-    @Query("Select * from AtmPojo")
-    fun getAtmCountry():List<AtmPojo>
+    @Query("Select * from AtmData")
+    fun getAtmCountry(): Flow<List<AtmData>>
 
-    @Query("Select * from AtmPojo WHERE city=:city")
-    fun getAtmCity(city:String):List<AtmPojo>
+    @Query("Select * from AtmData WHERE city=:city")
+    fun getAtmCity(city:String):Flow<List<AtmData>>
 
 }

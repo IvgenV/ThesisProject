@@ -8,15 +8,11 @@ import android.content.Intent
 import android.os.Build
 import android.telephony.AvailableNetworkInfo.PRIORITY_HIGH
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.thesis_project.R
-import okhttp3.internal.notify
-import thesis_project.App
 import thesis_project.Dependencies
-import thesis_project.data.data_base.news.News
-import thesis_project.presentation.ui.MainActivity
+import thesis_project.presentation.ui.start.StartActivity
 
 
 class WorkerNotificationNews(appContext: Context,
@@ -42,7 +38,7 @@ class WorkerNotificationNews(appContext: Context,
             ///уведомление
             notificationManager =
                 (applicationContext.getSystemService(Context.NOTIFICATION_SERVICE)) as NotificationManager
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, StartActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             val pendingIntent = PendingIntent.getActivity(
                 applicationContext,
