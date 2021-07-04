@@ -11,7 +11,7 @@ import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.NewsAdapter
 
-class NewsFragment: Fragment() {
+class FragmentNews: Fragment() {
 
     lateinit var viewModel: ViewModel
     val adapter = NewsAdapter()

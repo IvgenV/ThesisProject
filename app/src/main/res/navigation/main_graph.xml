@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/fragment_start">
 
     <fragment
         android:id="@+id/fragment_start"
         android:name="thesis_project.presentation.ui.start.FragmentStart"
-        android:label="FragmentStart" />
+        android:label="FragmentStart"
+        tools:layout="@layout/fragment_start"/>
     <fragment
         android:id="@+id/fragment_rate"
         android:name="thesis_project.presentation.ui.start.FragmentRate"
-        android:label="FragmentRate" />
+        android:label="FragmentRate"
+        tools:layout="@layout/fragment_rate"/>
     <fragment
         android:id="@+id/fragment_filials"
         android:name="thesis_project.presentation.ui.start.FragmentFilials"
-        android:label="FragmentFilials" />
+        android:label="FragmentFilials"
+        tools:layout="@layout/fragment_filials"/>
     <fragment
         android:id="@+id/fragment_atm"
         android:name="thesis_project.presentation.ui.start.FragmentAtm"
-        android:label="FragmentAtm"/>
+        android:label="FragmentAtm"
+        tools:layout="@layout/fragment_atm"/>
     <fragment
         android:id="@+id/fragment_infoBox"
         android:name="thesis_project.presentation.ui.start.FragmentInfoBox"
-        android:label="FragmentInfoBox"/>
+        android:label="FragmentInfoBox"
+        tools:layout="@layout/fragment_info_box"/>
     <fragment
         android:id="@+id/fragment_map"
         android:name="thesis_project.presentation.ui.start.FragmentMap"
-        android:label="FragmentMap" />
+        android:label="FragmentMap"
+        tools:layout="@layout/fragment_map"/>
     <fragment
-        android:id="@+id/news_fragment"
-        android:name="thesis_project.presentation.ui.start.NewsFragment"
-        android:label="NewsFragment"/>
+        android:id="@+id/fragment_news"
+        android:name="thesis_project.presentation.ui.start.FragmentNews"
+        android:label="NewsFragment"
+        tools:layout="@layout/news_fragment"/>
+
+    <fragment
+        android:id="@+id/fragment_profile"
+        android:name="thesis_project.presentation.ui.start.FragmentProfile"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile"/>
 </navigation>

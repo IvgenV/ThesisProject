@@ -376,7 +376,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun createListInfoBox(location: Location?) {
+    fun createListInfoBox(location: Location?):Boolean {
         if (location != null) {
             viewModelScope.launch {
                 var list = mutableListOf<ItemDistance>()
@@ -393,11 +393,10 @@ class ViewModel : ViewModel() {
                 } else {
                     listInfoBox.value = list.take(15)
                 }
-                Log.d("infoboxcreate", "createListInfoBOx")
             }
+            return true
         } else {
-            Log.d("infoboxcreate", "no Location!")
-
+            return false
         }
     }
 

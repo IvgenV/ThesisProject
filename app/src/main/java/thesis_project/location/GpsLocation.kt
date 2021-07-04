@@ -32,6 +32,7 @@ class GpsLocation :  LocationListener {
 
     }
 
+
     fun setLocalListenerInterface(locationListener: ILocationListener){
         this.localListenerInterface = locationListener
     }

@@ -46,7 +46,7 @@ class FragmentStart : Fragment() {
             navigation.navigate(R.id.fragment_infoBox)
         }
         toNews.setOnClickListener {
-            navigation.navigate(R.id.news_fragment)
+            navigation.navigate(R.id.fragment_news)
         }
 
     }

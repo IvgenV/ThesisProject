@@ -3,6 +3,7 @@ package thesis_project.data.data_base.infobox
 import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import thesis_project.domain.repository.InfoBoxDbRepository
 

@@ -1,6 +1,8 @@
 package thesis_project.data.cloud.rate
 
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -33,7 +35,11 @@ object RateCloudSource: RateCloudRepository {
     }
 
     override suspend fun getRateCountry(): Response<List<RateData>> {
-        return rateApiService.getRateCountry()
+        val list:Response<List<RateData>>
+        withContext(Dispatchers.IO){
+            list = rateApiService.getRateCountry()
+        }
+        return list
     }
 
     override suspend fun getFilialsCountry(): Response<List<СoordinatesData>> {
