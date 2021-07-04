@@ -10,6 +10,7 @@ import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
 import thesis_project.data.data_base.infobox.InfoBoxDb
 import thesis_project.data.data_base.news.NewsData
+import thesis_project.data.sharedPreferences.SharedPreferencesRateDouble
 import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
 import thesis_project.data.worker.WorkerControllerUseCaseImpl
 import thesis_project.domain.entity.*
@@ -83,13 +84,32 @@ object Dependencies {
         NewsDbUseCaseImpl(getNewsDbRepository())
 
     //SharedPrefenceSwitch
-    private val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { SharedPreferencesSwitch(App.instance) }
+    private val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy {
+        SharedPreferencesSwitch(
+            App.instance
+        )
+    }
 
-    fun getSharedPreferenceSwitch():SharedPreferencesSwitchRepository = sharedPreferencesSwitch
+    fun getSharedPreferenceSwitch(): SharedPreferencesSwitchUseCase =
+        SharedPreferencesSwitchUseCaseImpl(
+            sharedPreferencesSwitch
+        )
+
+    //SharedPrefence
+    private val sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository by lazy {
+        SharedPreferencesRateDouble(
+            App.instance
+        )
+    }
+
+    fun getSharedPreferenceRate(): SharedPreferencesRateDoubleUseCase =
+        SharedPreferencesRateDoubleUseCaseImpl(
+            sharedPreferencesRateDouble
+        )
 
     ///WorkerNotification
     private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
 
-    fun getMyWorkerController():WorkerControllerUseCase = workerController
+    fun getMyWorkerController(): WorkerControllerUseCase = workerController
 
 }

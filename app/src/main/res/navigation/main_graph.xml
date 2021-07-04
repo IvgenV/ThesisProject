@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/fragment_infoBox"
         android:name="thesis_project.presentation.ui.start.FragmentInfoBox"
-        android:label="FragmentInfoBox"/>
+        android:label="FragmentInfoBox" />
     <fragment
         android:id="@+id/fragment_map"
         android:name="thesis_project.presentation.ui.start.FragmentMap"
@@ -30,5 +30,15 @@
     <fragment
         android:id="@+id/news_fragment"
         android:name="thesis_project.presentation.ui.start.NewsFragment"
-        android:label="NewsFragment"/>
+        android:label="NewsFragment" />
+    <fragment
+        android:id="@+id/news_item"
+        android:name="thesis_project.presentation.ui.start.NewsItemFragment"
+        android:label="NewsItemFragment" />
+    <fragment
+        android:id="@+id/notification_setting"
+        android:name="thesis_project.presentation.ui.start.NotificationSettingFragment"
+        android:label="NotificationSettingFragment" />
+
+
 </navigation>

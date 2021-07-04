@@ -34,4 +34,12 @@ class WorkerControllerUseCaseImpl:WorkerControllerUseCase {
     override suspend fun StopWorkerNotificationNews() {
         WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
     }
+
+    override suspend fun StartWorkerNotificationRate() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun StopWorkerNotificationRate() {
+        TODO("Not yet implemented")
+    }
 }
