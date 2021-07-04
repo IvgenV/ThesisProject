@@ -43,7 +43,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <fragment
-            android:id="@+id/nav_host_fragment_login"
+            android:id="@+id/nav_host_fragment_start"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -61,6 +61,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        app:headerLayout="@layout/layout_navigation_header"
         android:layout_gravity="start"
         app:menu="@menu/navigation_menu" />
 

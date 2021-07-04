@@ -17,15 +17,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
@@ -74,11 +72,13 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         })
 
         buttonRefresh.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                progressInfoBox.visibility = View.VISIBLE
-                delay(300)
-                initialization()
-                progressInfoBox.visibility = View.INVISIBLE
+            viewLifecycleOwner.lifecycleScope.launch {
+                withContext(Dispatchers.Main){
+                    progressInfoBox.visibility = View.VISIBLE
+                    delay(300)
+                    initialization()
+                    progressInfoBox.visibility = View.INVISIBLE
+                }
             }
         }
     }
