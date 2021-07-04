@@ -6,10 +6,11 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -31,35 +32,38 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     lateinit var viewModel: ViewModel
     lateinit var infoBoxList: RecyclerView
     val adapter = ItemDistanceAdapter()
+    lateinit var tvText: TextView
+    lateinit var buttonRefresh: Button
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
     var isGPSEnabled = false
     var isNetworkEnabled = false
+
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            var bol = false
-            it.entries.forEach {
-                bol = it.value
+            if (!it.containsValue(false)) {
+               initialization()
+                viewModel.getInfoBox().observe(viewLifecycleOwner, {
+                    adapter.setData(it)
+                })
             }
-            if (bol) {
-                checkPermission()
-            } else Toast.makeText(requireContext(), "NEED PERMISSION!", Toast.LENGTH_SHORT).show()
         }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        init()
-        viewModel.initialInfoBox()
-        viewModel.createListInfoBox(location)
+        initialization()
+
         viewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
-            Log.d("sdsdsdsdsdsdsd","setData")
         })
 
+        buttonRefresh.setOnClickListener {
+            initialization()
+        }
     }
 
     override fun onCreateView(
@@ -73,6 +77,8 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         infoBoxList = view.findViewById(R.id.infoBox_recycler)
+        tvText = view.findViewById(R.id.tvTextInfoBox)
+        buttonRefresh = view.findViewById(R.id.buttonRefreshInfoBox)
         infoBoxList.layoutManager = LinearLayoutManager(requireContext())
         infoBoxList.adapter = adapter
         navigation = Navigation.findNavController(view)
@@ -86,7 +92,12 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
 
     override fun onLocationChanged(location: Location) {
-
+        viewModel.initialInfoBox()
+        if (viewModel.createListInfoBox(location)) {
+            tvText.text = "Current data"
+        } else {
+            tvText.text = "Not current data"
+        }
     }
 
     override fun onClick(infoBox: String) {
@@ -95,17 +106,29 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
-    fun init() {
+    fun initialization() {
+        initLocation()
+        viewModel.initialInfoBox()
+        if (viewModel.createListInfoBox(location)) {
+            tvText.text = "Current data"
+        } else {
+            tvText.text = "Not current data"
+        }
+    }
+
+    fun initLocation() {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        isNetworkEnabled = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
+        isNetworkEnabled =
+            locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
         gpsLocation = GpsLocation()
         gpsLocation.setLocalListenerInterface(this)
         checkPermission()
     }
 
     fun checkPermission() {
+
         if (isGPSEnabled) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -124,14 +147,18 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    1,
-                    1F,
+                    100,
+                    10F,
                     gpsLocation
                 )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 }
             }
+        } else {
+            location = null
+            Toast.makeText(requireContext(), "Turn on GPS!", Toast.LENGTH_SHORT).show()
+            return
         }
 
         if (isNetworkEnabled) {
@@ -152,16 +179,15 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    1,
-                    1F,
+                    100,
+                    10F,
                     gpsLocation
                 )
                 if (locationManager != null) {
-                    location = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    location =
+                        locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 }
             }
         }
-
-
     }
 }

@@ -29,6 +29,6 @@
         android:label="FragmentMap" />
     <fragment
         android:id="@+id/news_fragment"
-        android:name="thesis_project.presentation.ui.start.NewsFragment"
+        android:name="thesis_project.presentation.ui.start.FragmentNews"
         android:label="NewsFragment"/>
 </navigation>

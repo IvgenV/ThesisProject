@@ -21,12 +21,13 @@
             android:value="${GOOGLE_MAPS_API_KEY}"/>
 
         <activity android:name="thesis_project.presentation.ui.login.LoginActivity">
+        </activity>
+        <activity android:name="thesis_project.presentation.ui.start.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="thesis_project.presentation.ui.start.StartActivity"/>
     </application>
 
 </manifest>
