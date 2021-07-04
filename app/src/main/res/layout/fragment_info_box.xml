@@ -16,6 +16,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTextInfoBox" />
 
+    <ProgressBar
+        android:id="@+id/progressInfoBox"
+        app:layout_constraintTop_toTopOf="@id/infoBox_recycler"
+        app:layout_constraintBottom_toBottomOf="@id/infoBox_recycler"
+        app:layout_constraintStart_toStartOf="@id/infoBox_recycler"
+        app:layout_constraintEnd_toEndOf="@id/infoBox_recycler"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
     <TextView
         android:id="@+id/tvTextInfoBox"
         android:layout_width="wrap_content"

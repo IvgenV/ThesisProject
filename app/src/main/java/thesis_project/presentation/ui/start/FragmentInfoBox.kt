@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,10 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
@@ -35,6 +40,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     lateinit var tvText: TextView
     lateinit var buttonRefresh: Button
     lateinit var navigation: NavController
+    lateinit var progressInfoBox:ProgressBar
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
@@ -55,14 +61,25 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
-        initialization()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            progressInfoBox.visibility = View.VISIBLE
+            delay(300)
+            initialization()
+            progressInfoBox.visibility = View.INVISIBLE
+        }
 
         viewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
 
         buttonRefresh.setOnClickListener {
-            initialization()
+            CoroutineScope(Dispatchers.Main).launch {
+                progressInfoBox.visibility = View.VISIBLE
+                delay(300)
+                initialization()
+                progressInfoBox.visibility = View.INVISIBLE
+            }
         }
     }
 
@@ -79,6 +96,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         infoBoxList = view.findViewById(R.id.infoBox_recycler)
         tvText = view.findViewById(R.id.tvTextInfoBox)
         buttonRefresh = view.findViewById(R.id.buttonRefreshInfoBox)
+        progressInfoBox = view.findViewById(R.id.progressInfoBox)
         infoBoxList.layoutManager = LinearLayoutManager(requireContext())
         infoBoxList.adapter = adapter
         navigation = Navigation.findNavController(view)
