@@ -495,4 +495,16 @@ class ViewModel : ViewModel() {
         }
     }
 
+    fun startNotificationRate() {
+        viewModelScope.launch {
+            myWorkerController.StartWorkerNotificationRate()
+        }
+    }
+
+    fun stopNotificationRate() {
+        viewModelScope.launch {
+            myWorkerController.StopWorkerNotificationRate()
+        }
+    }
+
 }

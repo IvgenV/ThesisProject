@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 
 class FragmentProfile:Fragment() {
     lateinit var viewModel: ViewModel
+
+    lateinit var buttonSaveSetting: Button
     lateinit var buyRub: EditText
     lateinit var saleRub: EditText
     lateinit var buyUsd: EditText
@@ -117,26 +119,19 @@ class FragmentProfile:Fragment() {
         saleUah = view.findViewById(R.id.editTextNumberSaleUAH)
         buyEur = view.findViewById(R.id.editTextNumberBuyEUR)
         saleEur = view.findViewById(R.id.editTextNumberSaleEUR)
+        buttonSaveSetting = view.findViewById(R.id.btnSaveSettingRate)
 
         switchRub.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.addStatusSwitch(key_switchRub, isChecked)
-            viewModel.addRateSharedPreferences(key_BuyRub, buyRub.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleRub, saleRub.text.toString().toDouble())
         }
         switchUsd.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.addStatusSwitch(key_switchUsd, isChecked)
-            viewModel.addRateSharedPreferences(key_BuyUsd, buyUsd.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleUsd, saleUsd.text.toString().toDouble())
         }
         switchUah.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.addStatusSwitch(key_switchUah, isChecked)
-            viewModel.addRateSharedPreferences(key_BuyUah, buyUah.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleUah, saleUah.text.toString().toDouble())
         }
         switchEur.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.addStatusSwitch(key_switchEur, isChecked)
-            viewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
         }
 
         switchNotification.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -146,6 +141,24 @@ class FragmentProfile:Fragment() {
                 viewModel.stopNotificationNews()
             }
             viewModel.addStatusSwitch(key_switch, isChecked)
+        }
+        buttonSaveSetting.setOnClickListener {
+            viewModel.addRateSharedPreferences(key_BuyRub, buyRub.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_SaleRub, saleRub.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_BuyUsd, buyUsd.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_SaleUsd, saleUsd.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_BuyUah, buyUah.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_SaleUah, saleUah.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
+            viewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
+
+            if ((switchRub.isChecked == true) || (switchUsd.isChecked == true) ||
+                (switchUah.isChecked == true) || (switchEur.isChecked == true)
+            ) {
+                viewModel.startNotificationRate()
+            } else {
+                viewModel.stopNotificationRate()
+            }
         }
     }
 
