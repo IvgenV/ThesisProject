@@ -57,7 +57,7 @@ class FragmentStart : Fragment() {
         toRate = view.findViewById(R.id.filials_start_fragment)
         toAtm = view.findViewById(R.id.atm_start_fragment)
         toInfoBox = view.findViewById(R.id.infoBoxes_start_fragment)
-        toNews = view.findViewById(R.id.fouritem)
+        toNews = view.findViewById(R.id.news_start_fragment)
         navigation = Navigation.findNavController(view)
     }
 

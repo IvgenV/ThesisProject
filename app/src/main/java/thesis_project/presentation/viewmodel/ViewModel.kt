@@ -21,6 +21,8 @@ import thesis_project.sealed.CurrencyOperation
 import java.util.*
 import thesis_project.data.data_base.news.News
 import thesis_project.domain.repository.SharedPreferencesSwitchRepository
+import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
+import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
@@ -34,12 +36,19 @@ class ViewModel : ViewModel() {
     var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
     var listInfoBox = MutableLiveData<List<ItemDistance>>()
     var latLng = MutableLiveData<LatLng>()
+
     //News
-    var localNewsDb=Dependencies.getNewsDbUseCase()
+    var localNewsDb = Dependencies.getNewsDbUseCase()
     var listNews = MutableLiveData<List<News>>()
 
+    //SharedPreferences
+    val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
+    val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
 
-    fun toRateFilialData(rate: RateData,coordinates: СoordinatesData):RateFilialData{
+    //Worker
+    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
+
+    fun toRateFilialData(rate: RateData, coordinates: СoordinatesData): RateFilialData {
         return RateFilialData(
             rate.usd_in.toDouble(),
             rate.usd_out.toDouble(),
@@ -60,8 +69,6 @@ class ViewModel : ViewModel() {
     }
 
 
-    val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
-    val myWorkerController:WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
     fun initialCountryRate() {
 
         viewModelScope.launch {
@@ -457,25 +464,35 @@ class ViewModel : ViewModel() {
     }
 
     ///SaveStatusSwitch
-    fun addStatusSwitch(key:String,status:Boolean){
-            sharedPreferencesSwitch.add(key,status)
+    fun addStatusSwitch(key: String, status: Boolean) {
+        sharedPreferencesSwitch.add(key, status)
     }
 
-    fun takeStatusSwitch(key: String):Boolean{
+    fun takeStatusSwitch(key: String): Boolean {
         return sharedPreferencesSwitch.take(key)
+    }
+
+    ////SaveRateinNotificationSetting
+    fun addRateSharedPreferences(key: String, rate: Double) {
+        sharedPreferencesRate.add(key, rate)
+    }
+
+    fun takeRateSharedPreferences(key: String): Double {
+        return sharedPreferencesRate.take(key)
     }
 
     ///Worker
 
-    fun startNotificationNews(){
+    fun startNotificationNews() {
         viewModelScope.launch {
             myWorkerController.StartWorkerNotificationNews()
         }
     }
 
-    fun stopNotificationNews(){
+    fun stopNotificationNews() {
         viewModelScope.launch {
             myWorkerController.StopWorkerNotificationNews()
         }
     }
+
 }

@@ -45,4 +45,11 @@
         android:name="thesis_project.presentation.ui.start.FragmentProfile"
         android:label="Profile"
         tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/news_item"
+        android:name="thesis_project.presentation.ui.start.NewsItemFragment"
+        android:label="NewsItemFragment" />
+
+
 </navigation>
