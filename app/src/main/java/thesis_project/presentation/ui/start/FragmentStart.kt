@@ -16,7 +16,6 @@ class FragmentStart : Fragment() {
     lateinit var toAtm: TextView
     lateinit var toInfoBox: TextView
     lateinit var toNews: TextView
-    lateinit var toNotificationSetting: TextView
     lateinit var navigation: NavController
     lateinit var viewmodel: ViewModel
 
@@ -50,10 +49,6 @@ class FragmentStart : Fragment() {
             navigation.navigate(R.id.news_fragment)
         }
 
-        toNotificationSetting.setOnClickListener {
-            navigation.navigate(R.id.notification_setting)
-        }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +58,6 @@ class FragmentStart : Fragment() {
         toAtm = view.findViewById(R.id.atm_start_fragment)
         toInfoBox = view.findViewById(R.id.infoBoxes_start_fragment)
         toNews = view.findViewById(R.id.news_start_fragment)
-        toNotificationSetting = view.findViewById(R.id.notification_setting_start_fragment)
         navigation = Navigation.findNavController(view)
     }
 

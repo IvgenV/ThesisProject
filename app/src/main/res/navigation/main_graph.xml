@@ -35,10 +35,6 @@
         android:id="@+id/news_item"
         android:name="thesis_project.presentation.ui.start.NewsItemFragment"
         android:label="NewsItemFragment" />
-    <fragment
-        android:id="@+id/notification_setting"
-        android:name="thesis_project.presentation.ui.start.NotificationSettingFragment"
-        android:label="NotificationSettingFragment" />
 
 
 </navigation>
