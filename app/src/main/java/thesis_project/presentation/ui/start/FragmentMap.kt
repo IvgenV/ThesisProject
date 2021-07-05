@@ -1,6 +1,7 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
 
     }
 
@@ -45,10 +46,14 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
         googleMap = map
         val filial = arguments?.getString("filial")
         val atm = arguments?.getString("atm")
-        val infoBOx = arguments?.getString("infoBox")
+       /* val infoBOx = arguments?.getString("infoBox")*/
+
 
         if (filial != null) {
+            viewModel.createGpsFilial(filial)
+/*
             filial.let { viewModel.createGpsFilial(it) }
+*/
             viewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
@@ -60,7 +65,7 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
         }
 
         if (atm != null) {
-            atm.let { viewModel.createGpsAtm(it) }
+            viewModel.createGpsAtm(atm)
             viewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
@@ -71,9 +76,9 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
             })
         }
 
-        if(infoBOx != null){
-            infoBOx.let { viewModel.createGpsInfoBOx(it) }
-            viewModel.getGps().observe(viewLifecycleOwner,{
+        if (viewModel.getInfoBoxInfo() != null) {
+            viewModel.createGpsInfoBOx(viewModel.getInfoBoxInfo()?:"")
+            viewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
@@ -81,6 +86,7 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
             })
+            viewModel.setInfoBoxInfo(null)
         }
     }
 

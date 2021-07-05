@@ -8,7 +8,7 @@ import thesis_project.domain.use_case.AtmDbUseCase
 class AtmDbUseCaseImpl(
     val atmDbRepository: AtmDbRepository
 ):AtmDbUseCase {
-    override suspend fun getAtmCountry(): Flow<List<AtmData>> {
+    override suspend fun getAtmCountry():  Flow<List<AtmData>> {
         return atmDbRepository.getAtmCountry()
     }
 

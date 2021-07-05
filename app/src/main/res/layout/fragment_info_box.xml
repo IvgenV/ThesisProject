@@ -22,16 +22,17 @@
         app:layout_constraintBottom_toBottomOf="@id/infoBox_recycler"
         app:layout_constraintStart_toStartOf="@id/infoBox_recycler"
         app:layout_constraintEnd_toEndOf="@id/infoBox_recycler"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
 
     <TextView
         android:id="@+id/tvTextInfoBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="52dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,9 +40,10 @@
         android:id="@+id/buttonRefreshInfoBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
         android:text="Refresh"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvTextInfoBox"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

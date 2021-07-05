@@ -5,7 +5,7 @@ import thesis_project.data.data_base.atm.AtmData
 
 interface AtmDbUseCase {
 
-    suspend fun getAtmCountry(): Flow<List<AtmData>>
+    suspend fun getAtmCountry():  Flow<List<AtmData>>
     suspend fun getAtmCity(city:String):Flow<List<AtmData>>
     suspend fun addListAtm(atmList:List<AtmData>)
 

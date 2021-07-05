@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     lateinit var tvText: TextView
     lateinit var buttonRefresh: Button
     lateinit var navigation: NavController
-    lateinit var progressInfoBox:ProgressBar
+    lateinit var progressInfoBox: ProgressBar
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
@@ -48,7 +49,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (!it.containsValue(false)) {
-               initialization()
+                initialization()
                 viewModel.getInfoBox().observe(viewLifecycleOwner, {
                     adapter.setData(it)
                 })
@@ -58,28 +59,21 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            progressInfoBox.visibility = View.VISIBLE
-            delay(300)
-            initialization()
-            progressInfoBox.visibility = View.INVISIBLE
-        }
+        createLocationManager()
+        initialization()
+
+        viewModel.getProgress().observe(viewLifecycleOwner, {
+            progressInfoBox.visibility = it
+        })
 
         viewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
 
         buttonRefresh.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                withContext(Dispatchers.Main){
-                    progressInfoBox.visibility = View.VISIBLE
-                    delay(300)
-                    initialization()
-                    progressInfoBox.visibility = View.INVISIBLE
-                }
-            }
+            initialization()
         }
     }
 
@@ -110,44 +104,48 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
 
     override fun onLocationChanged(location: Location) {
-        viewModel.initialInfoBox()
-        if (viewModel.createListInfoBox(location)) {
-            tvText.text = "Current data"
-        } else {
-            tvText.text = "Not current data"
-        }
+        initialization()
     }
 
     override fun onClick(infoBox: String) {
-        val bundle = Bundle()
-        bundle.putString("infoBox", infoBox)
-        navigation.navigate(R.id.fragment_map, bundle)
+        /*val bundle = Bundle()
+        bundle.putString("infoBox", infoBox)*/
+        viewModel.setInfoBoxInfo(infoBox)
+        navigation.navigate(R.id.fragment_map)
     }
 
     fun initialization() {
         initLocation()
-        viewModel.initialInfoBox()
-        if (viewModel.createListInfoBox(location)) {
+        if (isGPSEnabled) {
+            viewModel.initialInfoBox()
+            viewModel.createListInfoBox(location)
             tvText.text = "Current data"
+
         } else {
+            Toast.makeText(requireContext(), "Turn on GPS!", Toast.LENGTH_SHORT).show()
             tvText.text = "Not current data"
         }
     }
 
+    fun createLocationManager() {
+        if (activity != null && isAdded) {
+            locationManager =
+                requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            gpsLocation = GpsLocation()
+            gpsLocation.setLocalListenerInterface(this)
+        }
+    }
+
     fun initLocation() {
-        locationManager =
-            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
         isNetworkEnabled =
             locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
-        gpsLocation = GpsLocation()
-        gpsLocation.setLocalListenerInterface(this)
         checkPermission()
     }
 
     fun checkPermission() {
 
-        if (isGPSEnabled) {
+        if (isGPSEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -175,11 +173,10 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             }
         } else {
             location = null
-            Toast.makeText(requireContext(), "Turn on GPS!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (isNetworkEnabled) {
+        if (isNetworkEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION

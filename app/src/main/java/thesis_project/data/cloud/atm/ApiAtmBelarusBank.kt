@@ -9,7 +9,7 @@ import thesis_project.data.data_base.atm.AtmData
 interface ApiAtmBelarusBank {
 
     @GET("https://belarusbank.by/api/atm")
-    suspend fun getAtmCountry(): Response<List<AtmData>>
+    suspend fun getAtmCountry():Response<List<AtmData>>
 
     @GET("atm")
     suspend fun getAtmCity(@Query("city") city: String): Response<List<AtmData>>

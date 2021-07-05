@@ -1,12 +1,8 @@
 package thesis_project.presentation.viewmodel
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.location.Location
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
+import android.view.View
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
@@ -26,20 +22,35 @@ import thesis_project.domain.use_case.WorkerControllerUseCase
 
 class ViewModel : ViewModel() {
 
-    var localRateDb = Dependencies.getRateDbUseCase(App.instance)
-    var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
-    var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
-    var listOfCurrency = MutableLiveData<List<Double>>()
-    var listRateFilial = MutableLiveData<List<ItemDistance>>()
-    var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
-    var listInfoBox = MutableLiveData<List<ItemDistance>>()
-    var latLng = MutableLiveData<LatLng>()
+    private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
+    private var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
+    private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
+    private var listOfCurrency = MutableLiveData<List<Double>>()
+    private var listRateFilial = MutableLiveData<List<ItemDistance>>()
+    private var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
+    private var listInfoBox = MutableLiveData<List<ItemDistance>>()
+    private var latLng = MutableLiveData<LatLng>()
+
     //News
-    var localNewsDb=Dependencies.getNewsDbUseCase()
-    var listNews = MutableLiveData<List<News>>()
+    private var localNewsDb = Dependencies.getNewsDbUseCase()
+    private var listNews = MutableLiveData<List<News>>()
 
+    //profile
+    private var email = ""
+    private var name = ""
+    private var infoBoxInfo: String? = null
 
-    fun toRateFilialData(rate: RateData,coordinates: СoordinatesData):RateFilialData{
+    private var progress = MutableLiveData(View.GONE)
+
+    fun setInfoBoxInfo(atm: String?) {
+        this.infoBoxInfo = atm
+    }
+
+    fun getInfoBoxInfo(): String? {
+        return infoBoxInfo
+    }
+
+    fun toRateFilialData(rate: RateData, coordinates: СoordinatesData): RateFilialData {
         return RateFilialData(
             rate.usd_in.toDouble(),
             rate.usd_out.toDouble(),
@@ -56,12 +67,13 @@ class ViewModel : ViewModel() {
             rate.street,
             rate.name,
             coordinates.latitude.toDouble(),
-            coordinates.longitude.toDouble())
+            coordinates.longitude.toDouble()
+        )
     }
 
 
-    val sharedPreferencesSwitch:SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
-    val myWorkerController:WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
+    val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
+    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
     fun initialCountryRate() {
 
         viewModelScope.launch {
@@ -74,7 +86,7 @@ class ViewModel : ViewModel() {
                 callRate.body()?.forEach { rate ->
                     callFilials.body()?.forEach inner@{ filial ->
                         if (rate.id == filial.id) {
-                            val data = toRateFilialData(rate,filial)
+                            val data = toRateFilialData(rate, filial)
                             dataList.add(data)
                             return@inner
                         }
@@ -87,7 +99,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun createCurrency(location:String){
+    fun createCurrency(location: String) {
         viewModelScope.launch {
             viewModelScope.launch {
                 if (location == "Belarus") {
@@ -108,7 +120,7 @@ class ViewModel : ViewModel() {
 
         if (operation is CurrencyOperation.Buy) {
             when (currency) {
-                 Constnsts.usd -> {
+                Constnsts.usd -> {
                     viewModelScope.launch {
                         if (location == "Belarus") {
                             listOfCurrency.value =
@@ -240,6 +252,7 @@ class ViewModel : ViewModel() {
     }
 
     fun updatesFilials(location: Location, compare: (RateFilialData) -> Boolean) {
+
         viewModelScope.launch {
             val list = mutableListOf<ItemDistance>()
             localRateDb.getRateCountry().forEach {
@@ -328,15 +341,16 @@ class ViewModel : ViewModel() {
             val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
             if (call.isSuccessful) {
                 call.body()?.let { localAtmDb.addListAtm(it) }
-            } else {
-                localAtmDb.addListAtm(listOf())
             }
         }
     }
 
-    fun createListAtm(location: Location?):Boolean {
+    fun createListAtm(location: Location?) {
         if (location != null) {
             viewModelScope.launch {
+                progress.value = View.VISIBLE
+                Log.d("createListAtm", progress.value.toString())
+                delay(500)
                 val list = mutableListOf<ItemDistance>()
                 localAtmDb.getAtmCountry().collect { atmDataList ->
                     atmDataList.forEach {
@@ -352,11 +366,11 @@ class ViewModel : ViewModel() {
                     } else {
                         listAtm.value = list.take(15)
                     }
+                    progress.value = View.GONE
+                    ///трижды вызывается этот лог?
+                    Log.d("createListAtm", progress.value.toString())
                 }
             }
-            return true
-        }else{
-            return false
         }
     }
 
@@ -376,9 +390,11 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun createListInfoBox(location: Location?):Boolean {
+    fun createListInfoBox(location: Location?) {
         if (location != null) {
             viewModelScope.launch {
+                progress.value = View.VISIBLE
+                delay(500)
                 var list = mutableListOf<ItemDistance>()
                 localInfoBoxDb.getInfoBoxCountry().forEach {
                     val loc = Location("")
@@ -393,11 +409,13 @@ class ViewModel : ViewModel() {
                 } else {
                     listInfoBox.value = list.take(15)
                 }
+                progress.value = View.GONE
             }
-            return true
-        } else {
-            return false
         }
+    }
+
+    fun getProgress(): LiveData<Int> {
+        return progress
     }
 
     fun getInfoBox(): LiveData<List<ItemDistance>> {
@@ -425,6 +443,7 @@ class ViewModel : ViewModel() {
                                 it.latitude.toDouble(),
                                 it.longitude.toDouble()
                             )
+
                     }
                 }
             }
@@ -444,36 +463,37 @@ class ViewModel : ViewModel() {
     fun getGps(): LiveData<LatLng> {
         return latLng
     }
+
     //News
-    fun getNews(): LiveData<List<News>>{
+    fun getNews(): LiveData<List<News>> {
         viewModelScope.launch {
             val callNews = Dependencies.getNewsCloudUseCase().getNews()
-            if (callNews.isSuccessful){
-                localNewsDb.addNews(callNews.body()?: listOf())
+            if (callNews.isSuccessful) {
+                localNewsDb.addNews(callNews.body() ?: listOf())
             }
-            listNews.value=localNewsDb.getNewsList()
+            listNews.value = localNewsDb.getNewsList()
         }
         return listNews
     }
 
     ///SaveStatusSwitch
-    fun addStatusSwitch(key:String,status:Boolean){
-            sharedPreferencesSwitch.add(key,status)
+    fun addStatusSwitch(key: String, status: Boolean) {
+        sharedPreferencesSwitch.add(key, status)
     }
 
-    fun takeStatusSwitch(key: String):Boolean{
+    fun takeStatusSwitch(key: String): Boolean {
         return sharedPreferencesSwitch.take(key)
     }
 
     ///Worker
 
-    fun startNotificationNews(){
+    fun startNotificationNews() {
         viewModelScope.launch {
             myWorkerController.StartWorkerNotificationNews()
         }
     }
 
-    fun stopNotificationNews(){
+    fun stopNotificationNews() {
         viewModelScope.launch {
             myWorkerController.StopWorkerNotificationNews()
         }
