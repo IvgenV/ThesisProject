@@ -3,6 +3,7 @@ package thesis_project.presentation.ui.start
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
@@ -39,6 +40,12 @@ class StartActivity : AppCompatActivity() {
 
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
         navigationView.itemIconTintList = null
+        val header = LayoutInflater.from(this).inflate(R.layout.layout_navigation_header,null)
+        navigationView.addHeaderView(header)
+
+        var text = header.findViewById<TextView>(R.id.email_navigation_header)
+
+        text.text = intent.extras?.getString("email") ?:"Error!"
 
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
         NavigationUI.setupWithNavController(navigationView, navController)
@@ -49,7 +56,6 @@ class StartActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             textTitle.text = destination.label
-
         }
     }
 

@@ -33,7 +33,7 @@ class FragmentInitialization : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         buttonInit.setOnClickListener {
-            uwerLogin()
+            userLogin()
         }
 
         buttonCreateUser.setOnClickListener {
@@ -96,7 +96,7 @@ class FragmentInitialization : Fragment() {
 
                 FirebaseAuth.getInstance().currentUser?.let { auth ->
                     FirebaseDatabase.getInstance().getReference("FreBaseUsers")
-                        .child(auth.uid).setValue(user).addOnCompleteListener { dataBase->
+                        .child(auth.uid).setValue(user).addOnCompleteListener { dataBase ->
                             if (dataBase.isComplete) {
                                 Toast.makeText(requireContext(), "User add", Toast.LENGTH_SHORT)
                                     .show()
@@ -115,7 +115,7 @@ class FragmentInitialization : Fragment() {
         }
     }
 
-    private fun uwerLogin() {
+    private fun userLogin() {
 
         val email = inputEmail.text.toString().trim()
         val password = inputPassword.text.toString().trim()
@@ -145,12 +145,10 @@ class FragmentInitialization : Fragment() {
         }
 
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-
             if (task.isSuccessful) {
-
-
-
-                startActivity(Intent(requireContext(), StartActivity::class.java))
+                val bundle = Bundle()
+                bundle.putString("email",email)
+                startActivity(Intent(requireContext(), StartActivity::class.java),bundle)
             } else {
                 Toast.makeText(requireContext(), "Failed to login! Check info!", Toast.LENGTH_SHORT)
                     .show()

@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import thesis_project.data.data_base.atm.AtmData
 import thesis_project.domain.repository.AtmCloudRepository
 
-class AtmCloudSource(val disp: CoroutineDispatcher): AtmCloudRepository {
+class AtmCloudSource(val dispatcher: CoroutineDispatcher): AtmCloudRepository {
 
     private val baseUrl = "https://belarusbank.by/api/atm/"
 
@@ -32,18 +32,17 @@ class AtmCloudSource(val disp: CoroutineDispatcher): AtmCloudRepository {
     private val atmApiService = retrofit.create(ApiAtmBelarusBank::class.java)
 
     override suspend fun getAtmCountry(): Response<List<AtmData>> {
+
         val list:Response<List<AtmData>>
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             list = atmApiService.getAtmCountry()
         }
         return list
     }
 
     override suspend fun getAtmCity(city: String): Response<List<AtmData>> {
-        return withContext(disp){
+        return withContext(dispatcher){
             atmApiService.getAtmCity(city)
         }
     }
-
-
 }
