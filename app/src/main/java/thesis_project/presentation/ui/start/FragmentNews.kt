@@ -2,7 +2,9 @@ package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.Switch
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -19,6 +21,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
 
     lateinit var viewModel: ViewModel
     val adapter = NewsAdapter()
+    lateinit var progressNews: ProgressBar
     lateinit var newsList: RecyclerView
     lateinit var navigation: NavController
 
@@ -28,7 +31,9 @@ class FragmentNews : Fragment(), ToFragmentNews {
 
         viewModel.getNews().observe(viewLifecycleOwner,{
             adapter.setData(it)
+            progressNews.visibility = View.INVISIBLE
         })
+
 
 
     }
@@ -47,10 +52,10 @@ class FragmentNews : Fragment(), ToFragmentNews {
         adapter.setListener(this)
         navigation = Navigation.findNavController(view)
 
+        progressNews = view.findViewById(R.id.progressNews)
         newsList = view.findViewById(R.id.Newsrecycler)
         newsList.layoutManager = LinearLayoutManager(requireContext())
         newsList.adapter = adapter
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
