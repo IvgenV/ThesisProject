@@ -108,7 +108,7 @@ object Dependencies {
         )
 
     ///WorkerNotification
-    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl() }
+    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl(App.instance) }
 
     fun getMyWorkerController(): WorkerControllerUseCase = workerController
 

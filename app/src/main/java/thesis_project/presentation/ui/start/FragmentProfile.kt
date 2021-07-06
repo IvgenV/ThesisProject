@@ -14,44 +14,60 @@ import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
 
 class FragmentProfile:Fragment() {
-    lateinit var viewModel: ViewModel
+    private lateinit var viewModel: ViewModel
 
-    lateinit var buttonSaveSetting: Button
-    lateinit var buyRub: EditText
-    lateinit var saleRub: EditText
-    lateinit var buyUsd: EditText
-    lateinit var saleUsd: EditText
-    lateinit var buyUah: EditText
-    lateinit var saleUah: EditText
-    lateinit var buyEur: EditText
-    lateinit var saleEur: EditText
+    private lateinit var buttonSaveSetting: Button
+    private lateinit var buyRub: EditText
+    private lateinit var saleRub: EditText
+    private lateinit var buyUsd: EditText
+    private lateinit var saleUsd: EditText
+    private lateinit var buyUah: EditText
+    private lateinit var saleUah: EditText
+    private lateinit var buyEur: EditText
+    private lateinit var saleEur: EditText
 
 
-    lateinit var switchNotification: Switch
-    lateinit var switchRub: Switch
-    lateinit var switchUsd: Switch
-    lateinit var switchUah: Switch
-    lateinit var switchEur: Switch
+    private lateinit var switchNotification: Switch
+    private lateinit var switchRub: Switch
+    private lateinit var switchUsd: Switch
+    private lateinit var switchUah: Switch
+    private lateinit var switchEur: Switch
 
-    val key_switch = "APP_SWITCHNEWS"
-    val key_switchRub = "RUB_SWITCHNEWS"
-    val key_switchUsd = "USD_SWITCHNEWS"
-    val key_switchUah = "UAH_SWITCHNEWS"
-    val key_switchEur = "EUR_SWITCHNEWS"
+    private lateinit var key_switch: String
+    private lateinit var key_switchRub: String
+    private lateinit var key_switchUsd: String
+    private lateinit var key_switchUah: String
+    private lateinit var key_switchEur: String
 
-    val key_BuyRub = "RUB_BUY"
-    val key_BuyUsd = "USD_BUY"
-    val key_BuyUah = "UAH_BUY"
-    val key_BuyEur = "EUR_BUY"
-    val key_SaleRub = "RUB_SALE"
-    val key_SaleUsd = "USD_SALE"
-    val key_SaleUah = "UAH_SALE"
-    val key_SaleEur = "EUR_SALE"
+    private lateinit var key_BuyRub: String
+    private lateinit var key_BuyUsd: String
+    private lateinit var key_BuyUah: String
+    private lateinit var key_BuyEur: String
+    private lateinit var key_SaleRub: String
+    private lateinit var key_SaleUsd: String
+    private lateinit var key_SaleUah: String
+    private lateinit var key_SaleEur: String
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+
+        key_switch = getString(R.string.key_switchNews)
+        key_switchRub = getString(R.string.key_switchRub)
+        key_switchUsd = getString(R.string.key_switchUsd)
+        key_switchUah = getString(R.string.key_switchUah)
+        key_switchEur = getString(R.string.key_switchEur)
+
+        key_BuyRub = getString(R.string.key_buyRub)
+        key_BuyUsd = getString(R.string.key_buyUsd)
+        key_BuyUah = getString(R.string.key_buyUah)
+        key_BuyEur = getString(R.string.key_buyEur)
+        key_SaleRub = getString(R.string.key_saleRub)
+        key_SaleUsd = getString(R.string.key_saleUsd)
+        key_SaleUah = getString(R.string.key_saleUah)
+        key_SaleEur = getString(R.string.key_saleEur)
+
 
         buyRub.setText(
             viewModel.takeRateSharedPreferences(key_BuyRub).toString(),

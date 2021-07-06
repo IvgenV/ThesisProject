@@ -23,7 +23,7 @@ class WorkerNotificationRate(
 
     private var notificationManager: NotificationManager? = null
     private val NOTIFY_ID = 2
-    private val CHANNEL_ID = "CHANNEL_ID"
+    private val CHANNEL_ID = appContext.getString(R.string.channel_id_Rate)
     private var eur_in: Double = 0.0
     private var usd_in: Double = 0.0
     private var rub_in: Double = 0.0
@@ -39,19 +39,19 @@ class WorkerNotificationRate(
     private var notificationUah: Boolean = false
     private var notificationEur: Boolean = false
 
-    val key_switchRub = "RUB_SWITCHNEWS"
-    val key_switchUsd = "USD_SWITCHNEWS"
-    val key_switchUah = "UAH_SWITCHNEWS"
-    val key_switchEur = "EUR_SWITCHNEWS"
+    val key_switchRub = appContext.getString(R.string.key_switchRub)
+    val key_switchUsd = appContext.getString(R.string.key_switchUsd)
+    val key_switchUah = appContext.getString(R.string.key_switchUah)
+    val key_switchEur = appContext.getString(R.string.key_switchEur)
 
-    val key_BuyRub = "RUB_BUY"
-    val key_BuyUsd = "USD_BUY"
-    val key_BuyUah = "UAH_BUY"
-    val key_BuyEur = "EUR_BUY"
-    val key_SaleRub = "RUB_SALE"
-    val key_SaleUsd = "USD_SALE"
-    val key_SaleUah = "UAH_SALE"
-    val key_SaleEur = "EUR_SALE"
+    val key_BuyRub = appContext.getString(R.string.key_buyRub)
+    val key_BuyUsd = appContext.getString(R.string.key_buyUsd)
+    val key_BuyUah = appContext.getString(R.string.key_buyUah)
+    val key_BuyEur = appContext.getString(R.string.key_buyEur)
+    val key_SaleRub = appContext.getString(R.string.key_saleRub)
+    val key_SaleUsd = appContext.getString(R.string.key_saleUsd)
+    val key_SaleUah = appContext.getString(R.string.key_saleUah)
+    val key_SaleEur = appContext.getString(R.string.key_saleEur)
 
     val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
