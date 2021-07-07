@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
+import com.example.thesis_project.R
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -28,7 +29,8 @@ import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class ViewModel : ViewModel() {
-    val textError = "Ошибка при подключений"
+
+    val textError = App.instance.getString(R.string.TextError)
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
     var localRateDb = Dependencies.getRateDbUseCase(App.instance)

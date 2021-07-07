@@ -16,4 +16,5 @@
     <string name="channel_id_Rate">CHANNEL_ID_RATE</string>
     <string name="channel_id_News">CHANNEL_ID_NEWS</string>
     <string name="workerTime">60</string>
+    <string name="TextError">Ошибка при подключений</string>
 </resources>
