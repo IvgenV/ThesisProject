@@ -489,7 +489,7 @@ class ViewModel : ViewModel() {
     }
 
     //News
-    fun getNews(): LiveData<List<News>> {
+    fun initialNews() {
         viewModelScope.launch {
             try {
 
@@ -500,10 +500,19 @@ class ViewModel : ViewModel() {
             } catch (e: Exception) {
                 toast.show()
             }
+        }
+    }
+
+    fun setNews() {
+        viewModelScope.launch {
             listNews.value = localNewsDb.getNewsList()
         }
+    }
+
+    fun getNews(): LiveData<List<News>> {
         return listNews
     }
+
 
     ///SaveStatusSwitch
     fun addStatusSwitch(key: String, status: Boolean) {
