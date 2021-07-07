@@ -2,22 +2,28 @@ package thesis_project.presentation.ui.start
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.Switch
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import thesis_project.data.data_base.news.News
 import thesis_project.presentation.viewmodel.ViewModel
 import thesis_project.presentation.adapter.NewsAdapter
+import thesis_project.presentation.adapter.ToFragmentNews
 
-class FragmentNews: Fragment() {
+class FragmentNews : Fragment(), ToFragmentNews {
 
     lateinit var viewModel: ViewModel
     val adapter = NewsAdapter()
-    lateinit var newsList:RecyclerView
-    lateinit var switchNotification: Switch
-    val key_switch = "APP_SWITCHNEWS"
+    lateinit var progressNews: ProgressBar
+    lateinit var newsList: RecyclerView
+    lateinit var navigation: NavController
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -25,9 +31,10 @@ class FragmentNews: Fragment() {
 
         viewModel.getNews().observe(viewLifecycleOwner,{
             adapter.setData(it)
+            progressNews.visibility = View.INVISIBLE
         })
-        
-        switchNotification.isChecked=viewModel.takeStatusSwitch(key_switch)
+
+
 
     }
 
@@ -42,26 +49,26 @@ class FragmentNews: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter.setListener(this)
+        navigation = Navigation.findNavController(view)
 
+        progressNews = view.findViewById(R.id.progressNews)
         newsList = view.findViewById(R.id.Newsrecycler)
         newsList.layoutManager = LinearLayoutManager(requireContext())
         newsList.adapter = adapter
-        
-        switchNotification=view.findViewById(R.id.switch1)
-        
-        switchNotification.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked==true && !viewModel.takeStatusSwitch(key_switch)){
-                viewModel.startNotificationNews()
-            }else if(isChecked==false && viewModel.takeStatusSwitch(key_switch) ){
-                viewModel.stopNotificationNews()
-            }
-            viewModel.addStatusSwitch(key_switch, isChecked)
-        }
-        
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onClick(news: News) {
+        val bundle = Bundle()
+        bundle.putString("name_ru", news.name_ru)
+        bundle.putString("start_date", news.start_date)
+        bundle.putString("html_ru", news.html_ru)
+        bundle.putString("img", news.img)
+        navigation.navigate(R.id.news_item, bundle)
     }
 
 }

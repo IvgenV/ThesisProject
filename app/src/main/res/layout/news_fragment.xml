@@ -9,20 +9,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Newsrecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/switch1"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="15dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progressNews"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Уведомление"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/Newsrecycler"
+        app:layout_constraintEnd_toEndOf="@+id/Newsrecycler"
+        app:layout_constraintStart_toStartOf="@+id/Newsrecycler"
+        app:layout_constraintTop_toTopOf="@+id/Newsrecycler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

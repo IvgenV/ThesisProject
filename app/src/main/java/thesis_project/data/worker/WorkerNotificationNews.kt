@@ -20,18 +20,18 @@ class WorkerNotificationNews(appContext: Context,
 ) :CoroutineWorker(appContext, params) {
     private var notificationManager: NotificationManager? = null
     private val NOTIFY_ID = 1
-    private val CHANNEL_ID = "CHANNEL_ID"
-    var localNewsDb= Dependencies.getNewsDbUseCase()
+    private val CHANNEL_ID = appContext.getString(R.string.channel_id_News)
+    var localNewsDb = Dependencies.getNewsDbUseCase()
 
 
     override suspend fun doWork(): Result {
 
         ///проверка на новость
-        val listOldNews =localNewsDb.getNewsList()
+        val listOldNews = localNewsDb.getNewsList()
 
         val callNews = Dependencies.getNewsCloudUseCase().getNews()
-        if (callNews.isSuccessful){
-            localNewsDb.addNews(callNews.body()?: listOf())
+        if (callNews.isSuccessful) {
+            localNewsDb.addNews(callNews.body() ?: listOf())
         }
         val listNewNews=localNewsDb.getNewsList()
         if (listOldNews.get(0).name_ru != listNewNews.get(0).name_ru) {

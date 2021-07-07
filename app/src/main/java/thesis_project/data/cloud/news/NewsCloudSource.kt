@@ -29,6 +29,6 @@ object NewsCloudSource:NewsCloudRepository {
     private val newsApiService = retrofit.create(ApiNewsBelarusBank::class.java)
 
     override suspend fun getNews(): Response<List<News>> {
-       return newsApiService.getNews()
+            return newsApiService.getNews()
     }
 }

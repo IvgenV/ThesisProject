@@ -2,6 +2,7 @@ package thesis_project.presentation.viewmodel
 
 import android.location.Location
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
@@ -17,11 +18,15 @@ import thesis_project.sealed.CurrencyOperation
 import java.util.*
 import thesis_project.data.data_base.news.News
 import thesis_project.domain.repository.SharedPreferencesSwitchRepository
+import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
+import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class ViewModel : ViewModel() {
-
+    val textError = "Ошибка при подключений"
+    val duration = Toast.LENGTH_SHORT
+    val toast = Toast.makeText(App.instance, textError, duration)
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     private var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
     private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
@@ -31,7 +36,6 @@ class ViewModel : ViewModel() {
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
-
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
     private var listNews = MutableLiveData<List<News>>()
@@ -51,6 +55,12 @@ class ViewModel : ViewModel() {
     fun getInfoBoxInfo(): String? {
         return infoBoxInfo
     }
+    //SharedPreferences
+    val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
+    val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
+
+    //Worker
+    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
 
     fun toRateFilialData(rate: RateData, coordinates: СoordinatesData): RateFilialData {
         return RateFilialData(
@@ -74,29 +84,31 @@ class ViewModel : ViewModel() {
     }
 
 
-    val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy { Dependencies.getSharedPreferenceSwitch() }
-    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
     fun initialCountryRate() {
 
         viewModelScope.launch {
-            val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
-            val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
+            try {
+                val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
+                val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
 
-            if (callRate.isSuccessful && callFilials.isSuccessful) {
+                if (callRate.isSuccessful && callFilials.isSuccessful) {
 
-                val dataList = mutableListOf<RateFilialData>()
-                callRate.body()?.forEach { rate ->
-                    callFilials.body()?.forEach inner@{ filial ->
-                        if (rate.id == filial.id) {
-                            val data = toRateFilialData(rate, filial)
-                            dataList.add(data)
-                            return@inner
+                    val dataList = mutableListOf<RateFilialData>()
+                    callRate.body()?.forEach { rate ->
+                        callFilials.body()?.forEach inner@{ filial ->
+                            if (rate.id == filial.id) {
+                                val data = toRateFilialData(rate, filial)
+                                dataList.add(data)
+                                return@inner
+                            }
                         }
                     }
-                }
 
-                localRateDb.addListRate(dataList)
-            } else localRateDb.addListRate(listOf())
+                    localRateDb.addListRate(dataList)
+                } else localRateDb.addListRate(listOf())
+            } catch (e: Exception) {
+                toast.show()
+            }
 
         }
     }
@@ -340,9 +352,15 @@ class ViewModel : ViewModel() {
 
     fun initialAtm() {
         viewModelScope.launch {
-            val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
-            if (call.isSuccessful) {
-                call.body()?.let { localAtmDb.addListAtm(it) }
+            try {
+                val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
+                if (call.isSuccessful) {
+                    call.body()?.let { localAtmDb.addListAtm(it) }
+                } else {
+                    localAtmDb.addListAtm(listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
         }
     }
@@ -383,11 +401,15 @@ class ViewModel : ViewModel() {
 
     fun initialInfoBox() {
         viewModelScope.launch {
-            val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
-            if (callAtm.isSuccessful) {
-                callAtm.body().let { it?.let { it1 -> localInfoBoxDb.insertListInfoBox(it1) } }
-            } else {
-                localInfoBoxDb.insertListInfoBox(listOf())
+            try {
+                val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
+                if (callAtm.isSuccessful) {
+                    callAtm.body().let { it?.let { it1 -> localInfoBoxDb.insertListInfoBox(it1) } }
+                } else {
+                    localInfoBoxDb.insertListInfoBox(listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
         }
     }
@@ -469,9 +491,14 @@ class ViewModel : ViewModel() {
     //News
     fun getNews(): LiveData<List<News>> {
         viewModelScope.launch {
-            val callNews = Dependencies.getNewsCloudUseCase().getNews()
-            if (callNews.isSuccessful) {
-                localNewsDb.addNews(callNews.body() ?: listOf())
+            try {
+
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    localNewsDb.addNews(callNews.body() ?: listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
             listNews.value = localNewsDb.getNewsList()
         }
@@ -487,6 +514,15 @@ class ViewModel : ViewModel() {
         return sharedPreferencesSwitch.take(key)
     }
 
+    ////SaveRateinNotificationSetting
+    fun addRateSharedPreferences(key: String, rate: Double) {
+        sharedPreferencesRate.add(key, rate)
+    }
+
+    fun takeRateSharedPreferences(key: String): Double {
+        return sharedPreferencesRate.take(key)
+    }
+
     ///Worker
 
     fun startNotificationNews() {
@@ -500,4 +536,17 @@ class ViewModel : ViewModel() {
             myWorkerController.StopWorkerNotificationNews()
         }
     }
+
+    fun startNotificationRate() {
+        viewModelScope.launch {
+            myWorkerController.StartWorkerNotificationRate()
+        }
+    }
+
+    fun stopNotificationRate() {
+        viewModelScope.launch {
+            myWorkerController.StopWorkerNotificationRate()
+        }
+    }
+
 }
