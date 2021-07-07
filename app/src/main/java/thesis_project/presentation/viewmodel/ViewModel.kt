@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.os.Build
 import android.util.Log
+import android.view.Gravity
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
@@ -27,7 +28,9 @@ import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class ViewModel : ViewModel() {
-
+    val textError = "Ошибка при подключений"
+    val duration = Toast.LENGTH_SHORT
+    val toast = Toast.makeText(App.instance, textError, duration)
     var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
     var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
@@ -72,24 +75,28 @@ class ViewModel : ViewModel() {
     fun initialCountryRate() {
 
         viewModelScope.launch {
-            val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
-            val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
+            try {
+                val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
+                val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
 
-            if (callRate.isSuccessful && callFilials.isSuccessful) {
+                if (callRate.isSuccessful && callFilials.isSuccessful) {
 
-                val dataList = mutableListOf<RateFilialData>()
-                callRate.body()?.forEach { rate ->
-                    callFilials.body()?.forEach inner@{ filial ->
-                        if (rate.id == filial.id) {
-                            val data = toRateFilialData(rate,filial)
-                            dataList.add(data)
-                            return@inner
+                    val dataList = mutableListOf<RateFilialData>()
+                    callRate.body()?.forEach { rate ->
+                        callFilials.body()?.forEach inner@{ filial ->
+                            if (rate.id == filial.id) {
+                                val data = toRateFilialData(rate, filial)
+                                dataList.add(data)
+                                return@inner
+                            }
                         }
                     }
-                }
 
-                localRateDb.addListRate(dataList)
-            } else localRateDb.addListRate(listOf())
+                    localRateDb.addListRate(dataList)
+                } else localRateDb.addListRate(listOf())
+            } catch (e: Exception) {
+                toast.show()
+            }
 
         }
     }
@@ -332,11 +339,15 @@ class ViewModel : ViewModel() {
 
     fun initialAtm() {
         viewModelScope.launch {
-            val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
-            if (call.isSuccessful) {
-                call.body()?.let { localAtmDb.addListAtm(it) }
-            } else {
-                localAtmDb.addListAtm(listOf())
+            try {
+                val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
+                if (call.isSuccessful) {
+                    call.body()?.let { localAtmDb.addListAtm(it) }
+                } else {
+                    localAtmDb.addListAtm(listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
         }
     }
@@ -374,11 +385,15 @@ class ViewModel : ViewModel() {
 
     fun initialInfoBox() {
         viewModelScope.launch {
-            val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
-            if (callAtm.isSuccessful) {
-                callAtm.body().let { it?.let { it1 -> localInfoBoxDb.insertListInfoBox(it1) } }
-            } else {
-                localInfoBoxDb.insertListInfoBox(listOf())
+            try {
+                val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
+                if (callAtm.isSuccessful) {
+                    callAtm.body().let { it?.let { it1 -> localInfoBoxDb.insertListInfoBox(it1) } }
+                } else {
+                    localInfoBoxDb.insertListInfoBox(listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
         }
     }
@@ -454,11 +469,16 @@ class ViewModel : ViewModel() {
     //News
     fun getNews(): LiveData<List<News>>{
         viewModelScope.launch {
-            val callNews = Dependencies.getNewsCloudUseCase().getNews()
-            if (callNews.isSuccessful){
-                localNewsDb.addNews(callNews.body()?: listOf())
+            try {
+
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    localNewsDb.addNews(callNews.body() ?: listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
             }
-            listNews.value=localNewsDb.getNewsList()
+            listNews.value = localNewsDb.getNewsList()
         }
         return listNews
     }
