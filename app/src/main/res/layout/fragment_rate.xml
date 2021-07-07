@@ -15,26 +15,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/cityRateInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:width="100dp"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <NumberPicker
         android:id="@+id/rateNumberPicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="30dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/recyclerRate"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rateSwitch" />
 
@@ -52,11 +42,11 @@
         android:id="@+id/rateSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/rateNumberPicker"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/rateIn"
@@ -68,7 +58,7 @@
         app:layout_constraintEnd_toStartOf="@+id/rateSwitch"
         app:layout_constraintHorizontal_bias="0.796"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/rateOut"
@@ -80,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.224"
         app:layout_constraintStart_toEndOf="@+id/rateSwitch"
-        app:layout_constraintTop_toBottomOf="@+id/cityRateInput" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

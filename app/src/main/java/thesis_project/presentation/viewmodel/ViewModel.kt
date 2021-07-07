@@ -30,15 +30,17 @@ class ViewModel : ViewModel() {
     private var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
+    private var infoBoxInfo: String? = null
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
     private var listNews = MutableLiveData<List<News>>()
 
     //profile
-    private var email = ""
-    private var name = ""
-    private var infoBoxInfo: String? = null
+     var email = ""
+     var name = ""
+    var surname = ""
+
 
     private var progress = MutableLiveData(View.GONE)
 

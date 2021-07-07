@@ -4,18 +4,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import thesis_project.presentation.viewmodel.ViewModel
 
 class StartActivity : AppCompatActivity() {
@@ -43,9 +42,32 @@ class StartActivity : AppCompatActivity() {
         val header = LayoutInflater.from(this).inflate(R.layout.layout_navigation_header,null)
         navigationView.addHeaderView(header)
 
-        var text = header.findViewById<TextView>(R.id.email_navigation_header)
+        val textName = header.findViewById<TextView>(R.id.name_navigation_header)
+        val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
-        text.text = intent.extras?.getString("email") ?:"Error!"
+        val child = intent.extras?.getString("child")?:"Error"
+        Log.d("childdd",child)
+        var name = ""
+        var surname = ""
+        var email = ""
+
+
+        val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
+        firebase.child(child).get().addOnSuccessListener {
+            name = it.child("name").getValue(String::class.java)?:"ErrorName"
+            surname = it.child("surname").getValue(String::class.java)?:"ErrorSurname"
+            email = it.child("email").getValue(String::class.java)?:"ErrorEmail"
+            Log.d("childdd",email)
+            textName.text = name
+            textSurname.text = surname
+            viewModel.name = name
+            viewModel.surname = surname
+            viewModel.email = email
+        }.addOnFailureListener {
+            Log.d("addOnFailureListener","Errorr!")
+        }
+
+
 
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
         NavigationUI.setupWithNavController(navigationView, navController)
@@ -57,6 +79,7 @@ class StartActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             textTitle.text = destination.label
         }
+
     }
 
 

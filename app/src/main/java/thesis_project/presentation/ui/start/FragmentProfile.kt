@@ -8,15 +8,23 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
-import de.hdodenhof.circleimageview.CircleImageView
 import thesis_project.presentation.viewmodel.ViewModel
 
 class FragmentProfile:Fragment() {
 
+    lateinit var name:TextView
+    lateinit var surname:TextView
+    lateinit var email:TextView
+    lateinit var viewModel: ViewModel
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
 
+        name.text = viewModel.name
+        surname.text = viewModel.surname
+        email.text = viewModel.email
     }
 
     override fun onCreateView(
@@ -29,6 +37,9 @@ class FragmentProfile:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        name = view.findViewById(R.id.name_fragment_profile)
+        surname = view.findViewById(R.id.surname_fragment_profile)
+        email = view.findViewById(R.id.email_fragment_profile)
     }
 
 }

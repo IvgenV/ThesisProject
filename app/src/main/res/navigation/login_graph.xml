@@ -6,7 +6,12 @@
 
     <fragment
         android:id="@+id/fragment_initialization"
-        android:name="thesis_project.presentation.ui.login.FragmentInitialization"
+        android:name="thesis_project.presentation.ui.login.FragmentAuthorization"
         android:label="FragmentInitialization"/>
+
+    <fragment
+        android:id="@+id/fragment_create_user"
+        android:name="thesis_project.presentation.ui.login.FragmentCreateUser"
+        android:label="FragmentCreateUser"/>
 
 </navigation>
