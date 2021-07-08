@@ -30,12 +30,9 @@ import thesis_project.domain.use_case.WorkerControllerUseCase
 
 class ViewModel : ViewModel() {
 
-    val textError = App.instance.getString(R.string.TextError)
-    val duration = Toast.LENGTH_SHORT
-    val toast = Toast.makeText(App.instance, textError, duration)
-    var localRateDb = Dependencies.getRateDbUseCase(App.instance)
-    var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
-    var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
+    var localRateDb = Dependencies.getRateDbUseCase()
+    var localAtmDb = Dependencies.getAtmDbUseCase()
+    var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase()
     var listOfCurrency = MutableLiveData<List<Double>>()
     var listRateFilial = MutableLiveData<List<ItemDistance>>()
     var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
@@ -74,7 +71,7 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun initialCountryRate() {
+    fun initialCountryRate(context: Context) {
 
         viewModelScope.launch {
             try {
@@ -97,7 +94,7 @@ class ViewModel : ViewModel() {
                     localRateDb.addListRate(dataList)
                 } else localRateDb.addListRate(listOf())
             } catch (e: Exception) {
-                toast.show()
+                showToastError(context)
             }
 
         }
@@ -339,7 +336,7 @@ class ViewModel : ViewModel() {
         return listRateFilial
     }
 
-    fun initialAtm() {
+    fun initialAtm(context: Context) {
         viewModelScope.launch {
             try {
                 val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
@@ -349,7 +346,7 @@ class ViewModel : ViewModel() {
                     localAtmDb.addListAtm(listOf())
                 }
             } catch (e: Exception) {
-                toast.show()
+                showToastError(context)
             }
         }
     }
@@ -385,7 +382,7 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun initialInfoBox() {
+    fun initialInfoBox(context: Context) {
         viewModelScope.launch {
             try {
                 val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
@@ -395,7 +392,7 @@ class ViewModel : ViewModel() {
                     localInfoBoxDb.insertListInfoBox(listOf())
                 }
             } catch (e: Exception) {
-                toast.show()
+                showToastError(context)
             }
         }
     }
@@ -470,7 +467,7 @@ class ViewModel : ViewModel() {
     }
 
     //News
-    fun initialNews() {
+    fun initialNews(context: Context) {
         viewModelScope.launch {
             try {
 
@@ -479,7 +476,7 @@ class ViewModel : ViewModel() {
                     localNewsDb.addNews(callNews.body() ?: listOf())
                 }
             } catch (e: Exception) {
-                toast.show()
+                showToastError(context)
             }
         }
     }
@@ -537,6 +534,12 @@ class ViewModel : ViewModel() {
         viewModelScope.launch {
             myWorkerController.StopWorkerNotificationRate()
         }
+    }
+
+    fun showToastError(context: Context) {
+        val toast =
+            Toast.makeText(context, context.getString(R.string.TextError), Toast.LENGTH_SHORT)
+        toast.show()
     }
 
 }

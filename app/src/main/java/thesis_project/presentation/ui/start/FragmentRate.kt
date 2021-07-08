@@ -1,5 +1,6 @@
 package thesis_project.presentation.ui.start
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import thesis_project.Constnsts
@@ -41,7 +42,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         rateNP.maxValue = Constnsts.uah
         rateNP.minValue = Constnsts.usd
         rateNP.displayedValues = listRate
-        viewModel.initialCountryRate()
+        viewModel.initialCountryRate(this.requireContext())
         locationTxt = "Belarus"
         locatioRate.text = locationTxt
         viewModel.createListCurrency(locationTxt, CurrencyOperation.Buy, 0)

@@ -32,7 +32,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
 
-        viewModel.initialNews()
+        viewModel.initialNews(this.requireContext())
         viewModel.setNews()
         viewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
@@ -59,7 +59,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         //  swipeRefreshLayout.setOnRefreshListener(this)
         swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.greenDark))
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.initialNews()
+            viewModel.initialNews(this.requireContext())
             viewModel.setNews()
             swipeRefreshLayout.isRefreshing = false
         }

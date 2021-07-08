@@ -56,7 +56,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
         init()
-        viewModel.initialAtm()
+        viewModel.initialAtm(this.requireContext())
         viewModel.createListAtm(location)
 
         buttonRefresh.setOnClickListener {
