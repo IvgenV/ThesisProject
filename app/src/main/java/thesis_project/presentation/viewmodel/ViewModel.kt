@@ -249,7 +249,7 @@ class ViewModel : ViewModel() {
         loc.latitude = rateFilialData.latitude.toDouble()
         loc.longitude = rateFilialData.longitude.toDouble()
         val dist = location.distanceTo(loc)
-        return ItemDistance(dist, rateFilialData.filial)
+        return ItemDistance("Филиал", dist, rateFilialData.filial)
     }
 
     fun updatesFilials(location: Location, compare: (RateFilialData) -> Boolean) {
@@ -361,7 +361,7 @@ class ViewModel : ViewModel() {
                         loc.latitude = it.latitude.toDouble()
                         loc.longitude = it.longitude.toDouble()
                         val dist = location.distanceTo(loc)
-                        list.add(ItemDistance(dist, it.id))
+                        list.add(ItemDistance("Банкомат", dist, it.id))
                     }
                     list.sortBy { it.distance }
                     if (list.size < 15) {
@@ -406,7 +406,7 @@ class ViewModel : ViewModel() {
                     loc.latitude = it.latitude.toDouble()
                     loc.longitude = it.longitude.toDouble()
                     val dist = location.distanceTo(loc)
-                    list.add(ItemDistance(dist, it.id))
+                    list.add(ItemDistance("Инфокиоск", dist, it.id))
                 }
                 list.sortBy { it.distance }
                 if (list.size < 15) {
