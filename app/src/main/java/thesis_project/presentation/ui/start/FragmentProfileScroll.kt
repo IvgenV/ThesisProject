@@ -69,38 +69,46 @@ class FragmentProfileScroll : Fragment() {
         key_SaleEur = getString(R.string.key_saleEur)
 
 
-        buyRub.setText(
-            viewModel.takeRateSharedPreferences(key_BuyRub).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        buyUsd.setText(
-            viewModel.takeRateSharedPreferences(key_BuyUsd).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        buyUah.setText(
-            viewModel.takeRateSharedPreferences(key_BuyUah).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        buyEur.setText(
-            viewModel.takeRateSharedPreferences(key_BuyEur).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        saleRub.setText(
-            viewModel.takeRateSharedPreferences(key_SaleRub).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        saleUsd.setText(
-            viewModel.takeRateSharedPreferences(key_SaleUsd).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        saleUah.setText(
-            viewModel.takeRateSharedPreferences(key_SaleUah).toString(),
-            TextView.BufferType.EDITABLE
-        )
-        saleEur.setText(
-            viewModel.takeRateSharedPreferences(key_SaleEur).toString(),
-            TextView.BufferType.EDITABLE
-        )
+        if (viewModel.takeStatusSwitch(key_switchRub)) {
+            saleRub.setText(
+                viewModel.takeRateSharedPreferences(key_SaleRub).toString(),
+                TextView.BufferType.EDITABLE
+            )
+            buyRub.setText(
+                viewModel.takeRateSharedPreferences(key_BuyRub).toString(),
+                TextView.BufferType.EDITABLE
+            )
+        }
+        if (viewModel.takeStatusSwitch(key_switchUsd)) {
+            saleUsd.setText(
+                viewModel.takeRateSharedPreferences(key_SaleUsd).toString(),
+                TextView.BufferType.EDITABLE
+            )
+            buyUsd.setText(
+                viewModel.takeRateSharedPreferences(key_BuyUsd).toString(),
+                TextView.BufferType.EDITABLE
+            )
+        }
+        if (viewModel.takeStatusSwitch(key_switchUah)) {
+            saleUah.setText(
+                viewModel.takeRateSharedPreferences(key_SaleUah).toString(),
+                TextView.BufferType.EDITABLE
+            )
+            buyUah.setText(
+                viewModel.takeRateSharedPreferences(key_BuyUah).toString(),
+                TextView.BufferType.EDITABLE
+            )
+        }
+        if (viewModel.takeStatusSwitch(key_switchEur)) {
+            buyEur.setText(
+                viewModel.takeRateSharedPreferences(key_BuyEur).toString(),
+                TextView.BufferType.EDITABLE
+            )
+            saleEur.setText(
+                viewModel.takeRateSharedPreferences(key_SaleEur).toString(),
+                TextView.BufferType.EDITABLE
+            )
+        }
 
         switchNotification.isChecked = viewModel.takeStatusSwitch(key_switch)
         switchRub.isChecked = viewModel.takeStatusSwitch(key_switchRub)
