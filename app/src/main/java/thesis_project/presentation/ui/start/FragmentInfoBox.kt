@@ -110,7 +110,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
 
     override fun onLocationChanged(location: Location) {
-        viewModel.initialInfoBox()
+        viewModel.initialInfoBox(this.requireContext())
         if (viewModel.createListInfoBox(location)) {
             tvText.text = "Current data"
         } else {
@@ -126,7 +126,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
     fun initialization() {
         initLocation()
-        viewModel.initialInfoBox()
+        viewModel.initialInfoBox(this.requireContext())
         if (viewModel.createListInfoBox(location)) {
             tvText.text = "Current data"
         } else {

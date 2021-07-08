@@ -19,30 +19,35 @@ import thesis_project.domain.use_case.*
 
 object Dependencies {
 
-    private fun getRateDbRepository(context: Context): RateDbRepository {
-        return RateDb(context)
+    private lateinit var rateDb: RateDb
+
+    private fun getRateDbRepository(): RateDbRepository {
+        return rateDb
     }
 
-    fun getRateDbUseCase(context: Context): RateDbUseCase =
-        RateDbUseCaseImpl(getRateDbRepository(context))
+    fun getRateDbUseCase(): RateDbUseCase =
+        RateDbUseCaseImpl(getRateDbRepository())
 
-    private fun getAtmDbRepository(context: Context):AtmDbRepository{
-        return AtmDb(context)
+
+    private lateinit var atmDb: AtmDb
+    private fun getAtmDbRepository(): AtmDbRepository {
+        return atmDb
     }
 
-    fun getAtmDbUseCase(context: Context): AtmDbUseCase =
-        AtmDbUseCaseImpl(getAtmDbRepository(context))
+    fun getAtmDbUseCase(): AtmDbUseCase =
+        AtmDbUseCaseImpl(getAtmDbRepository())
 
-    private fun getInfoBoxDbRepository(context: Context): InfoBoxDbRepository{
-        return InfoBoxDb(context)
+    private lateinit var infoBoxDb: InfoBoxDb
+    private fun getInfoBoxDbRepository(): InfoBoxDbRepository {
+        return infoBoxDb
     }
 
-    fun getInfoBoxDbUseCase(context: Context): InfoBoxDbUseCase =
-        InfoBoxDbUseCaseImpl(getInfoBoxDbRepository(context))
+    fun getInfoBoxDbUseCase(): InfoBoxDbUseCase =
+        InfoBoxDbUseCaseImpl(getInfoBoxDbRepository())
 
-    private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
+    private val apiRateCloudSource: RateCloudRepository by lazy { RateCloudSource }
 
-    fun getRateCloudUseCase():RateCloudUseCase =
+    fun getRateCloudUseCase(): RateCloudUseCase =
         RateCloudUseCaseImpl(apiRateCloudSource)
 
     private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource(Dispatchers.IO) }
@@ -72,23 +77,20 @@ object Dependencies {
 
     ///News
     private val apiNewsCloudSource: NewsCloudRepository by lazy { NewsCloudSource }
+    private lateinit var newsData: NewsData
 
     fun getNewsCloudUseCase(): NewsCloudUseCase =
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
     private fun getNewsDbRepository(): NewsDbRepository {
-        return NewsData(App.instance)
+        return newsData
     }
 
     fun getNewsDbUseCase(): NewsDbUseCase =
         NewsDbUseCaseImpl(getNewsDbRepository())
 
     //SharedPrefenceSwitch
-    private val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy {
-        SharedPreferencesSwitch(
-            App.instance
-        )
-    }
+    private lateinit var sharedPreferencesSwitch: SharedPreferencesSwitchRepository //by lazy { SharedPreferencesSwitch(App.instance) }
 
     fun getSharedPreferenceSwitch(): SharedPreferencesSwitchUseCase =
         SharedPreferencesSwitchUseCaseImpl(
@@ -96,11 +98,7 @@ object Dependencies {
         )
 
     //SharedPrefence
-    private val sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository by lazy {
-        SharedPreferencesRateDouble(
-            App.instance
-        )
-    }
+    private lateinit var sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository //by lazy { SharedPreferencesRateDouble(App.instance) }
 
     fun getSharedPreferenceRate(): SharedPreferencesRateDoubleUseCase =
         SharedPreferencesRateDoubleUseCaseImpl(
@@ -108,8 +106,18 @@ object Dependencies {
         )
 
     ///WorkerNotification
-    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl(App.instance) }
+    private lateinit var workerController: WorkerControllerUseCase// by lazy { WorkerControllerUseCaseImpl(App.instance) }
 
     fun getMyWorkerController(): WorkerControllerUseCase = workerController
+
+    fun init(context: Context) {
+        workerController = WorkerControllerUseCaseImpl(context)
+        sharedPreferencesRateDouble = SharedPreferencesRateDouble(context)
+        sharedPreferencesSwitch = SharedPreferencesSwitch(context)
+        newsData = NewsData(context)
+        rateDb = RateDb(context)
+        atmDb = AtmDb(context)
+        infoBoxDb = InfoBoxDb(context)
+    }
 
 }
