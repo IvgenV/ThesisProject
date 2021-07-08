@@ -23,6 +23,8 @@ class FragmentProfile:Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+
 
         name.text = viewModel.name
         surname.text = viewModel.surname
@@ -41,7 +43,7 @@ class FragmentProfile:Fragment() {
         super.onViewCreated(view, savedInstanceState)
         name = view.findViewById(R.id.name_fragment_profile)
         surname = view.findViewById(R.id.surname_fragment_profile)
-        email = view.findViewById(R.id.email_fragment_profile)
+        email = view.findViewById(R.id.email_fragment_prohile)
     }
 
 }

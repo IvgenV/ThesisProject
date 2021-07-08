@@ -1,15 +1,15 @@
 package thesis_project.presentation.viewmodel
 
 import android.location.Location
-import android.util.Log
-import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import thesis_project.*
+import thesis_project.data.data_base.atm.AtmData
 import thesis_project.data.data_base.filials.RateData
 import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.data.data_base.filials.СoordinatesData
@@ -17,10 +17,10 @@ import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 import java.util.*
 import thesis_project.data.data_base.news.News
-import thesis_project.domain.repository.SharedPreferencesSwitchRepository
 import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
+import thesis_project.sealed.Initial
 
 
 class ViewModel : ViewModel() {
@@ -32,17 +32,21 @@ class ViewModel : ViewModel() {
     private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
     private var listOfCurrency = MutableLiveData<List<Double>>()
     private var listRateFilial = MutableLiveData<List<ItemDistance>>()
-    private var listAtm = MutableStateFlow<List<ItemDistance>>(listOf())
+    private var listAtm = MutableStateFlow<List<AtmData>>(listOf())
+    private var listAtmDistance = MutableStateFlow<List<ItemDistance>>(listOf())
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
+
+    var initial = MutableLiveData<Initial>()
+
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
     private var listNews = MutableLiveData<List<News>>()
 
     //profile
-     var email = ""
-     var name = ""
+    var email = ""
+    var name = ""
     var surname = ""
 
 
@@ -55,6 +59,7 @@ class ViewModel : ViewModel() {
     fun getInfoBoxInfo(): String? {
         return infoBoxInfo
     }
+
     //SharedPreferences
     val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
@@ -62,6 +67,8 @@ class ViewModel : ViewModel() {
     //Worker
     val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
 
+
+    ///rateBlock
     fun toRateFilialData(rate: RateData, coordinates: СoordinatesData): RateFilialData {
         return RateFilialData(
             rate.usd_in.toDouble(),
@@ -83,17 +90,17 @@ class ViewModel : ViewModel() {
         )
     }
 
-
     fun initialCountryRate() {
 
         viewModelScope.launch {
             try {
+                progress.value = View.VISIBLE
                 val callRate = Dependencies.getRateCloudUseCase().getRateCountry()
                 val callFilials = Dependencies.getRateCloudUseCase().getFilialsCountry()
-
                 if (callRate.isSuccessful && callFilials.isSuccessful) {
-
                     val dataList = mutableListOf<RateFilialData>()
+                    callRate.body()?.sortedBy { it.id }
+                    callFilials.body()?.sortedBy { it.id }
                     callRate.body()?.forEach { rate ->
                         callFilials.body()?.forEach inner@{ filial ->
                             if (rate.id == filial.id) {
@@ -103,8 +110,8 @@ class ViewModel : ViewModel() {
                             }
                         }
                     }
-
                     localRateDb.addListRate(dataList)
+                    progress.value = View.INVISIBLE
                 } else localRateDb.addListRate(listOf())
             } catch (e: Exception) {
                 toast.show()
@@ -113,78 +120,35 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun createCurrency(location: String) {
-        viewModelScope.launch {
-            viewModelScope.launch {
-                if (location == "Belarus") {
-                    listOfCurrency.value =
-                        localRateDb.getRateCountry().map { it.usd_in }.toSet().toList()
-                            .sortedBy { it }
-                } else {
-                    listOfCurrency.value =
-                        localRateDb.getRateCity(location).map { it.usd_in }.toSet().toList()
-                            .sortedBy { it }
-                }
-            }
-        }
-
-    }
-
-    fun createListCurrency(location: String, operation: CurrencyOperation, currency: Int) {
-
+    fun createListCurrency(operation: CurrencyOperation, currency: Int) {
         if (operation is CurrencyOperation.Buy) {
             when (currency) {
                 Constnsts.usd -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.usd_in }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.usd_in }.toSet().toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.usd_in }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.eur -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.euro_in }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.euro_in }.toSet()
-                                    .toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.euro_in }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.rub -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.rub_in }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.rub_in }.toSet().toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.rub_in }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.uah -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.uah_in }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.uah_in }.toSet().toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.uah_in }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
             }
@@ -193,58 +157,30 @@ class ViewModel : ViewModel() {
             when (currency) {
                 Constnsts.usd -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.usd_out }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.usd_out }.toSet()
-                                    .toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.usd_out }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.eur -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.euro_out }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.euro_out }.toSet()
-                                    .toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.euro_out }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.rub -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.rub_out }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.rub_out }.toSet()
-                                    .toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.rub_out }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
                 Constnsts.uah -> {
                     viewModelScope.launch {
-                        if (location == "Belarus") {
-                            listOfCurrency.value =
-                                localRateDb.getRateCountry().map { it.uah_out }.toSet().toList()
-                                    .sortedBy { it }
-                        } else {
-                            listOfCurrency.value =
-                                localRateDb.getRateCity(location).map { it.uah_out }.toSet()
-                                    .toList()
-                                    .sortedBy { it }
-                        }
+                        listOfCurrency.value =
+                            localRateDb.getRateCountry().map { it.uah_out }.toSet().toList()
+                                .sortedBy { it }
                     }
                 }
             }
@@ -252,15 +188,16 @@ class ViewModel : ViewModel() {
 
     }
 
-
     fun getListCurrency(): LiveData<List<Double>> {
         return listOfCurrency
     }
 
-    fun createItemDistance(rateFilialData: RateFilialData, location: Location): ItemDistance {
+
+    ///Filial block
+    fun createItemDistanceFilials(rateFilialData: RateFilialData, location: Location): ItemDistance {
         val loc = Location("")
-        loc.latitude = rateFilialData.latitude.toDouble()
-        loc.longitude = rateFilialData.longitude.toDouble()
+        loc.latitude = rateFilialData.latitude
+        loc.longitude = rateFilialData.longitude
         val dist = location.distanceTo(loc)
         return ItemDistance(dist, rateFilialData.filial)
     }
@@ -271,7 +208,7 @@ class ViewModel : ViewModel() {
             val list = mutableListOf<ItemDistance>()
             localRateDb.getRateCountry().forEach {
                 if (compare.invoke(it)) {
-                    list.add(createItemDistance(it, location))
+                    list.add(createItemDistanceFilials(it, location))
                 }
             }
             list.sortBy { it.distance }
@@ -350,14 +287,25 @@ class ViewModel : ViewModel() {
         return listRateFilial
     }
 
+
+    ////Atm block
     fun initialAtm() {
         viewModelScope.launch {
             try {
+                progress.value = View.VISIBLE
+                delay(300)
                 val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
                 if (call.isSuccessful) {
                     call.body()?.let { localAtmDb.addListAtm(it) }
+                    localAtmDb.getAtmCountry().collect {
+                        listAtm.value = it
+                        progress.value = View.INVISIBLE
+                    }
                 } else {
-                    localAtmDb.addListAtm(listOf())
+                    localAtmDb.getAtmCountry().collect {
+                        listAtm.value = it
+                        progress.value = View.INVISIBLE
+                    }
                 }
             } catch (e: Exception) {
                 toast.show()
@@ -368,12 +316,9 @@ class ViewModel : ViewModel() {
     fun createListAtm(location: Location?) {
         if (location != null) {
             viewModelScope.launch {
-                progress.value = View.VISIBLE
-                Log.d("createListAtm", progress.value.toString())
-                delay(500)
                 val list = mutableListOf<ItemDistance>()
-                localAtmDb.getAtmCountry().collect { atmDataList ->
-                    atmDataList.forEach {
+                listAtm.collect { atmData ->
+                    atmData.forEach {
                         val loc = Location("")
                         loc.latitude = it.latitude.toDouble()
                         loc.longitude = it.longitude.toDouble()
@@ -382,64 +327,61 @@ class ViewModel : ViewModel() {
                     }
                     list.sortBy { it.distance }
                     if (list.size < 15) {
-                        listAtm.value = list
+                        listAtmDistance.value = list
                     } else {
-                        listAtm.value = list.take(15)
+                        listAtmDistance.value = list.take(15)
                     }
-                    progress.value = View.GONE
-                    ///трижды вызывается этот лог?
-                    Log.d("createListAtm", progress.value.toString())
                 }
             }
         }
     }
 
     fun getAtm(): StateFlow<List<ItemDistance>> {
-        return listAtm
+        return listAtmDistance
     }
 
 
-    fun initialInfoBox() {
+    /////InfoBox block
+    private suspend fun createListInfoBox(location: Location) {
+        val list = mutableListOf<ItemDistance>()
+        localInfoBoxDb.getInfoBoxCountry().forEach {
+            val loc = Location("")
+            loc.latitude = it.latitude.toDouble()
+            loc.longitude = it.longitude.toDouble()
+            val dist = location.distanceTo(loc)
+            list.add(ItemDistance(dist, it.id))
+        }
+        list.sortBy { it.distance }
+        if (list.size < 15) {
+            listInfoBox.value = list
+        } else {
+            listInfoBox.value = list.take(15)
+        }
+    }
+
+    fun initialInfoBox(location: Location?) {
         viewModelScope.launch {
+            progress.value = View.VISIBLE
+            delay(300)
             try {
                 val callAtm = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
-                if (callAtm.isSuccessful) {
+                if (callAtm.isSuccessful && location != null) {
                     callAtm.body().let { it?.let { it1 -> localInfoBoxDb.insertListInfoBox(it1) } }
-                } else {
-                    localInfoBoxDb.insertListInfoBox(listOf())
+                    createListInfoBox(location)
+                    initial.value = Initial.Success
+                    progress.value = View.GONE
+                }
+                if (!callAtm.isSuccessful && location != null) {
+                    initial.value = Initial.Error
+                    delay(300)
+                    progress.value = View.GONE
+                    createListInfoBox(location)
                 }
             } catch (e: Exception) {
                 toast.show()
-            }
-        }
-    }
-
-    fun createListInfoBox(location: Location?) {
-        if (location != null) {
-            viewModelScope.launch {
-                progress.value = View.VISIBLE
-                delay(500)
-                var list = mutableListOf<ItemDistance>()
-                localInfoBoxDb.getInfoBoxCountry().forEach {
-                    val loc = Location("")
-                    loc.latitude = it.latitude.toDouble()
-                    loc.longitude = it.longitude.toDouble()
-                    val dist = location.distanceTo(loc)
-                    list.add(ItemDistance(dist, it.id))
-                }
-                list.sortBy { it.distance }
-                if (list.size < 15) {
-                    listInfoBox.value = list
-                } else {
-                    listInfoBox.value = list.take(15)
-                }
                 progress.value = View.GONE
             }
         }
-    }
-
-    fun getProgress(): LiveData<Int> {
-        return progress
     }
 
     fun getInfoBox(): LiveData<List<ItemDistance>> {
@@ -447,11 +389,12 @@ class ViewModel : ViewModel() {
     }
 
 
+    ////Gps block
     fun createGpsFilial(filial: String) {
         viewModelScope.launch {
             localRateDb.getRateCountry().forEach {
                 if (it.filial == filial) {
-                    latLng.value = LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                    latLng.value = LatLng(it.latitude, it.longitude)
                 }
             }
         }
@@ -463,11 +406,7 @@ class ViewModel : ViewModel() {
                 atmDataList.forEach {
                     if (it.id == atm) {
                         latLng.value =
-                            LatLng(
-                                it.latitude.toDouble(),
-                                it.longitude.toDouble()
-                            )
-
+                            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
                     }
                 }
             }
@@ -487,6 +426,11 @@ class ViewModel : ViewModel() {
     fun getGps(): LiveData<LatLng> {
         return latLng
     }
+
+    fun getProgress(): LiveData<Int> {
+        return progress
+    }
+
 
     //News
     fun initialNews() {

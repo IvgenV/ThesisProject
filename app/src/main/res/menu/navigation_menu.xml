@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_user"
         android:title="Profile"/>
 
+    <item android:id="@+id/setting"
+        android:icon="@drawable/ic_settings"
+        android:title="Setting"/>
+
 
     <item android:id="@+id/exit"
         android:icon="@drawable/ic_exit"

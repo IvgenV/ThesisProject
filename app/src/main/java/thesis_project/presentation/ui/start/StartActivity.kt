@@ -4,16 +4,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import thesis_project.presentation.viewmodel.ViewModel
 
@@ -21,13 +22,12 @@ class StartActivity : AppCompatActivity() {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var textTitle: TextView
-    lateinit var textEmail:TextView
     lateinit var viewModel: ViewModel
+    lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-
 
         viewModel = ViewModelProvider(this).get(ViewModel::class.java)
 
@@ -38,7 +38,10 @@ class StartActivity : AppCompatActivity() {
         }
 
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
+
+
         navigationView.itemIconTintList = null
+
         val header = LayoutInflater.from(this).inflate(R.layout.layout_navigation_header,null)
         navigationView.addHeaderView(header)
 
@@ -46,17 +49,13 @@ class StartActivity : AppCompatActivity() {
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
         val child = intent.extras?.getString("child")?:"Error"
-        Log.d("childdd",child)
-        var name = ""
-        var surname = ""
-        var email = ""
 
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {
-            name = it.child("name").getValue(String::class.java)?:"ErrorName"
-            surname = it.child("surname").getValue(String::class.java)?:"ErrorSurname"
-            email = it.child("email").getValue(String::class.java)?:"ErrorEmail"
+            val name = it.child("name").getValue(String::class.java)?:"ErrorName"
+            val surname = it.child("surname").getValue(String::class.java)?:"ErrorSurname"
+            val email = it.child("email").getValue(String::class.java)?:"ErrorEmail"
             Log.d("childdd",email)
             textName.text = name
             textSurname.text = surname
@@ -64,13 +63,13 @@ class StartActivity : AppCompatActivity() {
             viewModel.surname = surname
             viewModel.email = email
         }.addOnFailureListener {
-            Log.d("addOnFailureListener","Errorr!")
         }
 
 
 
-        val navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
         NavigationUI.setupWithNavController(navigationView, navController)
+
 
 
         textTitle = findViewById(R.id.textTitleBar)
@@ -81,6 +80,7 @@ class StartActivity : AppCompatActivity() {
         }
 
     }
+
 
 
 }

@@ -30,6 +30,7 @@ import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.sealed.Initial
 
 class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
@@ -70,6 +71,13 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
         viewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
+        })
+
+        viewModel.initial.observe(viewLifecycleOwner,{initial ->
+            if(initial is Initial.Error){
+                Toast.makeText(requireContext(),"Server error! Try later!",Toast.LENGTH_SHORT).show()
+                tvText.text = "Not current data"
+            }
         })
 
         buttonRefresh.setOnClickListener {
@@ -117,8 +125,8 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     fun initialization() {
         initLocation()
         if (isGPSEnabled) {
-            viewModel.initialInfoBox()
-            viewModel.createListInfoBox(location)
+            viewModel.initialInfoBox(location)
+            ///viewModel.createListInfoBox(location)
             tvText.text = "Current data"
 
         } else {

@@ -19,35 +19,36 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/name_fragment_prohile"
+        android:id="@+id/name_fragment_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="44dp"
         android:text="Prophile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.286"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture_profile_fragment" />
 
     <TextView
-        android:id="@+id/email_fragment_prohile"
+        android:id="@+id/surname_fragment_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="44dp"
         android:text="Email"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.731"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_fragment_prohile" />
+        app:layout_constraintTop_toBottomOf="@+id/picture_profile_fragment" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="76dp"
         android:text="Покупка"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_fragment_prohile" />
+        app:layout_constraintTop_toBottomOf="@+id/name_fragment_profile" />
 
     <EditText
         android:id="@+id/editTextNumberSaleRUB"
@@ -75,11 +76,11 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="76dp"
         android:layout_marginEnd="120dp"
         android:text="Продажа"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_fragment_prohile" />
+        app:layout_constraintTop_toBottomOf="@+id/surname_fragment_profile" />
 
     <Switch
         android:id="@+id/switchEUR"
@@ -252,5 +253,15 @@
         app:layout_constraintHorizontal_bias="0.094"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/email_fragment_prohile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picture_profile_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
