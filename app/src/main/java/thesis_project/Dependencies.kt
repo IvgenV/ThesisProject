@@ -19,6 +19,7 @@ import thesis_project.domain.use_case.*
 
 object Dependencies {
 
+    ////////rate
     private fun getRateDbRepository(context: Context): RateDbRepository {
         return RateDb(context)
     }
@@ -26,13 +27,24 @@ object Dependencies {
     fun getRateDbUseCase(context: Context): RateDbUseCase =
         RateDbUseCaseImpl(getRateDbRepository(context))
 
+    private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
+
+    fun getRateCloudUseCase():RateCloudUseCase =
+        RateCloudUseCaseImpl(apiRateCloudSource)
+
+
+    /////atm
     private fun getAtmDbRepository(context: Context):AtmDbRepository{
         return AtmDb(context)
     }
 
-    fun getAtmDbUseCase(context: Context): AtmDbUseCase =
-        AtmDbUseCaseImpl(getAtmDbRepository(context))
+    private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource(Dispatchers.IO) }
 
+    fun getAtmUseCase(context: Context): AtmUseCase =
+        AtmUseCaseImpl(getAtmDbRepository(context), apiAtmCloudSource)
+
+
+    ///infoBox
     private fun getInfoBoxDbRepository(context: Context): InfoBoxDbRepository{
         return InfoBoxDb(context)
     }
@@ -40,35 +52,11 @@ object Dependencies {
     fun getInfoBoxDbUseCase(context: Context): InfoBoxDbUseCase =
         InfoBoxDbUseCaseImpl(getInfoBoxDbRepository(context))
 
-    private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
-
-    fun getRateCloudUseCase():RateCloudUseCase =
-        RateCloudUseCaseImpl(apiRateCloudSource)
-
-    private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource(Dispatchers.IO) }
-
-    fun getAtmCloudUseCase(): AtmCloudUseCase =
-        AtmCloudUseCaseImpl(apiAtmCloudSource)
-
     private val apiInfoBoxCloudSource:InfoBoxCloudRepository by lazy { InfoBoxCloudSource }
 
     fun getInfoBoxCloudUseCase(): InfoBoxCloudUseCase =
         InfoBoxCloudUseCaseImpl(apiInfoBoxCloudSource)
 
-    /*suspend fun <T> Call<T>.await():T = suspendCoroutine { cont->
-        enqueue(object : Callback<T>{
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                if(response.isSuccessful){
-                    cont.resume(response.body()!!)
-                }else cont.resumeWithException(Error("SDsd"))
-            }
-
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                cont.resumeWithException(t)
-            }
-
-        })
-    }*/
 
     ///News
     private val apiNewsCloudSource: NewsCloudRepository by lazy { NewsCloudSource }

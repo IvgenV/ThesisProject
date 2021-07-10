@@ -1,6 +1,7 @@
 package thesis_project.presentation.viewmodel
 
 import android.location.Location
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
@@ -27,13 +28,14 @@ class ViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
+
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
-    private var localAtmDb = Dependencies.getAtmDbUseCase(App.instance)
+    private var atmBB = Dependencies.getAtmUseCase(App.instance)
     private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
     private var listOfCurrency = MutableLiveData<List<Double>>()
     private var listRateFilial = MutableLiveData<List<ItemDistance>>()
     private var listAtm = MutableStateFlow<List<AtmData>>(listOf())
-    private var listAtmDistance = MutableStateFlow<List<ItemDistance>>(listOf())
+    private var listAtmDistance = MutableStateFlow<List<ItemAdressDistance>>(listOf())
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
@@ -194,7 +196,10 @@ class ViewModel : ViewModel() {
 
 
     ///Filial block
-    fun createItemDistanceFilials(rateFilialData: RateFilialData, location: Location): ItemDistance {
+    fun createItemDistanceFilials(
+        rateFilialData: RateFilialData,
+        location: Location
+    ): ItemDistance {
         val loc = Location("")
         loc.latitude = rateFilialData.latitude
         loc.longitude = rateFilialData.longitude
@@ -294,15 +299,15 @@ class ViewModel : ViewModel() {
             try {
                 progress.value = View.VISIBLE
                 delay(300)
-                val call = Dependencies.getAtmCloudUseCase().getAtmCountry()
+                val call = atmBB.getAtmCountryCloud()
                 if (call.isSuccessful) {
-                    call.body()?.let { localAtmDb.addListAtm(it) }
-                    localAtmDb.getAtmCountry().collect {
+                    call.body()?.let { atmBB.addListAtmDb(it) }
+                    atmBB.getAtmCountryDb().collect {
                         listAtm.value = it
                         progress.value = View.INVISIBLE
                     }
                 } else {
-                    localAtmDb.getAtmCountry().collect {
+                    atmBB.getAtmCountryDb().collect {
                         listAtm.value = it
                         progress.value = View.INVISIBLE
                     }
@@ -316,16 +321,37 @@ class ViewModel : ViewModel() {
     fun createListAtm(location: Location?) {
         if (location != null) {
             viewModelScope.launch {
-                val list = mutableListOf<ItemDistance>()
+                var list = mutableListOf<ItemAdressDistance>()
                 listAtm.collect { atmData ->
                     atmData.forEach {
                         val loc = Location("")
-                        loc.latitude = it.latitude.toDouble()
-                        loc.longitude = it.longitude.toDouble()
-                        val dist = location.distanceTo(loc)
-                        list.add(ItemDistance(dist, it.id))
+                        loc.latitude = it.latitude
+                        loc.longitude = it.longitude
+                        val dist = location.distanceTo(loc).toDouble()
+                        if (it.addressType == "тракт") {
+                            list.add(
+                                ItemAdressDistance(
+                                    it.id, it.address + " " + it.addressType + " " +
+                                            it.house, dist
+                                )
+                            )
+                        }else{
+                            list.add(
+                                ItemAdressDistance(
+                                    it.id, it.addressType + " " +
+                                            it.address + " " + it.house, dist
+                                )
+                            )
+                        }
                     }
                     list.sortBy { it.distance }
+                    list.forEach {
+                        if(it.distance > 1000){
+                            val final = it.distance/1000
+                            it.distance = String.format("%.2f",final).toDouble()
+                            Log.d("FOrmat",it.distance.toString())
+                        }
+                    }
                     if (list.size < 15) {
                         listAtmDistance.value = list
                     } else {
@@ -336,7 +362,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun getAtm(): StateFlow<List<ItemDistance>> {
+    fun getAtm(): StateFlow<List<ItemAdressDistance>> {
         return listAtmDistance
     }
 
@@ -402,7 +428,7 @@ class ViewModel : ViewModel() {
 
     fun createGpsAtm(atm: String) {
         viewModelScope.launch {
-            localAtmDb.getAtmCountry().collect { atmDataList ->
+            atmBB.getAtmCountryDb().collect { atmDataList ->
                 atmDataList.forEach {
                     if (it.id == atm) {
                         latLng.value =

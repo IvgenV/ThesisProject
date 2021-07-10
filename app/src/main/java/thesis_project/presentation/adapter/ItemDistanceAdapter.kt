@@ -38,7 +38,7 @@ class ItemDistanceAdapter: ListAdapter<ItemDistance,
     }
 
     inner class ViewHolder(view:View): RecyclerView.ViewHolder(view){
-        val item: TextView = view.findViewById(R.id.itemFilial)
+        val item: TextView = view.findViewById(R.id.itemName)
         val distance:TextView = view.findViewById(R.id.itemDistance)
     }
 

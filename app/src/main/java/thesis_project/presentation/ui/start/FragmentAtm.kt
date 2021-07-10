@@ -26,6 +26,7 @@ import com.example.thesis_project.R
 import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
+import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
@@ -34,7 +35,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
 
     lateinit var viewModel: ViewModel
     lateinit var atmList: RecyclerView
-    val adapter = ItemDistanceAdapter()
+    val adapter = ItemAddressDistanceAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null

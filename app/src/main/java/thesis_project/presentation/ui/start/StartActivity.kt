@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -42,21 +41,21 @@ class StartActivity : AppCompatActivity() {
 
         navigationView.itemIconTintList = null
 
-        val header = LayoutInflater.from(this).inflate(R.layout.layout_navigation_header,null)
+        val header = LayoutInflater.from(this).inflate(R.layout.layout_navigation_header, null)
         navigationView.addHeaderView(header)
 
         val textName = header.findViewById<TextView>(R.id.name_navigation_header)
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
-        val child = intent.extras?.getString("child")?:"Error"
+        val child = intent.extras?.getString("child") ?: "Error"
 
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {
-            val name = it.child("name").getValue(String::class.java)?:"ErrorName"
-            val surname = it.child("surname").getValue(String::class.java)?:"ErrorSurname"
-            val email = it.child("email").getValue(String::class.java)?:"ErrorEmail"
-            Log.d("childdd",email)
+            val name = it.child("name").getValue(String::class.java) ?: "ErrorName"
+            val surname = it.child("surname").getValue(String::class.java) ?: "ErrorSurname"
+            val email = it.child("email").getValue(String::class.java) ?: "ErrorEmail"
+            Log.d("childdd", email)
             textName.text = name
             textSurname.text = surname
             viewModel.name = name

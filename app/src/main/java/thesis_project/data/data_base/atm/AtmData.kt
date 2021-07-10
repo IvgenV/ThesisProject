@@ -12,8 +12,8 @@ data class AtmData(
     @SerializedName("address")val address :String,
     @SerializedName("house")val house :String,
     @SerializedName("work_time")val workTime :String,
-    @SerializedName("gps_x")val latitude :String,
-    @SerializedName("gps_y")val longitude :String,
+    @SerializedName("gps_x")val latitude :Double,
+    @SerializedName("gps_y")val longitude :Double,
     @SerializedName("ATM_type")val atmType :String,
     @SerializedName("ATM_error")val workingCapacity :String,
     @PrimaryKey
