@@ -73,12 +73,12 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             adapter.setData(it)
         })
 
-        viewModel.initial.observe(viewLifecycleOwner,{initial ->
+       /* viewModel.initial.observe(viewLifecycleOwner,{initial ->
             if(initial is Initial.Error){
                 Toast.makeText(requireContext(),"Server error! Try later!",Toast.LENGTH_SHORT).show()
                 tvText.text = "Not current data"
             }
-        })
+        })*/
 
         buttonRefresh.setOnClickListener {
             initialization()
@@ -112,7 +112,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
 
     override fun onLocationChanged(location: Location) {
-        initialization()
+        /*initialization()*/
     }
 
     override fun onClick(infoBox: String) {
@@ -125,6 +125,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     fun initialization() {
         initLocation()
         if (isGPSEnabled) {
+            Log.d("location!",location.toString())
             viewModel.initialInfoBox(location)
             ///viewModel.createListInfoBox(location)
             tvText.text = "Current data"
@@ -171,12 +172,13 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    100,
-                    10F,
+                    1,
+                    1F,
                     gpsLocation
                 )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    return
                 }
             }
         } else {

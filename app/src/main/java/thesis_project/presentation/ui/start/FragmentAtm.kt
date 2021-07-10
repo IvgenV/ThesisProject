@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.example.thesis_project.R
 import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
+import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
@@ -34,7 +36,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
 
     lateinit var viewModel: ViewModel
     lateinit var atmList: RecyclerView
-    val adapter = ItemDistanceAdapter()
+    val adapter = ItemAddressDistanceAdapter()
     lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
@@ -110,6 +112,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     }
 
     override fun onLocationChanged(location: Location) {
+        Log.d("onLocationChanged","chancge")
         initialization()
     }
 
@@ -168,12 +171,12 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    100,
-                    10F,
+                    120000,10f,
                     gpsLocation
                 )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    return
                 }
             }
         } else {
@@ -200,8 +203,8 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    100,
-                    10F,
+                    50000,
+                    300F,
                     gpsLocation
                 )
 

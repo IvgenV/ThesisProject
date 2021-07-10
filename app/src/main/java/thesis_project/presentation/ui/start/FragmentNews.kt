@@ -36,7 +36,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
         viewModel.setNews()
         viewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
-            progressNews.visibility = View.INVISIBLE
         })
 
     }
