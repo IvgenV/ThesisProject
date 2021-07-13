@@ -40,7 +40,6 @@ class ViewModel : ViewModel() {
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
 
-    var initial = MutableLiveData<Initial>()
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
@@ -51,8 +50,8 @@ class ViewModel : ViewModel() {
     var name = ""
     var surname = ""
 
-
     private var progress = MutableLiveData(View.GONE)
+    private var checkLocation = MutableLiveData<Boolean>()
 
     fun setInfoBoxInfo(atm: String?) {
         this.infoBoxInfo = atm
@@ -319,9 +318,9 @@ class ViewModel : ViewModel() {
     }
 
     fun createListAtm(location: Location?) {
-        if (location != null) {
+        if(location != null){
             viewModelScope.launch {
-                var list = mutableListOf<ItemAdressDistance>()
+                val list = mutableListOf<ItemAdressDistance>()
                 listAtm.collect { atmData ->
                     atmData.forEach {
                         val loc = Location("")
@@ -335,7 +334,7 @@ class ViewModel : ViewModel() {
                                             it.house, dist
                                 )
                             )
-                        }else{
+                        } else {
                             list.add(
                                 ItemAdressDistance(
                                     it.id, it.addressType + " " +
@@ -346,12 +345,12 @@ class ViewModel : ViewModel() {
                     }
                     list.sortBy { it.distance }
                     list.forEach {
-                        if(it.distance > 1000){
-                            val final = it.distance/1000
-                            it.distance = String.format("%.2f",final).toDouble()
-                            Log.d("FOrmat",it.distance.toString())
-                        }else {
-                            it.distance = String.format("%.0f",it.distance).toDouble()
+                        if (it.distance > 1000) {
+                            val final = it.distance / 1000
+                            it.distance = String.format("%.2f", final).toDouble()
+                            Log.d("FOrmat", it.distance.toString())
+                        } else {
+                            it.distance = String.format("%.0f", it.distance).toDouble()
                         }
                     }
                     if (list.size < 15) {
@@ -359,8 +358,12 @@ class ViewModel : ViewModel() {
                     } else {
                         listAtmDistance.value = list.take(15)
                     }
+                    checkLocation.value = true
                 }
             }
+        }
+        if(location == null){
+            checkLocation.value = false
         }
     }
 
@@ -393,21 +396,21 @@ class ViewModel : ViewModel() {
             delay(300)
             try {
                 val callInfoBox = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
-                Log.d("checjLocationViewModel",location.toString())
+                Log.d("checjLocationViewModel", location.toString())
                 if (callInfoBox.isSuccessful && location != null) {
                     callInfoBox.body()?.let { localInfoBoxDb.insertListInfoBox(it) }
                     createListInfoBox(location)
-                   /* initial.value = Initial.Success*/
+                    /* initial.value = Initial.Success*/
                     progress.value = View.GONE
-                }else {
-                    Log.d("noGps!","NOOOOOOOOOOOOOOOO!")
+                } else {
+                    Log.d("noGps!", "NOOOOOOOOOOOOOOOO!")
                 }
-               /* if (!callAtm.isSuccessful && location != null) {
-                    initial.value = Initial.Error
-                    delay(300)
-                    progress.value = View.GONE
-                    createListInfoBox(location)
-                }*/
+                /* if (!callAtm.isSuccessful && location != null) {
+                     initial.value = Initial.Error
+                     delay(300)
+                     progress.value = View.GONE
+                     createListInfoBox(location)
+                 }*/
             } catch (e: Exception) {
                 toast.show()
                 progress.value = View.GONE
@@ -460,6 +463,10 @@ class ViewModel : ViewModel() {
 
     fun getProgress(): LiveData<Int> {
         return progress
+    }
+
+    fun getCheckLocation():LiveData<Boolean>{
+        return checkLocation
     }
 
 

@@ -71,6 +71,15 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             progressAtm.visibility = it
         })
 
+        viewModel.getCheckLocation().observe(viewLifecycleOwner,{
+            if(it == true){
+                tvText.text = "Current data!"
+            }
+            if(it == false){
+                tvText.text = "Not current data!"
+            }
+        })
+
 
         lifecycleScope.launchWhenStarted {
             viewModel.getAtm().collect {
@@ -112,8 +121,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     }
 
     override fun onLocationChanged(location: Location) {
-        Log.d("onLocationChanged","chancge")
-        initialization()
+        this.location = location
     }
 
     override fun onClick(atm: String) {
@@ -123,24 +131,23 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
-    fun initialization() {
-        initLocation()
-        if (isGPSEnabled) {
-            viewModel.initialAtm()
-            viewModel.createListAtm(location)
-            tvText.text = "Current data"
-        } else {
-            Toast.makeText(requireContext(), "Turn on GPS!", Toast.LENGTH_SHORT).show()
-            tvText.text = "Not current data"
-        }
-    }
-
     fun createLocationManager() {
         if (activity != null && isAdded) {
             locationManager =
                 requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             gpsLocation = GpsLocation()
             gpsLocation.setLocalListenerInterface(this)
+        }
+    }
+
+    fun initialization() {
+        initLocation()
+        if (isGPSEnabled) {
+            viewModel.initialAtm()
+            viewModel.createListAtm(location)
+        } else {
+            Toast.makeText(requireContext(), "Cant find GPS!", Toast.LENGTH_SHORT).show()
+            tvText.text = "Not current data"
         }
     }
 
@@ -171,7 +178,8 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    120000,10f,
+                    10000,
+                    50F,
                     gpsLocation
                 )
                 if (locationManager != null) {
@@ -179,9 +187,6 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
                     return
                 }
             }
-        } else {
-            location = null
-            return
         }
 
 
@@ -203,8 +208,8 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             } else {
                 locationManager?.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-                    50000,
-                    300F,
+                    10000,
+                    50F,
                     gpsLocation
                 )
 
@@ -215,7 +220,10 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             }
         }
 
+    }
 
+    private fun checkLocationStatus(location: Location?): Boolean {
+        return location != null
     }
 
 }
