@@ -30,7 +30,6 @@ class AtmCloudSource(val dispatcher: CoroutineDispatcher): AtmCloudRepository {
     private val atmApiService = retrofit.create(ApiAtmBelarusBank::class.java)
 
     override suspend fun getAtmCountry(): Response<List<AtmData>> {
-
         val list:Response<List<AtmData>>
         withContext(dispatcher){
             list = atmApiService.getAtmCountry()

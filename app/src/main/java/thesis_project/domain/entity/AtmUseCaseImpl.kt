@@ -20,11 +20,11 @@ class AtmUseCaseImpl(
         return atmCloudRepository.getAtmCity(city)
     }
 
-    override suspend fun getAtmCountryDb(): Flow<List<AtmData>> {
+    override fun getAtmCountryDb(): Flow<List<AtmData>> {
         return atmDbRepository.getAtmCountryDb()
     }
 
-    override suspend fun getAtmCityDb(city: String): Flow<List<AtmData>> {
+    override fun getAtmCityDb(city: String): Flow<List<AtmData>> {
         return atmDbRepository.getAtmCityDb(city)
     }
 

@@ -47,6 +47,12 @@
         tools:layout="@layout/fragment_profile"/>
 
     <fragment
+        android:id="@+id/fragment_setting"
+        android:name="thesis_project.presentation.ui.start.FragmentSetting"
+        android:label="setting"
+        tools:layout="@layout/fragment_setting"/>
+
+    <fragment
         android:id="@+id/news_item"
         android:name="thesis_project.presentation.ui.start.NewsItemFragment"
         android:label="NewsItemFragment" />

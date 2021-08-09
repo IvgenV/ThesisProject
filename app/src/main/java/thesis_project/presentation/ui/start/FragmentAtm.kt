@@ -3,9 +3,11 @@ package thesis_project.presentation.ui.start
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,11 +26,14 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
-import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.ViewModel
 
@@ -59,27 +64,58 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             }
         }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+      override fun onResume() {
+        super.onResume()
+          viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+          viewModel.initialAtmDb()
+          createLocationManager()
+
+
+          viewModel.getProgress().observe(viewLifecycleOwner, {
+              progressAtm.visibility = it
+          })
+
+          viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+              if (it == true) {
+                  tvText.text = "Current data!"
+              }
+              if (it == false) {
+                  tvText.text = "Not current data!"
+              }
+          })
+
+          lifecycleScope.launchWhenStarted {
+              viewModel.getAtm().collect {
+                  adapter.setData(it)
+              }
+          }
+
+
+          buttonRefresh.setOnClickListener {
+              initialization()
+          }
+
+      }
+
+   /* override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-
+        viewModel.initialAtmDb()
         createLocationManager()
-        initialization()
 
 
         viewModel.getProgress().observe(viewLifecycleOwner, {
             progressAtm.visibility = it
         })
 
-        viewModel.getCheckLocation().observe(viewLifecycleOwner,{
-            if(it == true){
+        viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+            if (it == true) {
                 tvText.text = "Current data!"
             }
-            if(it == false){
+            if (it == false) {
                 tvText.text = "Not current data!"
             }
         })
-
 
         lifecycleScope.launchWhenStarted {
             viewModel.getAtm().collect {
@@ -93,7 +129,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         }
 
 
-    }
+    }*/
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -121,7 +157,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     }
 
     override fun onLocationChanged(location: Location) {
-        this.location = location
+        viewModel.initialAtmCloud(location)
     }
 
     override fun onClick(atm: String) {
@@ -135,16 +171,44 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         if (activity != null && isAdded) {
             locationManager =
                 requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            gpsLocation = GpsLocation()
-            gpsLocation.setLocalListenerInterface(this)
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestMultiplePermissions.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                )
+            } else {
+                gpsLocation = GpsLocation()
+                gpsLocation.setLocalListenerInterface(this)
+
+                locationManager?.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    5000,
+                    20F,
+                    gpsLocation
+                )
+                locationManager?.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    20000,
+                    20F,
+                    gpsLocation
+                )
+            }
         }
     }
 
     fun initialization() {
         initLocation()
-        if (isGPSEnabled) {
-            viewModel.initialAtm()
-            viewModel.createListAtm(location)
+        if (location != null) {
+            viewModel.initialAtmCloud(location)
         } else {
             Toast.makeText(requireContext(), "Cant find GPS!", Toast.LENGTH_SHORT).show()
             tvText.text = "Not current data"
@@ -155,11 +219,12 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
         isNetworkEnabled =
             locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
-        checkPermission()
+        getLocation()
     }
 
-    fun checkPermission() {
 
+
+    fun getLocation(){
         if (isGPSEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),
@@ -176,19 +241,14 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
                     )
                 )
             } else {
-                locationManager?.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    10000,
-                    50F,
-                    gpsLocation
-                )
                 if (locationManager != null) {
                     location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    return
+                    if (location != null) {
+                        return
+                    }
                 }
             }
         }
-
 
         if (isNetworkEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
@@ -206,13 +266,6 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
                     )
                 )
             } else {
-                locationManager?.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    10000,
-                    50F,
-                    gpsLocation
-                )
-
                 if (locationManager != null) {
                     location =
                         locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
@@ -221,9 +274,4 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         }
 
     }
-
-    private fun checkLocationStatus(location: Location?): Boolean {
-        return location != null
-    }
-
 }

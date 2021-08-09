@@ -127,7 +127,6 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         if (isGPSEnabled) {
             Log.d("location!",location.toString())
             viewModel.initialInfoBox(location)
-            ///viewModel.createListInfoBox(location)
             tvText.text = "Current data"
 
         } else {

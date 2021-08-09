@@ -55,7 +55,6 @@ class StartActivity : AppCompatActivity() {
             val name = it.child("name").getValue(String::class.java) ?: "ErrorName"
             val surname = it.child("surname").getValue(String::class.java) ?: "ErrorSurname"
             val email = it.child("email").getValue(String::class.java) ?: "ErrorEmail"
-            Log.d("childdd", email)
             textName.text = name
             textSurname.text = surname
             viewModel.name = name

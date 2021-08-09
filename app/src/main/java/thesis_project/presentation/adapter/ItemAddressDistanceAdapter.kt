@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.ItemAdressDistance
-import thesis_project.ItemDistance
-import kotlin.math.hypot
 
 class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
         ItemAddressDistanceAdapter.ViewHolder>(ItemAddressDistanceCompareCallback()) {
@@ -24,10 +22,11 @@ class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.name.text = getItem(position).name
+        holder.id.text = getItem(position).id
+        holder.type.text = getItem(position).type
         holder.address.text = getItem(position).adress
         holder.distance.text = getItem(position).distance.toString()
-        val info = getItem(position).name
+        val info = getItem(position).id
         holder.itemView.setOnClickListener {
             listenerToMap?.onClick(info)
         }
@@ -44,9 +43,10 @@ class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.itemName)
+        val id: TextView = view.findViewById(R.id.itemId)
         val address: TextView = view.findViewById(R.id.itemAdress)
         val distance: TextView = view.findViewById(R.id.itemDistance)
+        val type:TextView  = view.findViewById(R.id.itemType)
     }
 
 }

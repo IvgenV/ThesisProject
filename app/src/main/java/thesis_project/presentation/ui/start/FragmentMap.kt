@@ -46,14 +46,12 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
         googleMap = map
         val filial = arguments?.getString("filial")
         val atm = arguments?.getString("atm")
-       /* val infoBOx = arguments?.getString("infoBox")*/
+        val infoBOx = arguments?.getString("infoBox")
 
 
         if (filial != null) {
             viewModel.createGpsFilial(filial)
-/*
             filial.let { viewModel.createGpsFilial(it) }
-*/
             viewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()

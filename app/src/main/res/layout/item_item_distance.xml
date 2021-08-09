@@ -1,46 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="120dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp">
 
     <TextView
-        android:id="@+id/itemName"
-        android:layout_width="wrap_content"
+        android:id="@+id/itemId"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Otdelenie"
         android:maxWidth="180sp"
+        android:text="Id"
+        android:gravity="start"
+        app:layout_constraintHorizontal_weight="1"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/itemAdress"
         app:layout_constraintEnd_toStartOf="@id/itemDistance"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/itemType"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemAdress"
-        android:textSize="15sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:maxWidth="180sp"
         android:text="Adress"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        android:gravity="start"
+        android:layout_marginStart="20dp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemName"
         app:layout_constraintEnd_toStartOf="@id/itemDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/itemId" />
 
     <TextView
         android:id="@+id/itemDistance"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="distance"
+        android:gravity="center"
+        app:layout_constraintHorizontal_weight="1"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/itemName"
+        app:layout_constraintStart_toEndOf="@+id/itemId"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -51,4 +59,16 @@
         android:background="@color/greenDark"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
+
+    <TextView
+        android:id="@+id/itemType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:layout_marginStart="20dp"
+        android:gravity="start"
+        app:layout_constraintBottom_toTopOf="@id/itemAdress"
+        app:layout_constraintEnd_toStartOf="@+id/itemId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

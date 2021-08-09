@@ -32,10 +32,13 @@ class ViewModel : ViewModel() {
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     private var atmBB = Dependencies.getAtmUseCase(App.instance)
     private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
+
     private var listOfCurrency = MutableLiveData<List<Double>>()
     private var listRateFilial = MutableLiveData<List<ItemDistance>>()
-    private var listAtm = MutableStateFlow<List<AtmData>>(listOf())
+
+    private var listAtmFromDb = MutableStateFlow<List<AtmData>>(listOf())
     private var listAtmDistance = MutableStateFlow<List<ItemAdressDistance>>(listOf())
+
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
@@ -50,8 +53,8 @@ class ViewModel : ViewModel() {
     var name = ""
     var surname = ""
 
-    private var progress = MutableLiveData(View.GONE)
-    private var checkLocation = MutableLiveData<Boolean>()
+    private var progress = MutableLiveData(View.INVISIBLE)
+    private var checkLocation = MutableLiveData(false)
 
     fun setInfoBoxInfo(atm: String?) {
         this.infoBoxInfo = atm
@@ -293,76 +296,92 @@ class ViewModel : ViewModel() {
 
 
     ////Atm block
-    fun initialAtm() {
-        viewModelScope.launch {
-            try {
-                progress.value = View.VISIBLE
-                delay(300)
-                val call = atmBB.getAtmCountryCloud()
-                if (call.isSuccessful) {
-                    call.body()?.let { atmBB.addListAtmDb(it) }
-                    atmBB.getAtmCountryDb().collect {
-                        listAtm.value = it
+    fun initialAtmCloud(location: Location?) {
+        if(location != null){
+            viewModelScope.launch {
+                try {
+                    progress.value = View.VISIBLE
+                    delay(300)
+                    val call = atmBB.getAtmCountryCloud()
+                    if (call.isSuccessful) {
+                        call.body()?.let { atmBB.addListAtmDb(it) }
+                        createlistAtmDistance(location)
                         progress.value = View.INVISIBLE
                     }
-                } else {
-                    atmBB.getAtmCountryDb().collect {
-                        listAtm.value = it
+
+                    if(!call.isSuccessful){
+                        createlistAtmDistance(location)
                         progress.value = View.INVISIBLE
                     }
+
+
+                } catch (e: Exception) {
+                    createlistAtmDistance(location)
+                    progress.value = View.INVISIBLE
+                    toast.show()
                 }
-            } catch (e: Exception) {
-                toast.show()
             }
         }
     }
 
-    fun createListAtm(location: Location?) {
-        if(location != null){
-            viewModelScope.launch {
-                val list = mutableListOf<ItemAdressDistance>()
-                listAtm.collect { atmData ->
-                    atmData.forEach {
-                        val loc = Location("")
-                        loc.latitude = it.latitude
-                        loc.longitude = it.longitude
-                        val dist = location.distanceTo(loc).toDouble()
-                        if (it.addressType == "тракт") {
-                            list.add(
-                                ItemAdressDistance(
-                                    it.id, it.address + " " + it.addressType + " " +
-                                            it.house, dist
-                                )
-                            )
-                        } else {
-                            list.add(
-                                ItemAdressDistance(
-                                    it.id, it.addressType + " " +
-                                            it.address + " " + it.house, dist
-                                )
-                            )
-                        }
-                    }
-                    list.sortBy { it.distance }
-                    list.forEach {
-                        if (it.distance > 1000) {
-                            val final = it.distance / 1000
-                            it.distance = String.format("%.2f", final).toDouble()
-                            Log.d("FOrmat", it.distance.toString())
-                        } else {
-                            it.distance = String.format("%.0f", it.distance).toDouble()
-                        }
-                    }
-                    if (list.size < 15) {
-                        listAtmDistance.value = list
-                    } else {
-                        listAtmDistance.value = list.take(15)
-                    }
-                    checkLocation.value = true
+    fun initialAtmDb() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                atmBB.getAtmCountryDb().collect {
+                    listAtmFromDb.value = it
                 }
             }
         }
-        if(location == null){
+    }
+
+    fun createlistAtmDistance(location: Location?) {
+        if (location != null) {
+
+            val list = mutableListOf<ItemAdressDistance>()
+
+
+            listAtmFromDb.value.forEach {
+
+                val loc = Location("")
+                loc.latitude = it.latitude
+                loc.longitude = it.longitude
+                val dist = location.distanceTo(loc).toDouble()
+                if (it.addressType == "тракт") {
+                    list.add(
+                        ItemAdressDistance("Банкомат",
+                            it.id, it.address + " " + it.addressType + " " +
+                                    it.house, dist
+                        )
+                    )
+                } else {
+                    list.add(
+                        ItemAdressDistance(
+                             "Банкомат", it.id, it.addressType + " " +
+                                    it.address + " " + it.house, dist
+                        )
+                    )
+                }
+            }
+            list.sortBy { it.distance }
+            list.forEach {
+                if (it.distance > 1000) {
+                    val final = it.distance / 1000
+                    it.distance = String.format("%.2f", final).toDouble()
+                } else {
+                    val final = it.distance
+                    it.distance = String.format("%.0f", final).toDouble()
+                }
+            }
+            if (list.size < 15) {
+                listAtmDistance.value = list
+            } else {
+                listAtmDistance.value = list.take(15)
+            }
+            checkLocation.value = true
+
+        }
+
+        if (location == null) {
             checkLocation.value = false
         }
     }
@@ -396,21 +415,17 @@ class ViewModel : ViewModel() {
             delay(300)
             try {
                 val callInfoBox = Dependencies.getInfoBoxCloudUseCase().getInfoBoxCountry()
-                Log.d("checjLocationViewModel", location.toString())
                 if (callInfoBox.isSuccessful && location != null) {
                     callInfoBox.body()?.let { localInfoBoxDb.insertListInfoBox(it) }
                     createListInfoBox(location)
-                    /* initial.value = Initial.Success*/
                     progress.value = View.GONE
-                } else {
-                    Log.d("noGps!", "NOOOOOOOOOOOOOOOO!")
                 }
-                /* if (!callAtm.isSuccessful && location != null) {
-                     initial.value = Initial.Error
-                     delay(300)
-                     progress.value = View.GONE
-                     createListInfoBox(location)
-                 }*/
+                if (!callInfoBox.isSuccessful && location != null) {
+                    delay(300)
+                    createListInfoBox(location)
+                    progress.value = View.GONE
+
+                }
             } catch (e: Exception) {
                 toast.show()
                 progress.value = View.GONE
@@ -422,6 +437,10 @@ class ViewModel : ViewModel() {
         return listInfoBox
     }
 
+
+    fun createMapDescription(item:String){
+
+    }
 
     ////Gps block
     fun createGpsFilial(filial: String) {
@@ -465,7 +484,7 @@ class ViewModel : ViewModel() {
         return progress
     }
 
-    fun getCheckLocation():LiveData<Boolean>{
+    fun getCheckLocation(): LiveData<Boolean> {
         return checkLocation
     }
 

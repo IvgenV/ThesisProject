@@ -14,15 +14,11 @@ class AtmDb(context: Context): AtmDbRepository {
 
     private val atmDao = dbAtm.getAtmDao()
 
-    override suspend fun getAtmCountryDb(): Flow<List<AtmData>> {
-        val list:Flow<List<AtmData>>
-        withContext(Dispatchers.IO){
-            list = atmDao.getAtmCountry()
-        }
-        return list
+    override fun getAtmCountryDb(): Flow<List<AtmData>> {
+        return atmDao.getAtmCountry()
     }
 
-    override suspend fun getAtmCityDb(city: String): Flow<List<AtmData>> {
+    override fun getAtmCityDb(city: String): Flow<List<AtmData>> {
         return atmDao.getAtmCity(city)
     }
 
