@@ -57,6 +57,8 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(it)
                         .title("FILIAL")
+
+                
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
             })
