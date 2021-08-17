@@ -383,10 +383,12 @@ class ViewModel : ViewModel() {
 
         if (location == null) {
             checkLocation.value = false
+            Log.d("Locationnullornot", "null!")
         }
     }
 
     fun getAtm(): StateFlow<List<ItemAdressDistance>> {
+        Log.d("atmScope", "getAtm")
         return listAtmDistance
     }
 

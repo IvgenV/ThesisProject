@@ -23,11 +23,6 @@ class NewsData(context: Context):NewsDbRepository {
     }
     override suspend fun addNews(newsList: List<News>){
 
-        for (news in  newsList)
-        {
-            news.html_ru= Html.fromHtml(news.html_ru).toString()
-        }
-
         withContext(Dispatchers.IO){
             NewsDao.insertListNews(newsList)
         }
