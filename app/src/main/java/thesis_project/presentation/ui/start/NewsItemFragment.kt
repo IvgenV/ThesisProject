@@ -45,7 +45,8 @@ class NewsItemFragment : Fragment() {
         val bodyDate = arguments?.getString("start_date").toString()
 
         val html =
-            "$bodyDate<br><br><p style=\"color:#009624\">$bodyTitle</p>$bodyNews<img src=${arguments?.getString("img").toString()}>"
+            "<HTML><HEAD><LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/></HEAD><body><d>$bodyDate</d><br><br><t>$bodyTitle</t><n>$bodyNews></n></body></HTML>"
+
 
         webView.settings.javaScriptEnabled = true
         webView.loadDataWithBaseURL(null, html, null, null, null)
