@@ -48,8 +48,10 @@ class NewsItemFragment : Fragment() {
                 "<LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
                 "<script>" +
                 "function createToast(){" +
-                "var img = document.getElementByTagName(\"img\");" +
-                "img.addEventListener(\"click\",function{toast()},false);" +
+                "var img = document.getElementsByTagName(\"img\");" +
+                "for(var i=0;i<img.length;i++){" +
+                "img[i].addEventListener(\"click\",function{toast()},false);" +
+                "}" +
                 "}" +
                 "function toast(){" +
                 "PictureToast.showToast()" +
