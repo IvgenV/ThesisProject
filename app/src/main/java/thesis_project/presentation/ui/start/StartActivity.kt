@@ -3,6 +3,7 @@ package thesis_project.presentation.ui.start
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,7 +38,6 @@ class StartActivity : AppCompatActivity() {
         }
 
         val navigationView = findViewById<NavigationView>(R.id.navigationView)
-
 
         navigationView.itemIconTintList = null
 
@@ -78,7 +78,6 @@ class StartActivity : AppCompatActivity() {
         }
 
     }
-
 
 
 }

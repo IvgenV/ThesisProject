@@ -1,19 +1,19 @@
 package thesis_project.presentation.ui.start
 
 
+import thesis_project.web_view.JavaScriptInterface
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.TextView
+import android.webkit.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
-import com.squareup.picasso.Picasso
 import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.web_view.MyWebViewClient
 
 class NewsItemFragment : Fragment() {
 
@@ -44,13 +44,60 @@ class NewsItemFragment : Fragment() {
         val bodyTitle = arguments?.getString("name_ru").toString()
         val bodyDate = arguments?.getString("start_date").toString()
 
-        val html =
-            "<HTML><HEAD><LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/></HEAD><body><d>$bodyDate</d><br><br><t>$bodyTitle</t><n>$bodyNews></n></body></HTML>"
+        val html = "<HTML><HEAD>" +
+                "<LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
+                "<script>" +
+                "function createToast(){" +
+                "var img = document.getElementByTagName(\"img\");" +
+                "img.addEventListener(\"click\",function{toast()},false);" +
+                "}" +
+                "function toast(){" +
+                "PictureToast.showToast()" +
+                "}" +
+                "</script>" +
+                "</HEAD>" +
+                "<body><d>$bodyDate</d><br><br>" +
+                "<t>$bodyTitle</t>" +
+                "<n>$bodyNews</n>" +
+                "</body>" +
+                "</HTML>"
 
-
-        webView.settings.javaScriptEnabled = true
-        webView.loadDataWithBaseURL(null, html, null, null, null)
-
+        loadUrl(html)
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    fun loadUrl(url:String){
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+        webView.settings.builtInZoomControls = true
+        webView.settings.displayZoomControls = false
+        webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(JavaScriptInterface(requireContext()),"PictureToast")
+        webView.loadDataWithBaseURL(null, url, null, null, null)
+        webView.loadUrl("javascript:createToast()")
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                view?.loadUrl(request?.url.toString())
+                return true
+            }
+        }
+
+        webView.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (event?.action == KeyEvent.ACTION_DOWN) {
+                    when (keyCode) {
+                        KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
+                            webView.goBack()
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+        })
+
+    }
 }
