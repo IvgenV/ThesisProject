@@ -1,7 +1,6 @@
 package thesis_project.presentation.ui.start
 
 
-import thesis_project.web_view.JavaScriptInterface
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
@@ -9,11 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.ViewModel
-import thesis_project.web_view.MyWebViewClient
 
 class NewsItemFragment : Fragment() {
 
@@ -46,16 +45,15 @@ class NewsItemFragment : Fragment() {
 
         val html = "<HTML><HEAD>" +
                 "<LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
-                "<script>" +
-                "function createToast(){" +
-                "var img = document.getElementsByTagName(\"img\");" +
-                "for(var i=0;i<img.length;i++){" +
-                "img[i].addEventListener(\"click\",function{toast()},false);" +
+                "<script type=\"text/javascript\">" +
+                "window.onload = function () {" +
+                "var images = document.getElementsByTagName('img');" +
+                "for (let i = 0; i < images.length; i++) {" +
+                "images[i].onclick = function () {" +
+                "PictureToast.showToast();" +
+                "};" +
                 "}" +
-                "}" +
-                "function toast(){" +
-                "PictureToast.showToast()" +
-                "}" +
+                "};" +
                 "</script>" +
                 "</HEAD>" +
                 "<body><d>$bodyDate</d><br><br>" +
@@ -68,15 +66,22 @@ class NewsItemFragment : Fragment() {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    fun loadUrl(url:String){
+    fun loadUrl(url: String) {
+
         webView.settings.loadWithOverviewMode = true
         webView.settings.useWideViewPort = true
         webView.settings.builtInZoomControls = true
         webView.settings.displayZoomControls = false
+
         webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(JavaScriptInterface(requireContext()),"PictureToast")
-        webView.loadDataWithBaseURL(null, url, null, null, null)
-        webView.loadUrl("javascript:createToast()")
+        webView.addJavascriptInterface(object : Any() {
+            @JavascriptInterface
+            fun showToast() {
+                Toast.makeText(requireContext(), "Picture toast!", Toast.LENGTH_SHORT).show()
+            }
+        }, "PictureToast")
+        webView.loadDataWithBaseURL(null, url, null, null,null)
+
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
