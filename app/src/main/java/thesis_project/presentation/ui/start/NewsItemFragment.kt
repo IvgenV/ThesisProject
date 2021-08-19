@@ -44,7 +44,7 @@ class NewsItemFragment : Fragment() {
         val bodyDate = arguments?.getString("start_date").toString()
 
         val html = "<HTML><HEAD>" +
-                "<LINK href=\"file:/android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
+                "<LINK href=\"file:///android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
                 "<script type=\"text/javascript\">" +
                 "window.onload = function () {" +
                 "var images = document.getElementsByTagName('img');" +
@@ -80,7 +80,8 @@ class NewsItemFragment : Fragment() {
                 Toast.makeText(requireContext(), "Picture toast!", Toast.LENGTH_SHORT).show()
             }
         }, "PictureToast")
-        webView.loadDataWithBaseURL(null, url, null, null,null)
+        webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8",null)
+
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
