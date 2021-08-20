@@ -1,7 +1,11 @@
 package thesis_project.presentation.ui.start
 
 
+import PdfDownloadListener
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
+import com.google.android.material.snackbar.Snackbar
 import thesis_project.presentation.viewmodel.ViewModel
 
 class NewsItemFragment : Fragment() {
@@ -74,6 +79,48 @@ class NewsItemFragment : Fragment() {
         webView.settings.displayZoomControls = false
 
         webView.settings.javaScriptEnabled = true
+        ///webView.setDownloadListener(PdfDownloadListener(requireContext()))
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view:WebView, url: String):Boolean {
+                if( URLUtil.isNetworkUrl(url) ) {
+                    view.loadUrl(url)
+                    return false
+                }
+                ///вот такая проверка имеется в виду
+                if(url.startsWith("t.me")){
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(url)
+                    startActivity(intent)
+                }
+
+                ///вот так работает
+                /*val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(url)
+                startActivity(intent)*/
+
+                /*если добавить проверку эту то не работает
+                if (intent.resolveActivity(requireContext().packageManager) != null) {
+                     startActivity(intent)
+                }*/
+
+                return true;
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                Snackbar.make(requireView(),"ошибка открытия страницы",Snackbar.LENGTH_SHORT).show()
+                if (webView.canGoBack()){
+                    webView.goBack()
+                }
+                super.onReceivedError(view, request, error)
+            }
+
+        }
+
+
         webView.addJavascriptInterface(object : Any() {
             @JavascriptInterface
             fun showToast() {
@@ -83,15 +130,7 @@ class NewsItemFragment : Fragment() {
         webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8",null)
 
 
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                view?.loadUrl(request?.url.toString())
-                return true
-            }
-        }
+
 
         webView.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
