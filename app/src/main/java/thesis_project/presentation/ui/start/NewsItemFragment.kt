@@ -79,29 +79,38 @@ class NewsItemFragment : Fragment() {
         webView.settings.displayZoomControls = false
 
         webView.settings.javaScriptEnabled = true
-        ///webView.setDownloadListener(PdfDownloadListener(requireContext()))
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view:WebView, url: String):Boolean {
-                if( URLUtil.isNetworkUrl(url) ) {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+
+
+                if (URLUtil.isNetworkUrl(url)) {
+                    if (url.startsWith("https://t.me/")) {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(url)
+                        startActivity(intent)
+                        return false
+                    }
+
+                    if (url.startsWith("https://play")) {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(url)
+                        if (intent.resolveActivity(requireContext().packageManager) != null) {
+                            startActivity(intent)
+                        }
+                        return false
+                    }
+
+                    if (url.endsWith(".pdf")) {
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(url)
+                        startActivity(intent)
+
+                        return false
+                    }
+
                     view.loadUrl(url)
                     return false
                 }
-                ///вот такая проверка имеется в виду
-                if(url.startsWith("t.me")){
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(url)
-                    startActivity(intent)
-                }
-
-                ///вот так работает
-                /*val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(url)
-                startActivity(intent)*/
-
-                /*если добавить проверку эту то не работает
-                if (intent.resolveActivity(requireContext().packageManager) != null) {
-                     startActivity(intent)
-                }*/
 
                 return true;
             }
@@ -111,11 +120,16 @@ class NewsItemFragment : Fragment() {
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
-                Snackbar.make(requireView(),"ошибка открытия страницы",Snackbar.LENGTH_SHORT).show()
-                if (webView.canGoBack()){
-                    webView.goBack()
-                }
                 super.onReceivedError(view, request, error)
+                Snackbar.make(requireView(), "Ошибка открытия страницы", Snackbar.LENGTH_INDEFINITE)
+                    .setAction(
+                        "Назад"
+                    ) {
+                        if (webView.canGoBack()) {
+                            webView.goBack()
+                        }
+                    }.show()
+
             }
 
         }
@@ -127,7 +141,7 @@ class NewsItemFragment : Fragment() {
                 Toast.makeText(requireContext(), "Picture toast!", Toast.LENGTH_SHORT).show()
             }
         }, "PictureToast")
-        webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8",null)
+        webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8", null)
 
 
 
