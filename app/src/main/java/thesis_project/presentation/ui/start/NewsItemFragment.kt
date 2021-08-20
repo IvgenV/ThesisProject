@@ -104,7 +104,15 @@ class NewsItemFragment : Fragment() {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
                         startActivity(intent)
+                        return false
+                    }
 
+                    if(url.startsWith("https://mailto")){
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse(url)
+                        if (intent.resolveActivity(requireContext().packageManager) != null) {
+                            startActivity(intent)
+                        }
                         return false
                     }
 
