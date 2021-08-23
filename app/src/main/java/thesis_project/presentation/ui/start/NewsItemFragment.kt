@@ -83,53 +83,48 @@ class NewsItemFragment : Fragment() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
                 if (URLUtil.isNetworkUrl(url)) {
-                    ////сдесь не открываета телегу
-                    if (url.startsWith("https://t.me/")) {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(url)
-                        if(intent.resolveActivity(requireContext().packageManager) != null){
-                            view.reload()
-                            startActivity(intent)
-                        }else {
-                            view.loadUrl(url)
-                        }
-                        return false
-                    }
-
-                    ////сдесь откырвает playmarket
-                    if (url.startsWith("https://play")) {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(url)
-                        if (intent.resolveActivity(requireContext().packageManager) != null) {
-                            startActivity(intent)
-                            view.reload()
-                        }
-                        return false
-                    }
-
-                    if (url.endsWith(".pdf")) {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(url)
-                        view.reload()
-                        startActivity(intent)
-                        return false
-                    }
 
                     if (url.startsWith("https://mailto")) {
-                        val intent = Intent(Intent.ACTION_VIEW)
+                        val intent = Intent(Intent.ACTION_SEND)
                         intent.data = Uri.parse(url)
-                        if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        return if (intent.resolveActivity(requireContext().packageManager) != null){
                             view.reload()
                             startActivity(intent)
+                            true
+                        }else{
+                            view.loadUrl(url)
+                            true
                         }
-                        return false
+
                     }
 
-                    view.loadUrl(url)
+                    if(url.startsWith("https://tel")){
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse(url)
+                        }
+                        return if (intent.resolveActivity(requireContext().packageManager) != null){
+                            view.reload()
+                            startActivity(intent)
+                            true
+                        }else{
+                            view.loadUrl(url)
+                            true
+                        }
+                    }
+
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(url)
+                    if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        startActivity(intent)
+                        view.reload()
+                    } else{
+                        view.loadUrl(url)
+                    }
                     return true
                 }
 
-                return true;
+
+                return false
             }
 
             override fun onReceivedError(
