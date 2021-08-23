@@ -3,6 +3,7 @@ package thesis_project.presentation.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
+import androidx.core.net.MailTo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
@@ -22,7 +24,7 @@ class NewsItemFragment : Fragment() {
 
     lateinit var viewModel: ViewModel
     lateinit var webView: WebView
-    var snackbar: Snackbar?=null
+    var snackbar: Snackbar? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -82,47 +84,48 @@ class NewsItemFragment : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
-                if (URLUtil.isNetworkUrl(url)) {
-
-                    if (url.startsWith("https://mailto")) {
-                        val intent = Intent(Intent.ACTION_SEND)
-                        intent.data = Uri.parse(url)
-                        return if (intent.resolveActivity(requireContext().packageManager) != null){
-                            view.reload()
-                            startActivity(intent)
-                            true
-                        }else{
-                            view.loadUrl(url)
-                            true
-                        }
-
+                /// Intent.ACTION_SEND и Intent.VIEW делают одно и тоже сдесь
+                /// как правильно и где тогда применять Intent.ACTION_SEND
+                ///putExtra имейл не забирает
+                if (url.startsWith("mailto")) {
+                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = Uri.parse(url)
+                        putExtra(Intent.EXTRA_SUBJECT,"мой заголовок")
+                        putExtra(Intent.EXTRA_TEXT,"мой текст")
                     }
-
-                    if(url.startsWith("https://tel")){
-                        val intent = Intent(Intent.ACTION_DIAL).apply {
-                            data = Uri.parse(url)
-                        }
-                        return if (intent.resolveActivity(requireContext().packageManager) != null){
-                            view.reload()
-                            startActivity(intent)
-                            true
-                        }else{
-                            view.loadUrl(url)
-                            true
-                        }
-                    }
-
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = Uri.parse(url)
-                    if (intent.resolveActivity(requireContext().packageManager) != null) {
-                        startActivity(intent)
+                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
                         view.reload()
-                    } else{
-                        view.loadUrl(url)
+                        startActivity(intent)
+                        true
+                    } else {
+                        false
                     }
-                    return true
                 }
 
+                if (url.startsWith("tel")) {
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse(url)
+                    }
+                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        view.reload()
+                        startActivity(intent)
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                if(url.startsWith("https://t.me")||url.endsWith(".pdf")||url.startsWith("https://play.")){
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(url)
+                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        startActivity(intent)
+                        view.reload()
+                        true
+                    } else {
+                        false
+                    }
+                }
 
                 return false
             }
@@ -134,7 +137,7 @@ class NewsItemFragment : Fragment() {
             ) {
                 super.onReceivedError(view, request, error)
 
-                 snackbar = Snackbar.make(
+                snackbar = Snackbar.make(
                     requireView(),
                     R.string.Snackbar_Notification,
                     Snackbar.LENGTH_INDEFINITE
