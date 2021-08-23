@@ -1,12 +1,11 @@
 package thesis_project.presentation.ui.start
 
 
-import PdfDownloadListener
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +22,7 @@ class NewsItemFragment : Fragment() {
 
     lateinit var viewModel: ViewModel
     lateinit var webView: WebView
+    var snackbar: Snackbar?=null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -82,20 +82,27 @@ class NewsItemFragment : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
-
                 if (URLUtil.isNetworkUrl(url)) {
+                    ////сдесь не открываета телегу
                     if (url.startsWith("https://t.me/")) {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
-                        startActivity(intent)
+                        if(intent.resolveActivity(requireContext().packageManager) != null){
+                            view.reload()
+                            startActivity(intent)
+                        }else {
+                            view.loadUrl(url)
+                        }
                         return false
                     }
 
+                    ////сдесь откырвает playmarket
                     if (url.startsWith("https://play")) {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
                         if (intent.resolveActivity(requireContext().packageManager) != null) {
                             startActivity(intent)
+                            view.reload()
                         }
                         return false
                     }
@@ -103,21 +110,23 @@ class NewsItemFragment : Fragment() {
                     if (url.endsWith(".pdf")) {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
+                        view.reload()
                         startActivity(intent)
                         return false
                     }
 
-                    if(url.startsWith("https://mailto")){
+                    if (url.startsWith("https://mailto")) {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
                         if (intent.resolveActivity(requireContext().packageManager) != null) {
+                            view.reload()
                             startActivity(intent)
                         }
                         return false
                     }
 
                     view.loadUrl(url)
-                    return false
+                    return true
                 }
 
                 return true;
@@ -129,17 +138,20 @@ class NewsItemFragment : Fragment() {
                 error: WebResourceError?
             ) {
                 super.onReceivedError(view, request, error)
-                Snackbar.make(requireView(), "Ошибка открытия страницы", Snackbar.LENGTH_INDEFINITE)
-                    .setAction(
-                        "Назад"
-                    ) {
-                        if (webView.canGoBack()) {
-                            webView.goBack()
-                        }
-                    }.show()
 
+                 snackbar = Snackbar.make(
+                    requireView(),
+                    R.string.Snackbar_Notification,
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                snackbar?.setAction(R.string.Snackbar_back) {
+                    if (webView.canGoBack()) {
+                        webView.goBack()
+                        snackbar?.dismiss()
+                    }
+                }
+                snackbar?.show()
             }
-
         }
 
 
@@ -152,14 +164,13 @@ class NewsItemFragment : Fragment() {
         webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8", null)
 
 
-
-
         webView.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if (event?.action == KeyEvent.ACTION_DOWN) {
                     when (keyCode) {
                         KeyEvent.KEYCODE_BACK -> if (webView.canGoBack()) {
                             webView.goBack()
+                            snackbar?.dismiss()
                             return true
                         }
                     }
