@@ -4,7 +4,9 @@ package thesis_project.presentation.ui.start
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -13,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.net.MailTo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -84,6 +87,7 @@ class NewsItemFragment : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
+
                 /// Intent.ACTION_SEND и Intent.VIEW делают одно и тоже сдесь
                 /// как правильно и где тогда применять Intent.ACTION_SEND
                 ///putExtra имейл не забирает
@@ -93,49 +97,34 @@ class NewsItemFragment : Fragment() {
                         putExtra(Intent.EXTRA_SUBJECT,"мой заголовок")
                         putExtra(Intent.EXTRA_TEXT,"мой текст")
                     }
-                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
-                        view.reload()
-                        startActivity(intent)
-                        true
-                    } else {
-                        false
-                    }
+                    return resolveActivity(intent)
                 }
 
                 if (url.startsWith("tel")) {
                     val intent = Intent(Intent.ACTION_DIAL).apply {
                         data = Uri.parse(url)
                     }
-                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
-                        view.reload()
-                        startActivity(intent)
-                        true
-                    } else {
-                        false
-                    }
+                    return resolveActivity(intent)
                 }
 
                 if(url.startsWith("https://t.me")||url.endsWith(".pdf")||url.startsWith("https://play.")){
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(url)
-                    return if (intent.resolveActivity(requireContext().packageManager) != null) {
-                        startActivity(intent)
-                        view.reload()
-                        true
-                    } else {
-                        false
-                    }
+                    return resolveActivity(intent)
                 }
 
                 return false
             }
 
+            @RequiresApi(Build.VERSION_CODES.M)
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
                 super.onReceivedError(view, request, error)
+
+                Log.d("onReceivedError","$request   ${error?.description}")
 
                 snackbar = Snackbar.make(
                     requireView(),
@@ -146,17 +135,20 @@ class NewsItemFragment : Fragment() {
                     if (webView.canGoBack()) {
                         webView.goBack()
                         snackbar?.dismiss()
+                    }else {
+                        snackbar?.dismiss()
                     }
                 }
                 snackbar?.show()
             }
+
         }
 
 
         webView.addJavascriptInterface(object : Any() {
             @JavascriptInterface
             fun showToast() {
-                Toast.makeText(requireContext(), "Picture toast!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.picture_toast, Toast.LENGTH_SHORT).show()
             }
         }, "PictureToast")
         webView.loadDataWithBaseURL("file:///android_asset/", url, "text/html", "UTF-8", null)
@@ -178,4 +170,14 @@ class NewsItemFragment : Fragment() {
         })
 
     }
+
+    fun resolveActivity(intent:Intent):Boolean{
+        return if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+            true
+        } else {
+            false
+        }
+    }
+
 }

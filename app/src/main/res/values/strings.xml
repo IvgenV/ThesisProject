@@ -18,4 +18,5 @@
     <string name="workerTime">60</string>
     <string name="Snackbar_Notification">Ошибка загрузки страницы</string>
     <string name="Snackbar_back">НАЗАД</string>
+    <string name="picture_toast">это картинка</string>
 </resources>
