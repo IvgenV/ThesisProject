@@ -19,6 +19,11 @@ import androidx.annotation.RequiresApi
 import androidx.core.net.MailTo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
+import androidx.navigation.Navigator
+import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
 import thesis_project.presentation.viewmodel.ViewModel
@@ -136,7 +141,10 @@ class NewsItemFragment : Fragment() {
                         webView.goBack()
                         snackbar?.dismiss()
                     }else {
-                        snackbar?.dismiss()
+                        val back = findNavController().popBackStack()
+                        if(!back){
+                            requireActivity().finish()
+                        }
                     }
                 }
                 snackbar?.show()
