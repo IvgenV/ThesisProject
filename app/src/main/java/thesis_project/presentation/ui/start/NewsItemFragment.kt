@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.icu.util.ULocale
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -92,15 +93,12 @@ class NewsItemFragment : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
-
-                /// Intent.ACTION_SEND и Intent.VIEW делают одно и тоже сдесь
-                /// как правильно и где тогда применять Intent.ACTION_SEND
-                ///putExtra имейл не забирает
                 if (url.startsWith("mailto")) {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse(url)
-                        putExtra(Intent.EXTRA_SUBJECT,"мой заголовок")
-                        putExtra(Intent.EXTRA_TEXT,"мой текст")
+                        data = Uri.parse("$url ?subject=заголовок &body=текст")
+                       /* data = Uri.parse("mailto:")
+                        putExtra(Intent.EXTRA_SUBJECT,"Заголовок")
+                        putExtra(Intent.EXTRA_EMAIL, arrayOf("someemail"))*/
                     }
                     return resolveActivity(intent)
                 }
@@ -118,6 +116,7 @@ class NewsItemFragment : Fragment() {
                     return resolveActivity(intent)
                 }
 
+
                 return false
             }
 
@@ -129,25 +128,25 @@ class NewsItemFragment : Fragment() {
             ) {
                 super.onReceivedError(view, request, error)
 
-                Log.d("onReceivedError","$request   ${error?.description}")
-
-                snackbar = Snackbar.make(
-                    requireView(),
-                    R.string.Snackbar_Notification,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                snackbar?.setAction(R.string.Snackbar_back) {
-                    if (webView.canGoBack()) {
-                        webView.goBack()
-                        snackbar?.dismiss()
-                    }else {
-                        val back = findNavController().popBackStack()
-                        if(!back){
-                            requireActivity().finish()
+                if(request?.url.toString().endsWith("htm")){
+                    snackbar = Snackbar.make(
+                        requireView(),
+                        R.string.snackbar_back,
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                    snackbar?.setAction(R.string.snackbar_back) {
+                        if (webView.canGoBack()) {
+                            webView.goBack()
+                            snackbar?.dismiss()
+                        }else {
+                            val back = findNavController().popBackStack()
+                            if(!back){
+                                requireActivity().finish()
+                            }
                         }
                     }
+                    snackbar?.show()
                 }
-                snackbar?.show()
             }
 
         }
@@ -173,6 +172,7 @@ class NewsItemFragment : Fragment() {
                         }
                     }
                 }
+                snackbar?.dismiss()
                 return false
             }
         })

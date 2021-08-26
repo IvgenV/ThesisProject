@@ -6,9 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <queries>
         <intent>
-            <action android:name="android.intent.action.SENDTO" />
-        </intent>
-        <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
     </queries>
