@@ -26,10 +26,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationListener
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
@@ -64,8 +60,9 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             }
         }
 
-      override fun onResume() {
-        super.onResume()
+
+    override fun onStart() {
+        super.onStart()
           viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
           viewModel.initialAtmDb()
           createLocationManager()
