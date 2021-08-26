@@ -96,9 +96,15 @@ class NewsItemFragment : Fragment() {
                 if (url.startsWith("mailto")) {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("$url ?subject=заголовок &body=текст")
-                       /* data = Uri.parse("mailto:")
-                        putExtra(Intent.EXTRA_SUBJECT,"Заголовок")
-                        putExtra(Intent.EXTRA_EMAIL, arrayOf("someemail"))*/
+
+//                        data = Uri.parse(url)
+//                        or
+//                        data = Uri.parse("mailto:")
+//                        putExtra(Intent.EXTRA_EMAIL, url.substringAfter("mailto:"))
+//
+//                        also can use:
+//                        putExtra(Intent.EXTRA_SUBJECT, "subject")
+//                        putExtra(Intent.EXTRA_TEXT, "text")
                     }
                     return resolveActivity(intent)
                 }
@@ -110,7 +116,7 @@ class NewsItemFragment : Fragment() {
                     return resolveActivity(intent)
                 }
 
-                if(url.startsWith("https://t.me")||url.endsWith(".pdf")||url.startsWith("https://play.")){
+                if (url.startsWith("https://t.me") || url.endsWith(".pdf") || url.startsWith("https://play.")) {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(url)
                     return resolveActivity(intent)
@@ -127,8 +133,8 @@ class NewsItemFragment : Fragment() {
                 error: WebResourceError?
             ) {
                 super.onReceivedError(view, request, error)
-
-                if(request?.url.toString().endsWith("htm")){
+                val url = request?.url.toString()
+                if (url.endsWith("htm") || url.endsWith("html")) {
                     snackbar = Snackbar.make(
                         requireView(),
                         R.string.snackbar_back,
@@ -138,9 +144,9 @@ class NewsItemFragment : Fragment() {
                         if (webView.canGoBack()) {
                             webView.goBack()
                             snackbar?.dismiss()
-                        }else {
+                        } else {
                             val back = findNavController().popBackStack()
-                            if(!back){
+                            if (!back) {
                                 requireActivity().finish()
                             }
                         }
@@ -179,7 +185,7 @@ class NewsItemFragment : Fragment() {
 
     }
 
-    fun resolveActivity(intent:Intent):Boolean{
+    fun resolveActivity(intent: Intent): Boolean {
         return if (intent.resolveActivity(requireContext().packageManager) != null) {
             startActivity(intent)
             true
