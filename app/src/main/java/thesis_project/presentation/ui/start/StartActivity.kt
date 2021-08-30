@@ -1,5 +1,6 @@
 package thesis_project.presentation.ui.start
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
 import thesis_project.presentation.viewmodel.ViewModel
 
 class StartActivity : AppCompatActivity() {
@@ -69,8 +71,9 @@ class StartActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navigationView, navController)
 
 
-
         textTitle = findViewById(R.id.textTitleBar)
+
+
 
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
