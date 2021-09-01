@@ -28,6 +28,7 @@ class ViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
+    var key = ""
 
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     private var atmBB = Dependencies.getAtmUseCase(App.instance)

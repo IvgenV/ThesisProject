@@ -50,7 +50,7 @@ class StartActivity : AppCompatActivity() {
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
         val child = intent.extras?.getString("child") ?: "Error"
-
+        viewModel.key = intent.extras?.getString("child")?:"default"
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {
