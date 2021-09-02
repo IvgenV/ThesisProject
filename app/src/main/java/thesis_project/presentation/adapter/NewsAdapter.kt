@@ -28,16 +28,17 @@ class NewsAdapter: ListAdapter<News,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textTitle.text = "${getItem(position).name_ru} sdsdsdsd sdsdsdsdsd sdsdsdsd"
+        holder.textTitle.text = "${getItem(position).name_ru} sdsdsdsd sdsdsdsdsd sdsdsdsd" +
+                "sdsdsdsd dsdsdsds sdsdsd"
         holder.start_data.text = getItem(position).start_date
 
         Picasso.get().load(getItem(position).img).into(holder.image)
 
-
-        holder.wholeNews.setOnClickListener {
+        holder.card.setOnClickListener {
             listener?.addToSharedPreferences(getItem(position).name_ru)
             listener?.onClick(getItem(position))
         }
+
         holder.share.setOnClickListener {
             listener?.share(holder.textTitle.text.toString())
         }
@@ -58,7 +59,6 @@ class NewsAdapter: ListAdapter<News,
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val start_data: TextView = view.findViewById(R.id.textDate)
-        val wholeNews:TextView = view.findViewById(R.id.textWholeNews)
         val card: MaterialCardView = view.findViewById(R.id.card)
         val share:ImageView = view.findViewById(R.id.imageShare)
         val textTitle: TextView = view.findViewById(R.id.text_title)

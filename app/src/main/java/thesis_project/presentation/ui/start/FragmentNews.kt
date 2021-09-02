@@ -1,33 +1,22 @@
 package thesis_project.presentation.ui.start
 
-import android.animation.LayoutTransition
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.icu.number.NumberFormatter.with
 import android.os.Bundle
-import android.os.Handler
-import android.text.TextUtils
-import android.util.Log
 import android.view.*
-import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
 import com.google.android.material.card.MaterialCardView
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.Picasso
 import thesis_project.ReadNews
 import thesis_project.data.data_base.news.News
 import thesis_project.presentation.adapter.NewsAdapter
@@ -45,6 +34,8 @@ class FragmentNews : Fragment(), ToFragmentNews {
     private val sp = "NEWS_SHAREDPREFERENCES"
     lateinit var key:String
     var readNews = ReadNews(mutableListOf())
+    val readNewsEmpty = ReadNews(mutableListOf())
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -76,7 +67,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         navigation = Navigation.findNavController(view)
         progressNews = view.findViewById(R.id.progressNews)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.greenDark))
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(),R.color.greenDark))
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.initialNews()
             viewModel.setNews()
@@ -106,33 +97,27 @@ class FragmentNews : Fragment(), ToFragmentNews {
     }
 
     override fun checkSharedPreferences(card: MaterialCardView, title: String) {
-        val sp:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
         val builder = GsonBuilder()
         val gson = builder.create()
-
-        val readnews2 = ReadNews(mutableListOf())
-        var str = gson.toJson(readnews2)
-
-        readNews = gson.fromJson(sp.getString(key,str),ReadNews::class.java)
+        val str = gson.toJson(readNewsEmpty)
+        val sharedPreferences:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
+        readNews = gson.fromJson(sharedPreferences.getString(key,str),ReadNews::class.java)
         card.isChecked = readNews.news.contains(title)
     }
 
     override fun addToSharedPreferences(title: String) {
-        val sp:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
-        val editor = sp.edit()
-
+        val sharedPreferences:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
         val builder = GsonBuilder()
         val gson = builder.create()
+        var listOfTitle = gson.toJson(readNewsEmpty)
 
-        val readnews2 = ReadNews(mutableListOf())
-        var str = gson.toJson(readnews2)
-
-        readNews = gson.fromJson(sp.getString(key,str), ReadNews::class.java)
+        readNews = gson.fromJson(sharedPreferences.getString(key,listOfTitle), ReadNews::class.java)
         if(!readNews.news.contains(title)){
             readNews.news.add(title)
         }
-        str = gson.toJson(readNews)
-        editor.putString(key,str)
+        listOfTitle = gson.toJson(readNews)
+        editor.putString(key,listOfTitle)
         editor.apply()
     }
 
