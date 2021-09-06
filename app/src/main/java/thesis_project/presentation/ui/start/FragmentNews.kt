@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
@@ -31,9 +32,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
     lateinit var newsList: RecyclerView
     lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private val sp = "NEWS_SHAREDPREFERENCES"
-    var readNews = ReadNews(mutableListOf())
-    val readNewsEmpty = ReadNews(mutableListOf())
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -62,6 +60,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         if(!adapter.hasObservers()){
             adapter.setHasStableIds(true)
         }
+        Log.d("SDSDSDSD","onViewCreated")
         navigation = Navigation.findNavController(view)
         progressNews = view.findViewById(R.id.progressNews)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -94,18 +93,4 @@ class FragmentNews : Fragment(), ToFragmentNews {
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
     }
-
-    override fun checkSharedPreferences(card: MaterialCardView, title: String) {
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        val str = gson.toJson(readNewsEmpty)
-        val sharedPreferences:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
-        readNews = gson.fromJson(sharedPreferences.getString(viewModel.userKey,str),ReadNews::class.java)
-        card.isChecked =  readNews.newsList.contains(title)
-    }
-
-    /*override fun addToSharedPreferences(title: String) {
-        viewModel.addNewsSharedPreferences(title)
-    }*/
-
 }

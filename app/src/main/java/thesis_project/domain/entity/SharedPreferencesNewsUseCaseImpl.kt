@@ -7,8 +7,8 @@ import thesis_project.domain.use_case.SharedPreferencesNewsUseCase
 class SharedPreferencesNewsUseCaseImpl(
     val sharedPreferencesNewsRepository: SharedPreferencesNewsRepository
 ):SharedPreferencesNewsUseCase {
-    override fun checkSharedPreferences(card: MaterialCardView, title: String) {
-        sharedPreferencesNewsRepository.checkSharedPreferences(card,title)
+    override fun checkSharedPreferences( title: String,key:String):Boolean {
+        return sharedPreferencesNewsRepository.checkSharedPreferences(title,key)
     }
 
     override fun addToSharedPreferences(title: String,key:String) {

@@ -4,7 +4,7 @@ import com.google.android.material.card.MaterialCardView
 
 interface SharedPreferencesNewsUseCase {
 
-    fun checkSharedPreferences(card: MaterialCardView, title: String)
+    fun checkSharedPreferences(title: String,key:String):Boolean
     fun addToSharedPreferences(title: String,key:String)
 
 }

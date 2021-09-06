@@ -47,7 +47,7 @@ class ViewModel : ViewModel() {
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
     private var listNews = MutableLiveData<List<News>>()
-    private var mapTitle = mutableMapOf<String, Boolean>()
+    private var listNewsWithChackedLD = MutableLiveData<List<NewsWithChacked>>()
 
     //profile
     var email = ""
@@ -538,7 +538,9 @@ class ViewModel : ViewModel() {
         }
     }
 
-    //News
+    //////////////////News
+    /////
+    //
     fun initialNews() {
         viewModelScope.launch {
             try {
@@ -554,20 +556,28 @@ class ViewModel : ViewModel() {
 
     fun setNews() {
         viewModelScope.launch {
-            listNews.value = localNewsDb.getNewsList()
+            val listNews = localNewsDb.getNewsList()
+            var newsWithChacked:NewsWithChacked
+            val listNewsWithChacked = mutableListOf<NewsWithChacked>()
+            listNews.forEach {
+                if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
+                    newsWithChacked = NewsWithChacked(it,true)
+                    listNewsWithChacked.add(newsWithChacked)
+                }else{
+                    newsWithChacked = NewsWithChacked(it,false)
+                    listNewsWithChacked.add(newsWithChacked)
+                }
+            }
+            listNewsWithChackedLD.value = listNewsWithChacked
         }
     }
 
-    fun getNews(): LiveData<List<News>> {
-        return listNews
+    fun getNews(): LiveData<List<NewsWithChacked>> {
+        return listNewsWithChackedLD
     }
 
     fun addNewsSharedPreferences(title: String) {
         sharedPreferencesNews.addToSharedPreferences(title, userKey)
-    }
-
-    fun checkSharedPreferences() {
-
     }
 
 }

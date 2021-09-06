@@ -11,16 +11,16 @@ class SharedPreferencesNews(val context: Context): SharedPreferencesNewsReposito
 
     private val shPrNews = "NEWS_SHAREDPREFERENCES"
     var readNews = ReadNews(mutableListOf())
-    val newsTitleKey = ""
+    ///val newsTitleKey = ""
     val readNewsEmpty = ReadNews(mutableListOf())
 
-    override fun checkSharedPreferences(card: MaterialCardView, title: String) {
+    override fun checkSharedPreferences(title: String,key:String):Boolean {
         val builder = GsonBuilder()
         val gson = builder.create()
         val str = gson.toJson(readNewsEmpty)
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
-        readNews = gson.fromJson(sharedPreferences.getString(newsTitleKey,str),ReadNews::class.java)
-        card.isChecked = readNews.newsList.contains(title)
+        readNews = gson.fromJson(sharedPreferences.getString(key,str),ReadNews::class.java)
+        return readNews.newsList.contains(title)
     }
 
     override fun addToSharedPreferences(title: String,key:String) {

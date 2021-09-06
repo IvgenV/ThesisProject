@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
+import thesis_project.NewsWithChacked
 import thesis_project.data.data_base.news.News
 
-class NewsAdapter: ListAdapter<News,
+class NewsAdapter: ListAdapter<NewsWithChacked,
         NewsAdapter.ViewHolder>(NewsCompareCallback()) {
 
     private var listener: ToFragmentNews? = null
@@ -28,23 +29,22 @@ class NewsAdapter: ListAdapter<News,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textTitle.text = "${getItem(position).name_ru} sdsdsdsd sdsdsdsdsd sdsdsdsd" +
-                "sdsdsdsd dsdsdsds sdsdsd"
-        holder.start_data.text = getItem(position).start_date
-
         val item = getItem(position)
+        holder.card.isChecked = item.isChecked
+        holder.textTitle.text = "${getItem(position).news.name_ru} sdsdsdsd sdsdsdsdsd sdsdsdsd" +
+                "sdsdsdsd dsdsdsds sdsdsd"
+        holder.start_data.text = getItem(position).news.start_date
 
-        Picasso.get().load(item.img).into(holder.image)
+
+        Picasso.get().load(item.news.img).into(holder.image)
 
         holder.card.setOnClickListener {
-            ///listener?.addToSharedPreferences(getItem(position).name_ru)
-            listener?.onClick(item)
+            listener?.onClick(item.news)
         }
 
         holder.share.setOnClickListener {
-            listener?.share(item)
+            listener?.share(item.news)
         }
-        listener?.checkSharedPreferences(holder.card,item.name_ru)
     }
 
     override fun getItemId(position: Int): Long {
@@ -55,7 +55,7 @@ class NewsAdapter: ListAdapter<News,
         listener = toFragmentNews
     }
 
-    fun setData(data: List<News>) {
+    fun setData(data: List<NewsWithChacked>) {
         submitList(data)
     }
 
