@@ -46,7 +46,7 @@ class ViewModel : ViewModel() {
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
-    private var listNews = MutableLiveData<List<News>>()
+    ///private var listNews = MutableLiveData<List<News>>()
     private var listNewsWithChackedLD = MutableLiveData<List<NewsWithChacked>>()
 
     //profile
@@ -118,8 +118,12 @@ class ViewModel : ViewModel() {
                     }
                     localRateDb.addListRate(dataList)
                     progress.value = View.INVISIBLE
-                } else localRateDb.addListRate(listOf())
+                } else{
+                    progress.value = View.INVISIBLE
+                    localRateDb.addListRate(listOf())
+                }
             } catch (e: Exception) {
+                progress.value = View.INVISIBLE
                 toast.show()
             }
 
@@ -541,7 +545,7 @@ class ViewModel : ViewModel() {
     //////////////////News
     /////
     //
-    fun initialNews() {
+    fun initialNewssdsd() {
         viewModelScope.launch {
             try {
                 val callNews = Dependencies.getNewsCloudUseCase().getNews()
@@ -554,21 +558,35 @@ class ViewModel : ViewModel() {
         }
     }
 
-    fun setNews() {
+    fun initialNews() {
         viewModelScope.launch {
-            val listNews = localNewsDb.getNewsList()
-            var newsWithChacked:NewsWithChacked
-            val listNewsWithChacked = mutableListOf<NewsWithChacked>()
-            listNews.forEach {
-                if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
-                    newsWithChacked = NewsWithChacked(it,true)
-                    listNewsWithChacked.add(newsWithChacked)
+            try {
+                progress.value = View.VISIBLE
+                delay(300)
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    localNewsDb.addNews(callNews.body() ?: listOf())
+                    val listNews = callNews.body()
+                    var newsWithChacked:NewsWithChacked
+                    val listNewsWithChacked = mutableListOf<NewsWithChacked>()
+                    listNews?.forEach {
+                        if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
+                            newsWithChacked = NewsWithChacked(it,true)
+                            listNewsWithChacked.add(newsWithChacked)
+                        }else{
+                            newsWithChacked = NewsWithChacked(it,false)
+                            listNewsWithChacked.add(newsWithChacked)
+                        }
+                    }
+                    listNewsWithChackedLD.value = listNewsWithChacked
+                    progress.value = View.INVISIBLE
                 }else{
-                    newsWithChacked = NewsWithChacked(it,false)
-                    listNewsWithChacked.add(newsWithChacked)
+                    progress.value = View.INVISIBLE
                 }
+            } catch (e: Exception) {
+                progress.value = View.INVISIBLE
+                toast.show()
             }
-            listNewsWithChackedLD.value = listNewsWithChacked
         }
     }
 
