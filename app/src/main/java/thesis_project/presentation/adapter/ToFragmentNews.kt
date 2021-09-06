@@ -6,7 +6,7 @@ import thesis_project.data.data_base.news.News
 
 interface ToFragmentNews {
     fun onClick(news: News)
-    fun share(text:String)
+    fun share(news: News)
     fun checkSharedPreferences(card:MaterialCardView, title:String)
-    fun addToSharedPreferences(title:String)
+    ///fun addToSharedPreferences(title:String)
 }

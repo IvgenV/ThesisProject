@@ -1,3 +1,3 @@
 package thesis_project
 
-data class ReadNews(var news:MutableList<String>)
+data class ReadNews(var newsList:MutableList<String>)

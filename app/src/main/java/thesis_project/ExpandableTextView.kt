@@ -1,4 +1,5 @@
 package thesis_project
+
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
@@ -55,6 +56,7 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
             )
         }
         mAnimator.addListener(object : AnimatorListenerAdapter() {
+
             override fun onAnimationStart(animation: Animator) {
                 if (isCollapsed()) {
                     isCollapsing = false
@@ -150,11 +152,11 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
         }
     }
 
-    private fun paddingHeight():Int{
+    private fun paddingHeight(): Int {
         return compoundPaddingBottom + compoundPaddingTop
     }
 
-    private fun isCollapsed():Boolean{
+    private fun isCollapsed(): Boolean {
         return Int.MAX_VALUE != maxLines;
     }
 
@@ -169,6 +171,4 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         setLayoutParams(layoutParams)
     }
-
-
 }

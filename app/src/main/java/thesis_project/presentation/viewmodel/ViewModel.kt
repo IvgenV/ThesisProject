@@ -21,14 +21,13 @@ import thesis_project.data.data_base.news.News
 import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
-import thesis_project.sealed.Initial
 
 
 class ViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
-    var key = ""
+    var userKey = ""
 
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     private var atmBB = Dependencies.getAtmUseCase(App.instance)
@@ -48,6 +47,7 @@ class ViewModel : ViewModel() {
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
     private var listNews = MutableLiveData<List<News>>()
+    private var mapTitle = mutableMapOf<String, Boolean>()
 
     //profile
     var email = ""
@@ -68,6 +68,7 @@ class ViewModel : ViewModel() {
     //SharedPreferences
     val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
+    val sharedPreferencesNews = Dependencies.getSharedPreferencesNews()
 
     //Worker
     val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
@@ -298,7 +299,7 @@ class ViewModel : ViewModel() {
 
     ////Atm block
     fun initialAtmCloud(location: Location?) {
-        if(location != null){
+        if (location != null) {
             viewModelScope.launch {
                 try {
                     progress.value = View.VISIBLE
@@ -310,7 +311,7 @@ class ViewModel : ViewModel() {
                         progress.value = View.INVISIBLE
                     }
 
-                    if(!call.isSuccessful){
+                    if (!call.isSuccessful) {
                         createlistAtmDistance(location)
                         progress.value = View.INVISIBLE
                     }
@@ -349,7 +350,8 @@ class ViewModel : ViewModel() {
                 val dist = location.distanceTo(loc).toDouble()
                 if (it.addressType == "тракт") {
                     list.add(
-                        ItemAdressDistance("Банкомат",
+                        ItemAdressDistance(
+                            "Банкомат",
                             it.id, it.address + " " + it.addressType + " " +
                                     it.house, dist
                         )
@@ -357,7 +359,7 @@ class ViewModel : ViewModel() {
                 } else {
                     list.add(
                         ItemAdressDistance(
-                             "Банкомат", it.id, it.addressType + " " +
+                            "Банкомат", it.id, it.addressType + " " +
                                     it.address + " " + it.house, dist
                         )
                     )
@@ -441,7 +443,7 @@ class ViewModel : ViewModel() {
     }
 
 
-    fun createMapDescription(item:String){
+    fun createMapDescription(item: String) {
 
     }
 
@@ -492,32 +494,6 @@ class ViewModel : ViewModel() {
     }
 
 
-    //News
-    fun initialNews() {
-        viewModelScope.launch {
-            try {
-
-                val callNews = Dependencies.getNewsCloudUseCase().getNews()
-                if (callNews.isSuccessful) {
-                    localNewsDb.addNews(callNews.body() ?: listOf())
-                }
-            } catch (e: Exception) {
-                toast.show()
-            }
-        }
-    }
-
-    fun setNews() {
-        viewModelScope.launch {
-            listNews.value = localNewsDb.getNewsList()
-        }
-    }
-
-    fun getNews(): LiveData<List<News>> {
-        return listNews
-    }
-
-
     ///SaveStatusSwitch
     fun addStatusSwitch(key: String, status: Boolean) {
         sharedPreferencesSwitch.add(key, status)
@@ -560,6 +536,38 @@ class ViewModel : ViewModel() {
         viewModelScope.launch {
             myWorkerController.StopWorkerNotificationRate()
         }
+    }
+
+    //News
+    fun initialNews() {
+        viewModelScope.launch {
+            try {
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    localNewsDb.addNews(callNews.body() ?: listOf())
+                }
+            } catch (e: Exception) {
+                toast.show()
+            }
+        }
+    }
+
+    fun setNews() {
+        viewModelScope.launch {
+            listNews.value = localNewsDb.getNewsList()
+        }
+    }
+
+    fun getNews(): LiveData<List<News>> {
+        return listNews
+    }
+
+    fun addNewsSharedPreferences(title: String) {
+        sharedPreferencesNews.addToSharedPreferences(title, userKey)
+    }
+
+    fun checkSharedPreferences() {
+
     }
 
 }

@@ -35,12 +35,12 @@ class NewsAdapter: ListAdapter<News,
         Picasso.get().load(getItem(position).img).into(holder.image)
 
         holder.card.setOnClickListener {
-            listener?.addToSharedPreferences(getItem(position).name_ru)
+            ///listener?.addToSharedPreferences(getItem(position).name_ru)
             listener?.onClick(getItem(position))
         }
 
         holder.share.setOnClickListener {
-            listener?.share(holder.textTitle.text.toString())
+            listener?.share(getItem(position))
         }
         listener?.checkSharedPreferences(holder.card,getItem(position).name_ru)
     }

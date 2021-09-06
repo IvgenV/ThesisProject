@@ -1,10 +1,7 @@
 package thesis_project.presentation.ui.start
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +14,6 @@ import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.FirebaseDatabase
-import com.squareup.picasso.Picasso
 import thesis_project.presentation.viewmodel.ViewModel
 
 class StartActivity : AppCompatActivity() {
@@ -50,7 +46,7 @@ class StartActivity : AppCompatActivity() {
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
         val child = intent.extras?.getString("child") ?: "Error"
-        viewModel.key = intent.extras?.getString("child")?:"default"
+        viewModel.userKey = child
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {

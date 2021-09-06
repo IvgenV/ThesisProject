@@ -10,6 +10,7 @@ import thesis_project.data.data_base.atm.AtmDb
 import thesis_project.data.data_base.filials.RateDb
 import thesis_project.data.data_base.infobox.InfoBoxDb
 import thesis_project.data.data_base.news.NewsData
+import thesis_project.data.sharedPreferences.SharedPreferencesNews
 import thesis_project.data.sharedPreferences.SharedPreferencesRateDouble
 import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
 import thesis_project.data.worker.WorkerControllerUseCaseImpl
@@ -100,4 +101,11 @@ object Dependencies {
 
     fun getMyWorkerController(): WorkerControllerUseCase = workerController
 
+    ////SharedPreferencesNews
+    private val sharedPreferencesNews:SharedPreferencesNewsRepository by lazy {
+        SharedPreferencesNews(App.instance)
+    }
+
+    fun getSharedPreferencesNews():SharedPreferencesNewsUseCase =
+        SharedPreferencesNewsUseCaseImpl(sharedPreferencesNews)
 }

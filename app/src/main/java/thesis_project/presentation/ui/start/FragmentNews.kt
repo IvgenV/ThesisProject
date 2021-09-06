@@ -32,7 +32,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
     lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val sp = "NEWS_SHAREDPREFERENCES"
-    lateinit var key:String
     var readNews = ReadNews(mutableListOf())
     val readNewsEmpty = ReadNews(mutableListOf())
 
@@ -40,7 +39,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-        key = viewModel.key
         viewModel.initialNews()
         viewModel.setNews()
         viewModel.getNews().observe(viewLifecycleOwner, {
@@ -83,13 +81,14 @@ class FragmentNews : Fragment(), ToFragmentNews {
         bundle.putString("name_ru", news.name_ru)
         bundle.putString("start_date", news.start_date)
         bundle.putString("html_ru", news.html_ru)
+        viewModel.addNewsSharedPreferences(news.name_ru)
         navigation.navigate(R.id.news_item, bundle)
     }
 
-    override fun share(text: String) {
+    override fun share(news: News) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, text)
+            putExtra(Intent.EXTRA_TEXT, news.name_ru)
             type = "text/plain"
         }
         val shareIntent = Intent.createChooser(sendIntent, null)
@@ -101,24 +100,12 @@ class FragmentNews : Fragment(), ToFragmentNews {
         val gson = builder.create()
         val str = gson.toJson(readNewsEmpty)
         val sharedPreferences:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
-        readNews = gson.fromJson(sharedPreferences.getString(key,str),ReadNews::class.java)
-        card.isChecked = readNews.news.contains(title)
+        readNews = gson.fromJson(sharedPreferences.getString(viewModel.userKey,str),ReadNews::class.java)
+        card.isChecked =  readNews.newsList.contains(title)
     }
 
-    override fun addToSharedPreferences(title: String) {
-        val sharedPreferences:SharedPreferences = requireActivity().getSharedPreferences(sp,Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        var listOfTitle = gson.toJson(readNewsEmpty)
-
-        readNews = gson.fromJson(sharedPreferences.getString(key,listOfTitle), ReadNews::class.java)
-        if(!readNews.news.contains(title)){
-            readNews.news.add(title)
-        }
-        listOfTitle = gson.toJson(readNews)
-        editor.putString(key,listOfTitle)
-        editor.apply()
-    }
+    /*override fun addToSharedPreferences(title: String) {
+        viewModel.addNewsSharedPreferences(title)
+    }*/
 
 }
