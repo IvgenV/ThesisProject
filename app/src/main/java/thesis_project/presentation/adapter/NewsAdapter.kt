@@ -32,17 +32,19 @@ class NewsAdapter: ListAdapter<News,
                 "sdsdsdsd dsdsdsds sdsdsd"
         holder.start_data.text = getItem(position).start_date
 
-        Picasso.get().load(getItem(position).img).into(holder.image)
+        val item = getItem(position)
+
+        Picasso.get().load(item.img).into(holder.image)
 
         holder.card.setOnClickListener {
             ///listener?.addToSharedPreferences(getItem(position).name_ru)
-            listener?.onClick(getItem(position))
+            listener?.onClick(item)
         }
 
         holder.share.setOnClickListener {
-            listener?.share(getItem(position))
+            listener?.share(item)
         }
-        listener?.checkSharedPreferences(holder.card,getItem(position).name_ru)
+        listener?.checkSharedPreferences(holder.card,item.name_ru)
     }
 
     override fun getItemId(position: Int): Long {
