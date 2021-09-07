@@ -545,7 +545,7 @@ class ViewModel : ViewModel() {
 
     //////////////////News
 
-    fun initialNews() {
+    fun initialNews(): LiveData<List<NewsWithChacked>> {
         viewModelScope.launch {
             try {
                 progress.value = View.VISIBLE
@@ -571,6 +571,7 @@ class ViewModel : ViewModel() {
                 toast.show()
             }
         }
+        return listNewsWithChackedLD
     }
 
     fun getNews(): LiveData<List<NewsWithChacked>> {
