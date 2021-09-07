@@ -34,11 +34,14 @@ class FragmentNews : Fragment(), ToFragmentNews {
         viewModel.initialNews().observe(viewLifecycleOwner,{
             adapter.setData(it)
         })
-       /* viewModel.getNews().observe(viewLifecycleOwner, {
-            adapter.setData(it)
-        })*/
         viewModel.getProgress().observe(viewLifecycleOwner,{
             progressNews.visibility = it
+        })
+        viewModel.getAlpha().observe(viewLifecycleOwner,{
+            newsList.alpha = it
+        })
+        viewModel.getRefresh().observe(viewLifecycleOwner,{
+            swipeRefreshLayout.isRefreshing = it
         })
     }
 
@@ -62,8 +65,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(),R.color.greenDark))
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.initialNews()
-            swipeRefreshLayout.isRefreshing = false
+            viewModel.initialNewsSwipe()
         }
         newsList = view.findViewById(R.id.Newsrecycler)
         newsList.layoutManager = LinearLayoutManager(requireContext())

@@ -549,6 +549,7 @@ class ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 progress.value = View.VISIBLE
+                alpha.value = 0.4f
                 delay(300)
                 val callNews = Dependencies.getNewsCloudUseCase().getNews()
                 if (callNews.isSuccessful) {
@@ -565,6 +566,7 @@ class ViewModel : ViewModel() {
                     listNewsWithChackedLD.value = listNewsWithChacked
                 }
                 progress.value = View.INVISIBLE
+                alpha.value = 1f
             } catch (e: Exception) {
                 Log.d("SDSDSDSDS","Exception")
                 progress.value = View.INVISIBLE
@@ -574,8 +576,44 @@ class ViewModel : ViewModel() {
         return listNewsWithChackedLD
     }
 
-    fun getNews(): LiveData<List<NewsWithChacked>> {
-        return listNewsWithChackedLD
+    fun initialNewsSwipe(){
+        viewModelScope.launch {
+            try {
+                isRefreshing.value = true
+                alpha.value = 0.4f
+                delay(300)
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    localNewsDb.addNews(callNews.body() ?: listOf())
+                    val listNews = callNews.body()
+                    val listNewsWithChacked = listNews?.map {
+                        if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
+                            NewsWithChacked(it,true)
+                        }else{
+                            NewsWithChacked(it,false)
+                        }
+                    }?: listOf()
+                    listNewsWithChackedLD.value = listNewsWithChacked
+                }
+                isRefreshing.value = false
+                alpha.value = 1f
+            } catch (e: Exception) {
+                isRefreshing.value = false
+                alpha.value = 1f
+                toast.show()
+            }
+        }
+    }
+
+    val alpha = MutableLiveData<Float>()
+    val isRefreshing = MutableLiveData<Boolean>()
+
+    fun getAlpha():LiveData<Float>{
+        return alpha
+    }
+
+    fun getRefresh():LiveData<Boolean>{
+        return isRefreshing
     }
 
     fun addNewsSharedPreferences(title: String) {
