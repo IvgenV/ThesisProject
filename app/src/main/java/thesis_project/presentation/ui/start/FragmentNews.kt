@@ -30,15 +30,14 @@ class FragmentNews : Fragment(), ToFragmentNews {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Log.d("SDSDSDSD","onActivityCreated")
         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
         viewModel.getNews().observe(viewLifecycleOwner, {
+            viewModel.initialNews()
             adapter.setData(it)
         })
         viewModel.getProgress().observe(viewLifecycleOwner,{
             progressNews.visibility = it
         })
-        viewModel.initialNews()
     }
 
     override fun onCreateView(

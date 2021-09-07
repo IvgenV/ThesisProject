@@ -2,41 +2,33 @@ package thesis_project.data.sharedPreferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.android.material.card.MaterialCardView
 import com.google.gson.GsonBuilder
-import thesis_project.ReadNews
+import com.google.gson.reflect.TypeToken
 import thesis_project.domain.repository.SharedPreferencesNewsRepository
 
 class SharedPreferencesNews(val context: Context): SharedPreferencesNewsRepository {
 
     private val shPrNews = "NEWS_SHAREDPREFERENCES"
-    var readNews = ReadNews(mutableListOf())
-    ///val newsTitleKey = ""
-    val readNewsEmpty = ReadNews(mutableListOf())
+    val typeToken = object : TypeToken<MutableList<String>>(){}.type
+    val builder = GsonBuilder()
+    val gson = builder.create()
+    val str = gson.toJson(mutableListOf<String>())
+    val sharedPreferences:SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
 
     override fun checkSharedPreferences(title: String,key:String):Boolean {
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        val str = gson.toJson(readNewsEmpty)
-        val sharedPreferences: SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
-        readNews = gson.fromJson(sharedPreferences.getString(key,str),ReadNews::class.java)
-        return readNews.newsList.contains(title)
+        val readNews:MutableList<String> = gson.fromJson(sharedPreferences.getString(key,str),typeToken)
+        return readNews.contains(title)
     }
 
     override fun addToSharedPreferences(title: String,key:String) {
-        val sharedPreferences:SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        var listOfTitle = gson.toJson(readNewsEmpty)
-
-        readNews = gson.fromJson(sharedPreferences.getString(key,listOfTitle), ReadNews::class.java)
-        if(!readNews.newsList.contains(title)){
-            readNews.newsList.add(title)
+        val readNews:MutableList<String> = gson.fromJson(sharedPreferences.getString(key,str),typeToken)
+        if(!readNews.contains(title)){
+            readNews.add(title)
+            val listOfTitle = gson.toJson(readNews)
+            editor.putString(key,listOfTitle)
+            editor.apply()
         }
-        listOfTitle = gson.toJson(readNews)
-        editor.putString(key,listOfTitle)
-        editor.apply()
     }
 
 

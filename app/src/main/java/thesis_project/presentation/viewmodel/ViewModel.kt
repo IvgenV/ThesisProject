@@ -18,6 +18,7 @@ import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 import java.util.*
 import thesis_project.data.data_base.news.News
+import thesis_project.domain.use_case.SharedPreferencesNewsUseCase
 import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
@@ -68,7 +69,7 @@ class ViewModel : ViewModel() {
     //SharedPreferences
     val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
-    val sharedPreferencesNews = Dependencies.getSharedPreferencesNews()
+    val sharedPreferencesNews:SharedPreferencesNewsUseCase by lazy { Dependencies.getSharedPreferencesNews() }
 
     //Worker
     val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
@@ -543,20 +544,6 @@ class ViewModel : ViewModel() {
     }
 
     //////////////////News
-    /////
-    //
-    fun initialNewssdsd() {
-        viewModelScope.launch {
-            try {
-                val callNews = Dependencies.getNewsCloudUseCase().getNews()
-                if (callNews.isSuccessful) {
-                    localNewsDb.addNews(callNews.body() ?: listOf())
-                }
-            } catch (e: Exception) {
-                toast.show()
-            }
-        }
-    }
 
     fun initialNews() {
         viewModelScope.launch {
@@ -565,25 +552,21 @@ class ViewModel : ViewModel() {
                 delay(300)
                 val callNews = Dependencies.getNewsCloudUseCase().getNews()
                 if (callNews.isSuccessful) {
+                    Log.d("SDSDSDSDS","noeError")
                     localNewsDb.addNews(callNews.body() ?: listOf())
                     val listNews = callNews.body()
-                    var newsWithChacked:NewsWithChacked
-                    val listNewsWithChacked = mutableListOf<NewsWithChacked>()
-                    listNews?.forEach {
+                    val listNewsWithChacked = listNews?.map {
                         if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
-                            newsWithChacked = NewsWithChacked(it,true)
-                            listNewsWithChacked.add(newsWithChacked)
+                            NewsWithChacked(it,true)
                         }else{
-                            newsWithChacked = NewsWithChacked(it,false)
-                            listNewsWithChacked.add(newsWithChacked)
+                            NewsWithChacked(it,false)
                         }
-                    }
+                    }?: listOf()
                     listNewsWithChackedLD.value = listNewsWithChacked
-                    progress.value = View.INVISIBLE
-                }else{
-                    progress.value = View.INVISIBLE
                 }
+                progress.value = View.INVISIBLE
             } catch (e: Exception) {
+                Log.d("SDSDSDSDS","Exception")
                 progress.value = View.INVISIBLE
                 toast.show()
             }
