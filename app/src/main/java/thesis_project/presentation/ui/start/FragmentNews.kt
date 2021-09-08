@@ -62,7 +62,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
         )
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.getNews()
-            swipeRefreshLayout.isRefreshing = false
         }
         val newsList: RecyclerView = view.findViewById(R.id.rvNews)
         newsList.layoutManager = LinearLayoutManager(requireContext())
