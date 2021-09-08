@@ -1,43 +1,44 @@
 package thesis_project.data.sharedPreferences
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import thesis_project.domain.repository.SharedPreferencesNewsRepository
 
-class SharedPreferencesNews(val context: Context): SharedPreferencesNewsRepository {
+class SharedPreferencesNews(context: Context) : SharedPreferencesNewsRepository {
 
-    private val shPrNews = "NEWS_SHARED_PREFERENCES"
-    val typeToken = object : TypeToken<MutableList<String>>(){}.type
-
-    override fun checkSharedPreferences(title: String,key:String):Boolean {
-        val readNews:MutableList<String> = fromJsonNews(key)
-        return readNews.contains(title)
+    companion object {
+        private const val NEWS_SHARED_PREFERENCES = "NEWS_SHARED_PREFERENCES"
     }
 
-    override fun addToSharedPreferences(title: String,key:String) {
-        val readNews:MutableList<String> = fromJsonNews(key)
-        if(!readNews.contains(title)){
+    private val sharedPreferences =
+        context.getSharedPreferences(NEWS_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+    private val gson = GsonBuilder().create()
+
+    override fun check(title: String, key: String): Boolean {
+        return loadNews(key).contains(title)
+    }
+
+    override fun add(title: String, key: String) {
+        val readNews = loadNews(key)
+        if (!readNews.contains(title)) {
             readNews.add(title)
-           toJsonNews(key,readNews)
+            saveNews(key, readNews)
         }
     }
 
-    private fun fromJsonNews(key:String):MutableList<String>{
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        val sharedPreferences:SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
-        return gson.fromJson(sharedPreferences.getString(key,gson.toJson(mutableListOf<String>())),typeToken)
+    private fun loadNews(key: String): MutableList<String> {
+        val defValue = gson.toJson(mutableListOf<String>())
+        val listStr = sharedPreferences.getString(key, defValue)
+
+        val typeToken = object : TypeToken<MutableList<String>>() {}.type
+        return gson.fromJson(listStr, typeToken)
     }
 
-    private fun toJsonNews(key:String,readNews:MutableList<String>){
-        val sharedPreferences:SharedPreferences = context.getSharedPreferences(shPrNews,Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val builder = GsonBuilder()
-        val gson = builder.create()
-        editor.putString(key,gson.toJson(readNews))
-        editor.apply()
+    private fun saveNews(key: String, readNews: MutableList<String>) {
+        sharedPreferences.edit()
+            .putString(key, gson.toJson(readNews))
+            .apply()
     }
 
 }

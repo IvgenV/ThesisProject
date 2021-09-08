@@ -14,10 +14,10 @@ import thesis_project.data.data_base.atm.AtmData
 import thesis_project.data.data_base.filials.RateData
 import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.data.data_base.filials.СoordinatesData
+import thesis_project.data.data_base.news.News
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 import java.util.*
-import thesis_project.data.data_base.news.News
 import thesis_project.domain.use_case.SharedPreferencesNewsUseCase
 import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
@@ -47,6 +47,7 @@ class ViewModel : ViewModel() {
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
+
     ///private var listNews = MutableLiveData<List<News>>()
     private var listNewsWithChackedLD = MutableLiveData<List<NewsWithChacked>>()
 
@@ -67,12 +68,12 @@ class ViewModel : ViewModel() {
     }
 
     //SharedPreferences
-    val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
-    val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
-    val sharedPreferencesNews:SharedPreferencesNewsUseCase by lazy { Dependencies.getSharedPreferencesNews() }
+    private val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
+    private val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
+    private val sharedPreferencesNews: SharedPreferencesNewsUseCase by lazy { Dependencies.getSharedPreferencesNews() }
 
     //Worker
-    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
+    private val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
 
 
     ///rateBlock
@@ -119,7 +120,7 @@ class ViewModel : ViewModel() {
                     }
                     localRateDb.addListRate(dataList)
                     progress.value = View.INVISIBLE
-                } else{
+                } else {
                     progress.value = View.INVISIBLE
                     localRateDb.addListRate(listOf())
                 }
@@ -447,11 +448,6 @@ class ViewModel : ViewModel() {
         return listInfoBox
     }
 
-
-    fun createMapDescription(item: String) {
-
-    }
-
     ////Gps block
     fun createGpsFilial(filial: String) {
         viewModelScope.launch {
@@ -469,7 +465,7 @@ class ViewModel : ViewModel() {
                 atmDataList.forEach {
                     if (it.id == atm) {
                         latLng.value =
-                            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                            LatLng(it.latitude, it.longitude)
                     }
                 }
             }
@@ -545,30 +541,19 @@ class ViewModel : ViewModel() {
 
     //////////////////News
 
-    fun initialNews(): LiveData<List<NewsWithChacked>> {
+    fun getNews(): LiveData<List<NewsWithChacked>> {
         viewModelScope.launch {
             try {
+                listNewsWithChackedLD.value = convert(localNewsDb.getNewsList())
                 progress.value = View.VISIBLE
-                alpha.value = 0.4f
-                delay(300)
                 val callNews = Dependencies.getNewsCloudUseCase().getNews()
                 if (callNews.isSuccessful) {
-                    Log.d("SDSDSDSDS","noeError")
-                    localNewsDb.addNews(callNews.body() ?: listOf())
-                    val listNews = callNews.body()
-                    val listNewsWithChacked = listNews?.map {
-                        if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
-                            NewsWithChacked(it,true)
-                        }else{
-                            NewsWithChacked(it,false)
-                        }
-                    }?: listOf()
-                    listNewsWithChackedLD.value = listNewsWithChacked
+                    val listNews = callNews.body() ?: listOf()
+                    localNewsDb.addNews(listNews)
+                    listNewsWithChackedLD.value = convert(listNews)
                 }
                 progress.value = View.INVISIBLE
-                alpha.value = 1f
             } catch (e: Exception) {
-                Log.d("SDSDSDSDS","Exception")
                 progress.value = View.INVISIBLE
                 toast.show()
             }
@@ -576,48 +561,16 @@ class ViewModel : ViewModel() {
         return listNewsWithChackedLD
     }
 
-    fun initialNewsSwipe(){
-        viewModelScope.launch {
-            try {
-                isRefreshing.value = true
-                alpha.value = 0.4f
-                delay(300)
-                val callNews = Dependencies.getNewsCloudUseCase().getNews()
-                if (callNews.isSuccessful) {
-                    localNewsDb.addNews(callNews.body() ?: listOf())
-                    val listNews = callNews.body()
-                    val listNewsWithChacked = listNews?.map {
-                        if(sharedPreferencesNews.checkSharedPreferences(it.name_ru,userKey)){
-                            NewsWithChacked(it,true)
-                        }else{
-                            NewsWithChacked(it,false)
-                        }
-                    }?: listOf()
-                    listNewsWithChackedLD.value = listNewsWithChacked
-                }
-                isRefreshing.value = false
-                alpha.value = 1f
-            } catch (e: Exception) {
-                isRefreshing.value = false
-                alpha.value = 1f
-                toast.show()
-            }
+    private fun convert(list: List<News>): List<NewsWithChacked> {
+        return list.map {
+            val isChecked =
+                sharedPreferencesNews.check(it.name_ru, userKey)
+            NewsWithChacked(it, isChecked)
         }
     }
 
-    val alpha = MutableLiveData<Float>()
-    val isRefreshing = MutableLiveData<Boolean>()
-
-    fun getAlpha():LiveData<Float>{
-        return alpha
-    }
-
-    fun getRefresh():LiveData<Boolean>{
-        return isRefreshing
-    }
-
-    fun addNewsSharedPreferences(title: String) {
-        sharedPreferencesNews.addToSharedPreferences(title, userKey)
+    fun markNewsAsChecked(title: String) {
+        sharedPreferencesNews.add(title, userKey)
     }
 
 }
