@@ -1,7 +1,11 @@
 package thesis_project.presentation.ui.start
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -35,6 +40,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         viewModel.getProgress().observe(viewLifecycleOwner, {
             swipeRefreshLayout.isRefreshing = it == View.VISIBLE
         })
+
     }
 
     override fun onCreateView(
@@ -63,8 +69,21 @@ class FragmentNews : Fragment(), ToFragmentNews {
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.getNews()
         }
+
         val newsList: RecyclerView = view.findViewById(R.id.rvNews)
-        newsList.layoutManager = LinearLayoutManager(requireContext())
+        if(resources.getBoolean(R.bool.isTablet)){
+           if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+               newsList.layoutManager = GridLayoutManager(requireContext(),2)
+           }else{
+               newsList.layoutManager = GridLayoutManager(requireContext(),3)
+           }
+        }else{
+            if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                newsList.layoutManager = LinearLayoutManager(requireContext())
+            }else{
+                newsList.layoutManager = GridLayoutManager(requireContext(),2)
+            }
+        }
         newsList.adapter = adapter
     }
 

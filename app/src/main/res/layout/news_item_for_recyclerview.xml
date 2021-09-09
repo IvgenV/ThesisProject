@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:background="@color/text"
             android:padding="16dp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/bottom_title_expand_barrier"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

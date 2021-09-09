@@ -3,13 +3,9 @@ package thesis_project.presentation.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.icu.util.ULocale
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +13,8 @@ import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.net.MailTo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
-import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
@@ -84,12 +75,16 @@ class NewsItemFragment : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     fun loadUrl(url: String) {
 
-        webView.settings.loadWithOverviewMode = true
-        webView.settings.useWideViewPort = true
-        webView.settings.builtInZoomControls = true
-        webView.settings.displayZoomControls = false
+        val webSettings = webView.settings
 
-        webView.settings.javaScriptEnabled = true
+        webSettings.loadWithOverviewMode = true
+        webSettings.useWideViewPort = true
+        webSettings.builtInZoomControls = true
+        webSettings.displayZoomControls = false
+        webSettings.javaScriptEnabled = true
+        webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
+
+
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
