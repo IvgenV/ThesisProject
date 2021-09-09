@@ -2,8 +2,6 @@ package thesis_project.presentation.ui.start
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
@@ -48,7 +46,7 @@ class StartActivity : AppCompatActivity() {
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
         val child = intent.extras?.getString("child") ?: "Error"
-
+        viewModel.userKey = child
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {
@@ -69,8 +67,9 @@ class StartActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(navigationView, navController)
 
 
-
         textTitle = findViewById(R.id.textTitleBar)
+
+
 
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->

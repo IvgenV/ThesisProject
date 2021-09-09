@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
-import thesis_project.data.data_base.news.News
+import thesis_project.NewsWithChacked
 
-class NewsAdapter: ListAdapter<News,
+class NewsAdapter : ListAdapter<NewsWithChacked,
         NewsAdapter.ViewHolder>(NewsCompareCallback()) {
 
     private var listener: ToFragmentNews? = null
@@ -23,24 +24,40 @@ class NewsAdapter: ListAdapter<News,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.name_ru.text = getItem(position).name_ru
-        holder.start_data.text = getItem(position).start_date
-        val info = getItem(position).toString()
-        holder.itemView.setOnClickListener {
-            listener?.onClick(getItem(position))
+        getItem(position).apply {
+            holder.card.isChecked = isChecked
+            holder.textTitle.text = news.name_ru
+            holder.start_data.text = news.start_date
+
+            Picasso.get().load(news.img).into(holder.image)
+
+            holder.card.setOnClickListener {
+                listener?.onClick(news)
+            }
+
+            holder.share.setOnClickListener {
+                listener?.share(news)
+            }
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
     fun setListener(toFragmentNews: ToFragmentNews) {
         listener = toFragmentNews
     }
 
-    fun setData(data: List<News>) {
+    fun setData(data: List<NewsWithChacked>) {
         submitList(data)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name_ru: TextView = view.findViewById(R.id.name_ru)
-        val start_data: TextView = view.findViewById(R.id.start_data)
+        val start_data: TextView = view.findViewById(R.id.textDate)
+        val card: MaterialCardView = view.findViewById(R.id.card)
+        val share: ImageView = view.findViewById(R.id.imageShare)
+        val textTitle: TextView = view.findViewById(R.id.text_title)
+        val image: ImageView = view.findViewById(R.id.image)
     }
 }

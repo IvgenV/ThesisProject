@@ -14,20 +14,21 @@ import thesis_project.data.data_base.atm.AtmData
 import thesis_project.data.data_base.filials.RateData
 import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.data.data_base.filials.СoordinatesData
+import thesis_project.data.data_base.news.News
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 import java.util.*
-import thesis_project.data.data_base.news.News
+import thesis_project.domain.use_case.SharedPreferencesNewsUseCase
 import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
 import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
-import thesis_project.sealed.Initial
 
 
 class ViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
+    var userKey = ""
 
     private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
     private var atmBB = Dependencies.getAtmUseCase(App.instance)
@@ -46,7 +47,9 @@ class ViewModel : ViewModel() {
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
-    private var listNews = MutableLiveData<List<News>>()
+
+    ///private var listNews = MutableLiveData<List<News>>()
+    private var listNewsWithChackedLD = MutableLiveData<List<NewsWithChacked>>()
 
     //profile
     var email = ""
@@ -65,11 +68,12 @@ class ViewModel : ViewModel() {
     }
 
     //SharedPreferences
-    val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
-    val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
+    private val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
+    private val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
+    private val sharedPreferencesNews: SharedPreferencesNewsUseCase by lazy { Dependencies.getSharedPreferencesNews() }
 
     //Worker
-    val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
+    private val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
 
 
     ///rateBlock
@@ -116,8 +120,12 @@ class ViewModel : ViewModel() {
                     }
                     localRateDb.addListRate(dataList)
                     progress.value = View.INVISIBLE
-                } else localRateDb.addListRate(listOf())
+                } else {
+                    progress.value = View.INVISIBLE
+                    localRateDb.addListRate(listOf())
+                }
             } catch (e: Exception) {
+                progress.value = View.INVISIBLE
                 toast.show()
             }
 
@@ -297,7 +305,7 @@ class ViewModel : ViewModel() {
 
     ////Atm block
     fun initialAtmCloud(location: Location?) {
-        if(location != null){
+        if (location != null) {
             viewModelScope.launch {
                 try {
                     progress.value = View.VISIBLE
@@ -309,7 +317,7 @@ class ViewModel : ViewModel() {
                         progress.value = View.INVISIBLE
                     }
 
-                    if(!call.isSuccessful){
+                    if (!call.isSuccessful) {
                         createlistAtmDistance(location)
                         progress.value = View.INVISIBLE
                     }
@@ -348,7 +356,8 @@ class ViewModel : ViewModel() {
                 val dist = location.distanceTo(loc).toDouble()
                 if (it.addressType == "тракт") {
                     list.add(
-                        ItemAdressDistance("Банкомат",
+                        ItemAdressDistance(
+                            "Банкомат",
                             it.id, it.address + " " + it.addressType + " " +
                                     it.house, dist
                         )
@@ -356,7 +365,7 @@ class ViewModel : ViewModel() {
                 } else {
                     list.add(
                         ItemAdressDistance(
-                             "Банкомат", it.id, it.addressType + " " +
+                            "Банкомат", it.id, it.addressType + " " +
                                     it.address + " " + it.house, dist
                         )
                     )
@@ -439,11 +448,6 @@ class ViewModel : ViewModel() {
         return listInfoBox
     }
 
-
-    fun createMapDescription(item:String){
-
-    }
-
     ////Gps block
     fun createGpsFilial(filial: String) {
         viewModelScope.launch {
@@ -461,7 +465,7 @@ class ViewModel : ViewModel() {
                 atmDataList.forEach {
                     if (it.id == atm) {
                         latLng.value =
-                            LatLng(it.latitude.toDouble(), it.longitude.toDouble())
+                            LatLng(it.latitude, it.longitude)
                     }
                 }
             }
@@ -488,32 +492,6 @@ class ViewModel : ViewModel() {
 
     fun getCheckLocation(): LiveData<Boolean> {
         return checkLocation
-    }
-
-
-    //News
-    fun initialNews() {
-        viewModelScope.launch {
-            try {
-
-                val callNews = Dependencies.getNewsCloudUseCase().getNews()
-                if (callNews.isSuccessful) {
-                    localNewsDb.addNews(callNews.body() ?: listOf())
-                }
-            } catch (e: Exception) {
-                toast.show()
-            }
-        }
-    }
-
-    fun setNews() {
-        viewModelScope.launch {
-            listNews.value = localNewsDb.getNewsList()
-        }
-    }
-
-    fun getNews(): LiveData<List<News>> {
-        return listNews
     }
 
 
@@ -559,6 +537,40 @@ class ViewModel : ViewModel() {
         viewModelScope.launch {
             myWorkerController.StopWorkerNotificationRate()
         }
+    }
+
+    //////////////////News
+
+    fun getNews(): LiveData<List<NewsWithChacked>> {
+        viewModelScope.launch {
+            try {
+                listNewsWithChackedLD.value = convert(localNewsDb.getNewsList())
+                progress.value = View.VISIBLE
+                val callNews = Dependencies.getNewsCloudUseCase().getNews()
+                if (callNews.isSuccessful) {
+                    val listNews = callNews.body() ?: listOf()
+                    localNewsDb.addNews(listNews)
+                    listNewsWithChackedLD.value = convert(listNews)
+                }
+                progress.value = View.INVISIBLE
+            } catch (e: Exception) {
+                progress.value = View.INVISIBLE
+                toast.show()
+            }
+        }
+        return listNewsWithChackedLD
+    }
+
+    private fun convert(list: List<News>): List<NewsWithChacked> {
+        return list.map {
+            val isChecked =
+                sharedPreferencesNews.check(it.name_ru, userKey)
+            NewsWithChacked(it, isChecked)
+        }
+    }
+
+    fun markNewsAsChecked(title: String) {
+        sharedPreferencesNews.add(title, userKey)
     }
 
 }
