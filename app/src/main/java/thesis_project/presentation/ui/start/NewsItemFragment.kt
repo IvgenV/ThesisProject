@@ -14,6 +14,7 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
@@ -92,6 +93,10 @@ class NewsItemFragment : Fragment() {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("$url ?subject=заголовок &body=текст")
 
+                        childFragmentManager.commit {
+                            setReorderingAllowed(true)
+
+                        }
 //                        data = Uri.parse(url)
 //                        or
 //                        data = Uri.parse("mailto:")
