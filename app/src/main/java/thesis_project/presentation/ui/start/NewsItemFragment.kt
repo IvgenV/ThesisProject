@@ -2,24 +2,30 @@ package thesis_project.presentation.ui.start
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
+import thesis_project.StateNews
 import thesis_project.presentation.viewmodel.ViewModel
 
 class NewsItemFragment : Fragment() {
@@ -27,6 +33,7 @@ class NewsItemFragment : Fragment() {
     lateinit var viewModel: ViewModel
     lateinit var webView: WebView
     var snackbar: Snackbar? = null
+    lateinit var navigation: NavController
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -56,7 +63,10 @@ class NewsItemFragment : Fragment() {
 
             loadUrl(html)
         })
-
+        requireActivity().onBackPressedDispatcher.addCallback{
+            viewModel.setStateNews(StateNews("","",""))
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     override fun onCreateView(
@@ -67,11 +77,11 @@ class NewsItemFragment : Fragment() {
         return inflater.inflate(R.layout.news_item, container, false)
     }
 
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.news_text)
+        Navigation.findNavController(view)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -86,9 +96,9 @@ class NewsItemFragment : Fragment() {
         webSettings.javaScriptEnabled = true
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSizePortrait).toInt()
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
         }else{
-            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSizeLandscape).toInt()
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
         }
 
         webView.webViewClient = object : WebViewClient() {
@@ -100,7 +110,6 @@ class NewsItemFragment : Fragment() {
 
                         childFragmentManager.commit {
                             setReorderingAllowed(true)
-
                         }
 //                        data = Uri.parse(url)
 //                        or

@@ -69,14 +69,10 @@ class StartActivity : AppCompatActivity() {
 
         textTitle = findViewById(R.id.textTitleBar)
 
-
-
-
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             textTitle.text = destination.label
         }
 
     }
-
 
 }

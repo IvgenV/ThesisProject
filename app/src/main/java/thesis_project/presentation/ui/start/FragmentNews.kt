@@ -30,7 +30,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
     private val adapter = NewsAdapter()
     lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var myFragmentManager: FragmentManager
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -56,6 +55,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         super.onViewCreated(view, savedInstanceState)
         adapter.setListener(this)
         val newsList: RecyclerView = view.findViewById(R.id.rvNews)
+        newsList.adapter = adapter
         if (!adapter.hasObservers()) {
             adapter.setHasStableIds(true)
         }
@@ -90,58 +90,31 @@ class FragmentNews : Fragment(), ToFragmentNews {
     private fun openFragmentNews(news: News) {
         val stateNews = StateNews(news.name_ru, news.start_date, news.html_ru)
         viewModel.setStateNews(stateNews)
+        viewModel.markNewsAsChecked(news.name_ru)
         if (resources.getBoolean(R.bool.isTablet)) {
-            val fragmentItem = NewsItemFragment()
-            viewModel.markNewsAsChecked(news.name_ru)
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_news_content, fragmentItem).commit()
+                .replace(R.id.fragment_news_content, NewsItemFragment()).commit()
         } else {
-            viewModel.markNewsAsChecked(news.name_ru)
-            Log.d("DSDSDSDS", "navigation.navigat")
             navigation.navigate(R.id.news_item)
         }
     }
 
-    fun checkIsTablet(): Boolean {
-        return requireContext().resources
-            .configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
-    }
-
     fun createFragmentItem() {
         val fragmentItem = NewsItemFragment()
-        myFragmentManager.beginTransaction().add(R.id.fragment_news_content, fragmentItem).commit()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_news_content, fragmentItem).commit()
     }
 
     private fun checkDeviceType(newsList: RecyclerView) {
-
-        if (checkIsTablet()) {
+        if (resources.getBoolean(R.bool.isTablet)) {
             newsList.layoutManager = LinearLayoutManager(requireContext())
-            newsList.adapter = adapter
-            myFragmentManager = requireActivity().supportFragmentManager
             createFragmentItem()
         } else {
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 newsList.layoutManager = LinearLayoutManager(requireContext())
-                newsList.adapter = adapter
             } else {
                 newsList.layoutManager = GridLayoutManager(requireContext(), 2)
-                newsList.adapter = adapter
             }
         }
-
-        /*if (resources.getBoolean(R.bool.isTablet)) {
-            newsList.layoutManager = LinearLayoutManager(requireContext())
-            newsList.adapter = adapter
-            myFragmentManager = requireActivity().supportFragmentManager
-            createFragmentItem()
-        } else {
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                newsList.layoutManager = LinearLayoutManager(requireContext())
-                newsList.adapter = adapter
-            } else {
-                newsList.layoutManager = GridLayoutManager(requireContext(), 2)
-                newsList.adapter = adapter
-            }
-        }*/
     }
 }
