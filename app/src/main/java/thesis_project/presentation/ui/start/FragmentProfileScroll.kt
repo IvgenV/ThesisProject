@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentProfileScroll : Fragment() {
-    private lateinit var viewModel: ViewModel
+    private lateinit var myViewModel: MyViewModel
 
     private lateinit var buttonSaveSetting: Button
     private lateinit var buyRub: EditText
@@ -51,7 +51,7 @@ class FragmentProfileScroll : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
         key_switch = getString(R.string.key_switchNews)
         key_switchRub = getString(R.string.key_switchRub)
@@ -70,43 +70,43 @@ class FragmentProfileScroll : Fragment() {
 
 
         buyRub.setText(
-            viewModel.takeRateSharedPreferences(key_BuyRub).toString(),
+            myViewModel.takeRateSharedPreferences(key_BuyRub).toString(),
             TextView.BufferType.EDITABLE
         )
         buyUsd.setText(
-            viewModel.takeRateSharedPreferences(key_BuyUsd).toString(),
+            myViewModel.takeRateSharedPreferences(key_BuyUsd).toString(),
             TextView.BufferType.EDITABLE
         )
         buyUah.setText(
-            viewModel.takeRateSharedPreferences(key_BuyUah).toString(),
+            myViewModel.takeRateSharedPreferences(key_BuyUah).toString(),
             TextView.BufferType.EDITABLE
         )
         buyEur.setText(
-            viewModel.takeRateSharedPreferences(key_BuyEur).toString(),
+            myViewModel.takeRateSharedPreferences(key_BuyEur).toString(),
             TextView.BufferType.EDITABLE
         )
         saleRub.setText(
-            viewModel.takeRateSharedPreferences(key_SaleRub).toString(),
+            myViewModel.takeRateSharedPreferences(key_SaleRub).toString(),
             TextView.BufferType.EDITABLE
         )
         saleUsd.setText(
-            viewModel.takeRateSharedPreferences(key_SaleUsd).toString(),
+            myViewModel.takeRateSharedPreferences(key_SaleUsd).toString(),
             TextView.BufferType.EDITABLE
         )
         saleUah.setText(
-            viewModel.takeRateSharedPreferences(key_SaleUah).toString(),
+            myViewModel.takeRateSharedPreferences(key_SaleUah).toString(),
             TextView.BufferType.EDITABLE
         )
         saleEur.setText(
-            viewModel.takeRateSharedPreferences(key_SaleEur).toString(),
+            myViewModel.takeRateSharedPreferences(key_SaleEur).toString(),
             TextView.BufferType.EDITABLE
         )
 
-        switchNotification.isChecked = viewModel.takeStatusSwitch(key_switch)
-        switchRub.isChecked = viewModel.takeStatusSwitch(key_switchRub)
-        switchUsd.isChecked = viewModel.takeStatusSwitch(key_switchUsd)
-        switchUah.isChecked = viewModel.takeStatusSwitch(key_switchUah)
-        switchEur.isChecked = viewModel.takeStatusSwitch(key_switchEur)
+        switchNotification.isChecked = myViewModel.takeStatusSwitch(key_switch)
+        switchRub.isChecked = myViewModel.takeStatusSwitch(key_switchRub)
+        switchUsd.isChecked = myViewModel.takeStatusSwitch(key_switchUsd)
+        switchUah.isChecked = myViewModel.takeStatusSwitch(key_switchUah)
+        switchEur.isChecked = myViewModel.takeStatusSwitch(key_switchEur)
 
     }
 
@@ -138,42 +138,42 @@ class FragmentProfileScroll : Fragment() {
         buttonSaveSetting = view.findViewById(R.id.btnSaveSettingRate)
 
         switchRub.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.addStatusSwitch(key_switchRub, isChecked)
+            myViewModel.addStatusSwitch(key_switchRub, isChecked)
         }
         switchUsd.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.addStatusSwitch(key_switchUsd, isChecked)
+            myViewModel.addStatusSwitch(key_switchUsd, isChecked)
         }
         switchUah.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.addStatusSwitch(key_switchUah, isChecked)
+            myViewModel.addStatusSwitch(key_switchUah, isChecked)
         }
         switchEur.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.addStatusSwitch(key_switchEur, isChecked)
+            myViewModel.addStatusSwitch(key_switchEur, isChecked)
         }
 
         switchNotification.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked == true && !viewModel.takeStatusSwitch(key_switch)) {
-                viewModel.startNotificationNews()
-            } else if (isChecked == false && viewModel.takeStatusSwitch(key_switch)) {
-                viewModel.stopNotificationNews()
+            if (isChecked == true && !myViewModel.takeStatusSwitch(key_switch)) {
+                myViewModel.startNotificationNews()
+            } else if (isChecked == false && myViewModel.takeStatusSwitch(key_switch)) {
+                myViewModel.stopNotificationNews()
             }
-            viewModel.addStatusSwitch(key_switch, isChecked)
+            myViewModel.addStatusSwitch(key_switch, isChecked)
         }
         buttonSaveSetting.setOnClickListener {
-            viewModel.addRateSharedPreferences(key_BuyRub, buyRub.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleRub, saleRub.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_BuyUsd, buyUsd.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleUsd, saleUsd.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_BuyUah, buyUah.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleUah, saleUah.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
-            viewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_BuyRub, buyRub.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_SaleRub, saleRub.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_BuyUsd, buyUsd.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_SaleUsd, saleUsd.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_BuyUah, buyUah.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_SaleUah, saleUah.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
+            myViewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
 
             if ((switchRub.isChecked == true) || (switchUsd.isChecked == true) ||
                 (switchUah.isChecked == true) || (switchEur.isChecked == true)
             ) {
-                viewModel.startNotificationRate()
+                myViewModel.startNotificationRate()
             } else {
-                viewModel.stopNotificationRate()
+                myViewModel.stopNotificationRate()
             }
         }
     }

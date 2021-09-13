@@ -3,13 +3,11 @@ package thesis_project.presentation.ui.start
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -22,22 +20,22 @@ import thesis_project.StateNews
 import thesis_project.data.data_base.news.News
 import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentNews : Fragment(), ToFragmentNews {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()
     lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-        viewModel.getNews().observe(viewLifecycleOwner, {
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        myViewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
-        viewModel.getProgress().observe(viewLifecycleOwner, {
+        myViewModel.getProgress().observe(viewLifecycleOwner, {
             swipeRefreshLayout.isRefreshing = it == View.VISIBLE
         })
     }
@@ -69,7 +67,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
             )
         )
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getNews()
+            myViewModel.getNews()
         }
     }
 
@@ -89,8 +87,8 @@ class FragmentNews : Fragment(), ToFragmentNews {
 
     private fun openFragmentNews(news: News) {
         val stateNews = StateNews(news.name_ru, news.start_date, news.html_ru)
-        viewModel.setStateNews(stateNews)
-        viewModel.markNewsAsChecked(news.name_ru)
+        myViewModel.setStateNews(stateNews)
+        myViewModel.markNewsAsChecked(news.name_ru)
         if (resources.getBoolean(R.bool.isTablet)) {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_news_content, NewsItemFragment()).commit()

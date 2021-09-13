@@ -1,7 +1,6 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +9,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.MarkerOptions
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentMap : Fragment(), OnMapReadyCallback {
 
     lateinit var mapView: MapView
     lateinit var googleMap: GoogleMap
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
     }
 
@@ -50,9 +49,9 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
 
 
         if (filial != null) {
-            viewModel.createGpsFilial(filial)
-            filial.let { viewModel.createGpsFilial(it) }
-            viewModel.getGps().observe(viewLifecycleOwner, {
+            myViewModel.createGpsFilial(filial)
+            filial.let { myViewModel.createGpsFilial(it) }
+            myViewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
@@ -65,8 +64,8 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
         }
 
         if (atm != null) {
-            viewModel.createGpsAtm(atm)
-            viewModel.getGps().observe(viewLifecycleOwner, {
+            myViewModel.createGpsAtm(atm)
+            myViewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
@@ -76,9 +75,9 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
             })
         }
 
-        if (viewModel.getInfoBoxInfo() != null) {
-            viewModel.createGpsInfoBOx(viewModel.getInfoBoxInfo()?:"")
-            viewModel.getGps().observe(viewLifecycleOwner, {
+        if (myViewModel.getInfoBoxInfo() != null) {
+            myViewModel.createGpsInfoBOx(myViewModel.getInfoBoxInfo()?:"")
+            myViewModel.getGps().observe(viewLifecycleOwner, {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
@@ -86,7 +85,7 @@ class FragmentMap : Fragment(), OnMapReadyCallback {
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
             })
-            viewModel.setInfoBoxInfo(null)
+            myViewModel.setInfoBoxInfo(null)
         }
     }
 

@@ -24,7 +24,7 @@ import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
-class ViewModel : ViewModel() {
+class MyViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)

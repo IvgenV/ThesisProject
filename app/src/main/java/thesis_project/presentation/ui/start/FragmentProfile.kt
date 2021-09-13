@@ -4,31 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentProfile:Fragment() {
 
     lateinit var name:TextView
     lateinit var surname:TextView
     lateinit var email:TextView
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
 
-        name.text = viewModel.name
-        surname.text = viewModel.surname
-        email.text = viewModel.email
+        name.text = myViewModel.name
+        surname.text = myViewModel.surname
+        email.text = myViewModel.email
     }
 
     override fun onCreateView(

@@ -1,11 +1,9 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import thesis_project.Constnsts
 import android.widget.*
-import android.widget.NumberPicker.OnScrollListener.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -16,12 +14,12 @@ import com.example.thesis_project.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.adapter.RateAdapter
 import thesis_project.presentation.adapter.ToFragmentFilials
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 import thesis_project.sealed.CurrencyOperation
 
 class FragmentRate : Fragment(), ToFragmentFilials {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
     lateinit var rateList: RecyclerView
     lateinit var rateNP: NumberPicker
@@ -36,11 +34,11 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
         initialCountryRate()
 
-        viewModel.getProgress().observe(viewLifecycleOwner, {
+        myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressBar.visibility = it
         })
 
@@ -54,26 +52,26 @@ class FragmentRate : Fragment(), ToFragmentFilials {
 
                 when (newVal) {
                     Constnsts.usd -> {
-                        viewModel.createListCurrency(check, newVal)
-                        viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        myViewModel.createListCurrency(check, newVal)
+                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
                             adapter.setData(it)
                         })
                     }
                     Constnsts.eur -> {
-                        viewModel.createListCurrency(check, newVal)
-                        viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        myViewModel.createListCurrency(check, newVal)
+                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
                             adapter.setData(it)
                         })
                     }
                     Constnsts.rub -> {
-                        viewModel.createListCurrency(check, newVal)
-                        viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        myViewModel.createListCurrency(check, newVal)
+                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
                             adapter.setData(it)
                         })
                     }
                     Constnsts.uah -> {
-                        viewModel.createListCurrency(check, newVal)
-                        viewModel.getListCurrency().observe(viewLifecycleOwner, {
+                        myViewModel.createListCurrency(check, newVal)
+                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
                             adapter.setData(it)
                         })
                     }
@@ -82,9 +80,9 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     }
 
     fun initialCountryRate() {
-        viewModel.initialCountryRate()
-        viewModel.createListCurrency(CurrencyOperation.Buy, 0)
-        viewModel.getListCurrency().observe(viewLifecycleOwner, {
+        myViewModel.initialCountryRate()
+        myViewModel.createListCurrency(CurrencyOperation.Buy, 0)
+        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
     }
