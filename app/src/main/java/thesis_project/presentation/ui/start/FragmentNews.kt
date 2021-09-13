@@ -56,9 +56,9 @@ class FragmentNews : Fragment(), ToFragmentNews {
         super.onViewCreated(view, savedInstanceState)
         adapter.setListener(this)
         val newsList: RecyclerView = view.findViewById(R.id.rvNews)
-         if (!adapter.hasObservers()) {
-             adapter.setHasStableIds(true)
-         }
+        if (!adapter.hasObservers()) {
+            adapter.setHasStableIds(true)
+        }
         checkDeviceType(newsList)
         navigation = Navigation.findNavController(view)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -88,7 +88,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
     }
 
     private fun openFragmentNews(news: News) {
-        val stateNews = StateNews(news.name_ru,news.start_date,news.html_ru)
+        val stateNews = StateNews(news.name_ru, news.start_date, news.html_ru)
         viewModel.setStateNews(stateNews)
         if (resources.getBoolean(R.bool.isTablet)) {
             val fragmentItem = NewsItemFragment()
@@ -97,7 +97,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
                 .replace(R.id.fragment_news_content, fragmentItem).commit()
         } else {
             viewModel.markNewsAsChecked(news.name_ru)
-            Log.d("DSDSDSDS","navigation.navigat")
+            Log.d("DSDSDSDS", "navigation.navigat")
             navigation.navigate(R.id.news_item)
         }
     }
@@ -114,12 +114,12 @@ class FragmentNews : Fragment(), ToFragmentNews {
 
     private fun checkDeviceType(newsList: RecyclerView) {
 
-       /* if(checkIsTablet()){
+        if (checkIsTablet()) {
             newsList.layoutManager = LinearLayoutManager(requireContext())
             newsList.adapter = adapter
             myFragmentManager = requireActivity().supportFragmentManager
             createFragmentItem()
-        }else{
+        } else {
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 newsList.layoutManager = LinearLayoutManager(requireContext())
                 newsList.adapter = adapter
@@ -128,13 +128,13 @@ class FragmentNews : Fragment(), ToFragmentNews {
                 newsList.adapter = adapter
             }
         }
-*/
-        if (resources.getBoolean(R.bool.isTablet)) {
+
+        /*if (resources.getBoolean(R.bool.isTablet)) {
             newsList.layoutManager = LinearLayoutManager(requireContext())
             newsList.adapter = adapter
             myFragmentManager = requireActivity().supportFragmentManager
             createFragmentItem()
-        }else {
+        } else {
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 newsList.layoutManager = LinearLayoutManager(requireContext())
                 newsList.adapter = adapter
@@ -142,5 +142,6 @@ class FragmentNews : Fragment(), ToFragmentNews {
                 newsList.layoutManager = GridLayoutManager(requireContext(), 2)
                 newsList.adapter = adapter
             }
-        }    }
+        }*/
+    }
 }
