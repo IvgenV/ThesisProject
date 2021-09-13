@@ -3,6 +3,7 @@ package thesis_project.presentation.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -30,6 +31,31 @@ class NewsItemFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        viewModel.getStateNews().observe(viewLifecycleOwner,{
+            val bodyNews = it.html_ru
+            val bodyTitle = it.name_ru
+            val bodyDate = it.start_date
+            val html = "<HTML><HEAD>" +
+                    "<LINK href=\"file:///android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
+                    "<script type=\"text/javascript\">" +
+                    "window.onload = function () {" +
+                    "var images = document.getElementsByTagName('img');" +
+                    "for (let i = 0; i < images.length; i++) {" +
+                    "images[i].onclick = function () {" +
+                    "PictureToast.showToast();" +
+                    "};" +
+                    "}" +
+                    "};" +
+                    "</script>" +
+                    "</HEAD>" +
+                    "<body><d>$bodyDate</d><br><br>" +
+                    "<t>$bodyTitle</t>" +
+                    "<n>$bodyNews</n>" +
+                    "</body>" +
+                    "</HTML>"
+
+            loadUrl(html)
+        })
 
     }
 
@@ -46,31 +72,6 @@ class NewsItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.news_text)
-
-        val bodyNews = arguments?.getString("html_ru").toString()
-        val bodyTitle = arguments?.getString("name_ru").toString()
-        val bodyDate = arguments?.getString("start_date").toString()
-
-        val html = "<HTML><HEAD>" +
-                "<LINK href=\"file:///android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
-                "<script type=\"text/javascript\">" +
-                "window.onload = function () {" +
-                "var images = document.getElementsByTagName('img');" +
-                "for (let i = 0; i < images.length; i++) {" +
-                "images[i].onclick = function () {" +
-                "PictureToast.showToast();" +
-                "};" +
-                "}" +
-                "};" +
-                "</script>" +
-                "</HEAD>" +
-                "<body><d>$bodyDate</d><br><br>" +
-                "<t>$bodyTitle</t>" +
-                "<n>$bodyNews</n>" +
-                "</body>" +
-                "</HTML>"
-
-        loadUrl(html)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -83,8 +84,12 @@ class NewsItemFragment : Fragment() {
         webSettings.builtInZoomControls = true
         webSettings.displayZoomControls = false
         webSettings.javaScriptEnabled = true
-        webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
 
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSizePortrait).toInt()
+        }else{
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSizeLandscape).toInt()
+        }
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

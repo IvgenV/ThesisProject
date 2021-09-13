@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="isTablet">false</bool>
-    <dimen name="txtWebViewSize">18sp</dimen>
+    <dimen name="txtWebViewSizeLandscape">8sp</dimen>
+    <dimen name="txtWebViewSizePortrait">18sp</dimen>
 </resources>

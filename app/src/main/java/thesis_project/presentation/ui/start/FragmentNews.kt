@@ -2,9 +2,7 @@ package thesis_project.presentation.ui.start
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
+import thesis_project.StateNews
 import thesis_project.data.data_base.news.News
 import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
@@ -57,10 +56,10 @@ class FragmentNews : Fragment(), ToFragmentNews {
         super.onViewCreated(view, savedInstanceState)
         adapter.setListener(this)
         val newsList: RecyclerView = view.findViewById(R.id.rvNews)
-        /* if (!adapter.hasObservers()) {
+         if (!adapter.hasObservers()) {
              adapter.setHasStableIds(true)
-         }*/
-        isTablet(newsList)
+         }
+        checkDeviceType(newsList)
         navigation = Navigation.findNavController(view)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setColorSchemeColors(
@@ -75,7 +74,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
     }
 
     override fun onClick(news: News) {
-        tabletFragmentNews(news)
+        openFragmentNews(news)
     }
 
     override fun share(news: News) {
@@ -88,45 +87,39 @@ class FragmentNews : Fragment(), ToFragmentNews {
         startActivity(shareIntent)
     }
 
-    fun createFragmentItem() {
-        val bundle = Bundle()
-        val fragmentItem = NewsItemFragment()
-        bundle.putString("name_ru", "")
-        bundle.putString("start_date", "")
-        bundle.putString("html_ru", "")
-        fragmentItem.arguments = bundle
-        myFragmentManager.beginTransaction().add(R.id.fragment_news_content, fragmentItem).commit()
-    }
-
-    fun tabletFragmentNews(news: News) {
+    private fun openFragmentNews(news: News) {
+        val stateNews = StateNews(news.name_ru,news.start_date,news.html_ru)
+        viewModel.setStateNews(stateNews)
         if (resources.getBoolean(R.bool.isTablet)) {
-            val bundle = Bundle()
             val fragmentItem = NewsItemFragment()
-            bundle.putString("name_ru", news.name_ru)
-            bundle.putString("start_date", news.start_date)
-            bundle.putString("html_ru", news.html_ru)
-            fragmentItem.arguments = bundle
             viewModel.markNewsAsChecked(news.name_ru)
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_news_content, fragmentItem).commit()
         } else {
-            val bundle = Bundle()
-            bundle.putString("name_ru", news.name_ru)
-            bundle.putString("start_date", news.start_date)
-            bundle.putString("html_ru", news.html_ru)
             viewModel.markNewsAsChecked(news.name_ru)
-            navigation.navigate(R.id.news_item, bundle)
+            Log.d("DSDSDSDS","navigation.navigat")
+            navigation.navigate(R.id.news_item)
         }
     }
 
-    fun isTablet(newsList: RecyclerView) {
-        if (resources.getBoolean(R.bool.isTablet)) {
+    fun checkIsTablet(): Boolean {
+        return requireContext().resources
+            .configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
+    }
+
+    fun createFragmentItem() {
+        val fragmentItem = NewsItemFragment()
+        myFragmentManager.beginTransaction().add(R.id.fragment_news_content, fragmentItem).commit()
+    }
+
+    private fun checkDeviceType(newsList: RecyclerView) {
+
+       /* if(checkIsTablet()){
             newsList.layoutManager = LinearLayoutManager(requireContext())
             newsList.adapter = adapter
             myFragmentManager = requireActivity().supportFragmentManager
             createFragmentItem()
-        }
-        if (!resources.getBoolean(R.bool.isTablet)) {
+        }else{
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 newsList.layoutManager = LinearLayoutManager(requireContext())
                 newsList.adapter = adapter
@@ -135,5 +128,19 @@ class FragmentNews : Fragment(), ToFragmentNews {
                 newsList.adapter = adapter
             }
         }
-    }
+*/
+        if (resources.getBoolean(R.bool.isTablet)) {
+            newsList.layoutManager = LinearLayoutManager(requireContext())
+            newsList.adapter = adapter
+            myFragmentManager = requireActivity().supportFragmentManager
+            createFragmentItem()
+        }else {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                newsList.layoutManager = LinearLayoutManager(requireContext())
+                newsList.adapter = adapter
+            } else {
+                newsList.layoutManager = GridLayoutManager(requireContext(), 2)
+                newsList.adapter = adapter
+            }
+        }    }
 }
