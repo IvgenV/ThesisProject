@@ -19,4 +19,9 @@
     <string name="snackbar_Notification">Ошибка загрузки страницы</string>
     <string name="snackbar_back">НАЗАД</string>
     <string name="picture_toast">это картинка</string>
+    <string name="text_label_rate">курсы</string>
+    <string name="text_label_atm">банкоматы</string>
+    <string name="text_label_infobox">инфокиоски</string>
+    <string name="text_label_news">новости</string>
+    <string name="drawer_layout">drawer_layout</string>
 </resources>

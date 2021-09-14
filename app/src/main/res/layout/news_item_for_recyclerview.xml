@@ -41,9 +41,8 @@
 
         <thesis_project.ExpandableTextView
             android:id="@+id/text_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/text"
             android:padding="16dp"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/bottom_title_expand_barrier"

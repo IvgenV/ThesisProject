@@ -108,11 +108,13 @@ class NewsItemFragment : Fragment() {
         webSettings.displayZoomControls = false
         webSettings.javaScriptEnabled = true
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+        /*if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
             webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
         }else{
             webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
-        }
+        }*/
+
+        webSettings.textZoom = 300
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

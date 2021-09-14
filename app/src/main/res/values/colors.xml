@@ -9,5 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="greenDark">#009624</color>
     <color name="greenLight">#5efc82</color>
-    <color name="text">#67FFFFFF</color>
+    <color name="background">#67FFFFFF</color>
 </resources>
