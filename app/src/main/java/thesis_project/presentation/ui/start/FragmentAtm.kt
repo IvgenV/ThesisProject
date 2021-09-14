@@ -3,12 +3,9 @@ package thesis_project.presentation.ui.start
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +28,11 @@ import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     lateinit var atmList: RecyclerView
     val adapter = ItemAddressDistanceAdapter()
     lateinit var navigation: NavController
@@ -53,7 +50,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             if (!it.containsValue(false)) {
                 initialization()
                 lifecycleScope.launchWhenStarted {
-                    viewModel.getAtm().collect {
+                    myViewModel.getAtm().collect {
                         adapter.setData(it)
                     }
                 }
@@ -63,16 +60,16 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onStart() {
         super.onStart()
-          viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-          viewModel.initialAtmDb()
+          myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+          myViewModel.initialAtmDb()
           createLocationManager()
 
 
-          viewModel.getProgress().observe(viewLifecycleOwner, {
+          myViewModel.getProgress().observe(viewLifecycleOwner, {
               progressAtm.visibility = it
           })
 
-          viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+          myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
               if (it == true) {
                   tvText.text = "Current data!"
               }
@@ -82,7 +79,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
           })
 
           lifecycleScope.launchWhenStarted {
-              viewModel.getAtm().collect {
+              myViewModel.getAtm().collect {
                   adapter.setData(it)
               }
           }
@@ -154,7 +151,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     }
 
     override fun onLocationChanged(location: Location) {
-        viewModel.initialAtmCloud(location)
+        myViewModel.initialAtmCloud(location)
     }
 
     override fun onClick(atm: String) {
@@ -205,7 +202,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     fun initialization() {
         initLocation()
         if (location != null) {
-            viewModel.initialAtmCloud(location)
+            myViewModel.initialAtmCloud(location)
         } else {
             Toast.makeText(requireContext(), "Cant find GPS!", Toast.LENGTH_SHORT).show()
             tvText.text = "Not current data"

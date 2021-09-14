@@ -24,7 +24,7 @@ import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
 import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
-class ViewModel : ViewModel() {
+class MyViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
     val toast = Toast.makeText(App.instance, textError, duration)
@@ -47,8 +47,7 @@ class ViewModel : ViewModel() {
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
-
-    ///private var listNews = MutableLiveData<List<News>>()
+    private var stateNews = MutableLiveData<StateNews>()
     private var listNewsWithChackedLD = MutableLiveData<List<NewsWithChacked>>()
 
     //profile
@@ -571,6 +570,14 @@ class ViewModel : ViewModel() {
 
     fun markNewsAsChecked(title: String) {
         sharedPreferencesNews.add(title, userKey)
+    }
+
+    fun setStateNews(stateNews:StateNews){
+        this.stateNews.value = stateNews
+    }
+
+    fun getStateNews():LiveData<StateNews>{
+        return stateNews
     }
 
 }

@@ -3,41 +3,71 @@ package thesis_project.presentation.ui.start
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.icu.util.ULocale
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
-import androidx.core.net.MailTo
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.Navigation
-import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.StateNews
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class NewsItemFragment : Fragment() {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     lateinit var webView: WebView
     var snackbar: Snackbar? = null
+    lateinit var navigation: NavController
+    val callbackBackPressed = object : OnBackPressedCallback(false){
+        override fun handleOnBackPressed() {
+            myViewModel.setStateNews(StateNews("","",""))
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        myViewModel.getStateNews().observe(viewLifecycleOwner,{
+            val bodyNews = it.html_ru
+            val bodyTitle = it.name_ru
+            val bodyDate = it.start_date
+            val html = "<HTML><HEAD>" +
+                    "<LINK href=\"file:///android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
+                    "<script type=\"text/javascript\">" +
+                    "window.onload = function () {" +
+                    "var images = document.getElementsByTagName('img');" +
+                    "for (let i = 0; i < images.length; i++) {" +
+                    "images[i].onclick = function () {" +
+                    "PictureToast.showToast();" +
+                    "};" +
+                    "}" +
+                    "};" +
+                    "</script>" +
+                    "</HEAD>" +
+                    "<body><d>$bodyDate</d><br><br>" +
+                    "<t>$bodyTitle</t>" +
+                    "<n>$bodyNews</n>" +
+                    "</body>" +
+                    "</HTML>"
+
+            loadUrl(html)
+        })
 
     }
 
@@ -49,47 +79,41 @@ class NewsItemFragment : Fragment() {
         return inflater.inflate(R.layout.news_item, container, false)
     }
 
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.news_text)
+        Navigation.findNavController(view)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callbackBackPressed)
+    }
 
-        val bodyNews = arguments?.getString("html_ru").toString()
-        val bodyTitle = arguments?.getString("name_ru").toString()
-        val bodyDate = arguments?.getString("start_date").toString()
+    override fun onResume() {
+        super.onResume()
+        callbackBackPressed.isEnabled = true
+    }
 
-        val html = "<HTML><HEAD>" +
-                "<LINK href=\"file:///android_asset/styles.css\" type=\"text/css\" rel=\"stylesheet\"/>" +
-                "<script type=\"text/javascript\">" +
-                "window.onload = function () {" +
-                "var images = document.getElementsByTagName('img');" +
-                "for (let i = 0; i < images.length; i++) {" +
-                "images[i].onclick = function () {" +
-                "PictureToast.showToast();" +
-                "};" +
-                "}" +
-                "};" +
-                "</script>" +
-                "</HEAD>" +
-                "<body><d>$bodyDate</d><br><br>" +
-                "<t>$bodyTitle</t>" +
-                "<n>$bodyNews</n>" +
-                "</body>" +
-                "</HTML>"
-
-        loadUrl(html)
+    override fun onPause() {
+        super.onPause()
+        callbackBackPressed.isEnabled = false
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadUrl(url: String) {
 
-        webView.settings.loadWithOverviewMode = true
-        webView.settings.useWideViewPort = true
-        webView.settings.builtInZoomControls = true
-        webView.settings.displayZoomControls = false
+        val webSettings = webView.settings
 
-        webView.settings.javaScriptEnabled = true
+        webSettings.loadWithOverviewMode = true
+        webSettings.useWideViewPort = true
+        webSettings.builtInZoomControls = true
+        webSettings.displayZoomControls = false
+        webSettings.javaScriptEnabled = true
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
+        }else{
+            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
+        }
+
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
@@ -97,6 +121,9 @@ class NewsItemFragment : Fragment() {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         data = Uri.parse("$url ?subject=заголовок &body=текст")
 
+                        childFragmentManager.commit {
+                            setReorderingAllowed(true)
+                        }
 //                        data = Uri.parse(url)
 //                        or
 //                        data = Uri.parse("mailto:")

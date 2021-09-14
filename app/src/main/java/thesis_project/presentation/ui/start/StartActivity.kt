@@ -14,20 +14,20 @@ import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.FirebaseDatabase
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class StartActivity : AppCompatActivity() {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var textTitle: TextView
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
@@ -46,7 +46,7 @@ class StartActivity : AppCompatActivity() {
         val textSurname = header.findViewById<TextView>(R.id.surname_navigation_header)
 
         val child = intent.extras?.getString("child") ?: "Error"
-        viewModel.userKey = child
+        myViewModel.userKey = child
 
         val firebase = FirebaseDatabase.getInstance().getReference("FreBaseUsers")
         firebase.child(child).get().addOnSuccessListener {
@@ -55,9 +55,9 @@ class StartActivity : AppCompatActivity() {
             val email = it.child("email").getValue(String::class.java) ?: "ErrorEmail"
             textName.text = name
             textSurname.text = surname
-            viewModel.name = name
-            viewModel.surname = surname
-            viewModel.email = email
+            myViewModel.name = name
+            myViewModel.surname = surname
+            myViewModel.email = email
         }.addOnFailureListener {
         }
 
@@ -69,14 +69,10 @@ class StartActivity : AppCompatActivity() {
 
         textTitle = findViewById(R.id.textTitleBar)
 
-
-
-
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             textTitle.text = destination.label
         }
 
     }
-
 
 }

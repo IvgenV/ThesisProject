@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
@@ -29,7 +29,7 @@ import thesis_project.sealed.CurrencyOperation
 
 class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     lateinit var filialList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var navigation: NavController
@@ -57,14 +57,14 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         init()
         rate = arguments?.getString("rate")?.toDouble() ?: -1.0
         inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
         currency = Currency.fromValue(arguments?.getInt("currency") ?: -1)
 
-        viewModel.createListFilial(rate, inOut, currency, location)
-        viewModel.getRatFilials().observe(viewLifecycleOwner, {
+        myViewModel.createListFilial(rate, inOut, currency, location)
+        myViewModel.getRatFilials().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
     }

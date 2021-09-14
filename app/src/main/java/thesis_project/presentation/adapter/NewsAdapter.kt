@@ -33,6 +33,7 @@ class NewsAdapter : ListAdapter<NewsWithChacked,
 
             holder.card.setOnClickListener {
                 listener?.onClick(news)
+                holder.card.isChecked = true
             }
 
             holder.share.setOnClickListener {

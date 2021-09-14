@@ -18,23 +18,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import kotlinx.coroutines.*
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
-import thesis_project.presentation.viewmodel.ViewModel
-import thesis_project.sealed.Initial
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var viewModel: ViewModel
+    lateinit var myViewModel: MyViewModel
     lateinit var infoBoxList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var tvText: TextView
@@ -51,7 +48,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (!it.containsValue(false)) {
                 initialization()
-                viewModel.getInfoBox().observe(viewLifecycleOwner, {
+                myViewModel.getInfoBox().observe(viewLifecycleOwner, {
                     adapter.setData(it)
                 })
             }
@@ -60,16 +57,16 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
         createLocationManager()
         initialization()
 
-        viewModel.getProgress().observe(viewLifecycleOwner, {
+        myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressInfoBox.visibility = it
         })
 
-        viewModel.getInfoBox().observe(viewLifecycleOwner, {
+        myViewModel.getInfoBox().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
 
@@ -118,7 +115,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
     override fun onClick(infoBox: String) {
         /*val bundle = Bundle()
         bundle.putString("infoBox", infoBox)*/
-        viewModel.setInfoBoxInfo(infoBox)
+        myViewModel.setInfoBoxInfo(infoBox)
         navigation.navigate(R.id.fragment_map)
     }
 
@@ -126,7 +123,7 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         initLocation()
         if (isGPSEnabled) {
             Log.d("location!",location.toString())
-            viewModel.initialInfoBox(location)
+            myViewModel.initialInfoBox(location)
             tvText.text = "Current data"
 
         } else {

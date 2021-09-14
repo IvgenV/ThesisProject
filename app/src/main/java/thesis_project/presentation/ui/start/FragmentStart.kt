@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.thesis_project.R
-import thesis_project.presentation.viewmodel.ViewModel
+import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentStart : Fragment() {
 
@@ -17,7 +17,7 @@ class FragmentStart : Fragment() {
     lateinit var toInfoBox: TextView
     lateinit var toNews: TextView
     lateinit var navigation: NavController
-    lateinit var viewmodel: ViewModel
+    lateinit var viewmodel: MyViewModel
 
 
     override fun onCreateView(
@@ -31,7 +31,7 @@ class FragmentStart : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewmodel = ViewModelProvider(this).get(ViewModel::class.java)
+        viewmodel = ViewModelProvider(this).get(MyViewModel::class.java)
 
 
         toRate.setOnClickListener {
