@@ -1,10 +1,14 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
+
 
 open class BaseStartFragment: Fragment() {
 
@@ -15,12 +19,12 @@ open class BaseStartFragment: Fragment() {
             if(snackBar.isShown){
                 requireActivity().finish()
             }else{
-                ///вот так работает
                 snackBar = Snackbar.make(
                     requireView(),
                     "Еще раз для закрытия",
                     Snackbar.LENGTH_SHORT
                 )
+                snackBar.anchorView = requireActivity().findViewById(R.id.bottomNavigation)
                 snackBar.show()
             }
         }
@@ -28,8 +32,7 @@ open class BaseStartFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ///сдесь вылетает с ошибкой
-        ///Views added to a FragmentContainerView must be associated with a Fragment View is not associated with a Fragment
+        ///без этой инициализации snackbar все равно падает
         snackBar = Snackbar.make(
             requireView(),
             "Еще раз для закрытия",

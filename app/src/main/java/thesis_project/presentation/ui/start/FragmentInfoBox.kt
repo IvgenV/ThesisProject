@@ -29,7 +29,7 @@ import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentInfoBox : BaseStartFragment(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var infoBoxList: RecyclerView

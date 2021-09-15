@@ -30,7 +30,7 @@ import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentAtm : BaseStartFragment(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var atmList: RecyclerView

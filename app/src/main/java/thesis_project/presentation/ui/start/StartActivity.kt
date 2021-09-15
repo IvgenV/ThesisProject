@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.GravityCompat
@@ -78,18 +79,22 @@ class StartActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.rateBottomMenu -> {
+                    navController.graph.startDestination = R.id.fragment_rate
                     navController.navigate(R.id.fragment_rate)
                     true
                 }
                 R.id.atmBottomMenu -> {
+                    navController.graph.startDestination = R.id.fragment_atm
                     navController.navigate(R.id.fragment_atm)
                     true
                 }
                 R.id.infoboxBottomMenu -> {
+                    navController.graph.startDestination = R.id.fragment_infoBox
                     navController.navigate(R.id.fragment_infoBox)
                     true
                 }
                 R.id.newsBottomMenu -> {
+                    navController.graph.startDestination = R.id.fragment_news
                     navController.navigate(R.id.fragment_news)
                     true
                 }
