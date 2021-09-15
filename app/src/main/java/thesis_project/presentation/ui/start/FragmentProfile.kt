@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
@@ -16,13 +17,15 @@ class FragmentProfile:Fragment() {
     lateinit var surname:TextView
     lateinit var email:TextView
     lateinit var myViewModel: MyViewModel
+    val callbackBackPressed = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
 
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-
-
         name.text = myViewModel.name
         surname.text = myViewModel.surname
         email.text = myViewModel.email

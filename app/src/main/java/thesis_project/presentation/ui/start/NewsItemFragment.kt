@@ -23,6 +23,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
 import thesis_project.StateNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
@@ -68,7 +69,6 @@ class NewsItemFragment : Fragment() {
 
             loadUrl(html)
         })
-
     }
 
     override fun onCreateView(

@@ -57,7 +57,7 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="text_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

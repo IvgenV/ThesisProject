@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,18 +17,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
+import com.google.android.material.snackbar.Snackbar
 import thesis_project.StateNews
 import thesis_project.data.data_base.news.News
 import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentNews : Fragment(), ToFragmentNews {
+class FragmentNews : BaseStartFragment(), ToFragmentNews {
 
     lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()
     lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -38,6 +41,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         myViewModel.getProgress().observe(viewLifecycleOwner, {
             swipeRefreshLayout.isRefreshing = it == View.VISIBLE
         })
+
     }
 
     override fun onCreateView(
@@ -45,7 +49,7 @@ class FragmentNews : Fragment(), ToFragmentNews {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.news_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
 
@@ -69,7 +73,14 @@ class FragmentNews : Fragment(), ToFragmentNews {
         swipeRefreshLayout.setOnRefreshListener {
             myViewModel.getNews()
         }
+        snackBar = Snackbar.make(
+            view,
+            "Еще раз для закрытия",
+            Snackbar.LENGTH_SHORT
+        )
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callbackBackPressed)
     }
+
 
     override fun onClick(news: News) {
         openFragmentNews(news)

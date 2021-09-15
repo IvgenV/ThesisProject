@@ -1,6 +1,7 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import thesis_project.Constnsts
 import android.widget.*
@@ -11,13 +12,15 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.adapter.RateAdapter
 import thesis_project.presentation.adapter.ToFragmentFilials
 import thesis_project.presentation.viewmodel.MyViewModel
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentRate : Fragment(), ToFragmentFilials {
+class FragmentRate : BaseStartFragment(), ToFragmentFilials {
 
     lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
@@ -28,8 +31,6 @@ class FragmentRate : Fragment(), ToFragmentFilials {
     lateinit var progressBar: ProgressBar
     val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
     var check: CurrencyOperation = CurrencyOperation.Buy
-    var flag = true
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -95,10 +96,8 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         return inflater.inflate(R.layout.fragment_rate, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         rateList = view.findViewById(R.id.recyclerRate)
         rateList.layoutManager = LinearLayoutManager(requireContext())
         rateList.adapter = adapter
@@ -107,6 +106,7 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         adapter.setListenerFr2(this)
         switch = view.findViewById(R.id.rateSwitch)
         progressBar = view.findViewById(R.id.progressBarRate)
+
     }
 
     override fun onClick(rate: String) {
