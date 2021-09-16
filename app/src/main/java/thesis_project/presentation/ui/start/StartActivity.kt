@@ -3,10 +3,12 @@ package thesis_project.presentation.ui.start
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -32,7 +34,7 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-
+        
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
         materialToolbar = findViewById(R.id.materialToolBar)
@@ -67,7 +69,9 @@ class StartActivity : AppCompatActivity() {
             myViewModel.surname = surname
             myViewModel.email = email
         }.addOnFailureListener {
+
         }
+
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
         NavigationUI.setupWithNavController(navigationView, navController)
@@ -78,28 +82,16 @@ class StartActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.rateBottomMenu -> {
-                    navController.graph.startDestination = R.id.fragment_rate
-                    navController.navigate(R.id.fragment_rate)
-                    true
-                }
-                R.id.atmBottomMenu -> {
-                    navController.graph.startDestination = R.id.fragment_atm
-                    navController.navigate(R.id.fragment_atm)
-                    true
-                }
-                R.id.infoboxBottomMenu -> {
-                    navController.graph.startDestination = R.id.fragment_infoBox
-                    navController.navigate(R.id.fragment_infoBox)
-                    true
-                }
-                R.id.newsBottomMenu -> {
-                    navController.graph.startDestination = R.id.fragment_news
-                    navController.navigate(R.id.fragment_news)
-                    true
-                }
-                else -> false
-            }
+                R.id.rateBottomMenu -> R.id.fragment_rate
+                R.id.atmBottomMenu -> R.id.fragment_atm
+                R.id.infoboxBottomMenu -> R.id.fragment_infoBox
+                R.id.newsBottomMenu -> R.id.fragment_news
+                else -> null
+            }?.let { destinationId ->
+                navController.graph.startDestination = destinationId
+                navController.navigate(destinationId)
+                true
+            } ?: false
         }
         bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
     }

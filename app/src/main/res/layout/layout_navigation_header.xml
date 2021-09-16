@@ -22,7 +22,7 @@
         app:layout_constraintTop_toBottomOf="@id/imageProfile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/greenDark"
+        android:background="@color/greenPrimary"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 

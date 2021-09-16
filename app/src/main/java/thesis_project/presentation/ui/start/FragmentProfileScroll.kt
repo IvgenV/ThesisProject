@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
+import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentProfileScroll : Fragment() {
@@ -27,11 +28,11 @@ class FragmentProfileScroll : Fragment() {
     private lateinit var saleEur: EditText
 
 
-    private lateinit var switchNotification: Switch
-    private lateinit var switchRub: Switch
-    private lateinit var switchUsd: Switch
-    private lateinit var switchUah: Switch
-    private lateinit var switchEur: Switch
+    private lateinit var switchNotification: SwitchMaterial
+    private lateinit var switchRub: SwitchMaterial
+    private lateinit var switchUsd: SwitchMaterial
+    private lateinit var switchUah: SwitchMaterial
+    private lateinit var switchEur: SwitchMaterial
 
     private lateinit var key_switch: String
     private lateinit var key_switchRub: String
