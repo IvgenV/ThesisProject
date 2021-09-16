@@ -15,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -30,7 +29,7 @@ import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentAtm : BaseStartFragment(), ILocationListener, ToFragmentMap {
+class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var atmList: RecyclerView

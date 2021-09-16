@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -15,14 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.thesis_project.R
-import com.google.android.material.snackbar.Snackbar
 import thesis_project.StateNews
 import thesis_project.data.data_base.news.News
 import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentNews : BaseStartFragment(), ToFragmentNews {
+class FragmentNews : BaseStartFragments(), ToFragmentNews {
 
     lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()

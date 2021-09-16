@@ -1,15 +1,12 @@
 package thesis_project.presentation.ui.start
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -23,20 +20,22 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.FirebaseDatabase
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class StartActivity : AppCompatActivity() {
+class StartActivity : AppCompatActivity(),startActivityControlInterface {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var myViewModel: MyViewModel
     lateinit var navController: NavController
     lateinit var bottomNavigationView: BottomNavigationView
     lateinit var materialToolbar: MaterialToolbar
+    lateinit var navigationView:NavigationView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-        
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
+
         materialToolbar = findViewById(R.id.materialToolBar)
 
         materialToolbar.setNavigationOnClickListener {
@@ -45,7 +44,7 @@ class StartActivity : AppCompatActivity() {
 
         bottomNavigationView = findViewById(R.id.bottomNavigation)
 
-        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+        navigationView = findViewById(R.id.navigationView)
 
         navigationView.itemIconTintList = null
 
@@ -95,5 +94,25 @@ class StartActivity : AppCompatActivity() {
         }
         bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
     }
+
+    override fun isBottomNavigationVisible(isVisible:Boolean) {
+        bottomNavigationView.isVisible = isVisible
+    }
+
+    override fun checkDrawerMenu() {
+        if(drawerLayout.isOpen){
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }else{
+            ///так не сбрасывает чек
+            ////navigationView.checkedItem?.isChecked = false
+            navigationView.menu.getItem(0).isChecked = false
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    override fun setStartTheme():Boolean {
+        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+    }
+
 
 }

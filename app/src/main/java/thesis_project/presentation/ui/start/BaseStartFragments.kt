@@ -1,24 +1,16 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
-import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.example.thesis_project.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 
 
-open class BaseStartFragment: Fragment() {
+open class BaseStartFragments: Fragment() {
 
     lateinit var snackBar:Snackbar
     lateinit var drawerLayout: DrawerLayout
@@ -28,11 +20,6 @@ open class BaseStartFragment: Fragment() {
             if (drawerLayout.isOpen) {
                 drawerLayout.closeDrawer(GravityCompat.START)
             }else{
-                snackBar = Snackbar.make(
-                    requireView(),
-                    "Еще раз для закрытия",
-                    Snackbar.LENGTH_SHORT
-                )
                 if(snackBar.isShown){
                     requireActivity().finish()
                 }else{
@@ -43,8 +30,14 @@ open class BaseStartFragment: Fragment() {
         }
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        snackBar = Snackbar.make(
+            requireView(),
+            "Еще раз для закрытия",
+            Snackbar.LENGTH_SHORT
+        )
         drawerLayout = requireActivity().findViewById(R.id.drawerLayout)
     }
 
@@ -59,9 +52,9 @@ open class BaseStartFragment: Fragment() {
         callbackBackPressed.isEnabled = true
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
         callbackBackPressed.isEnabled = false
+        super.onDestroy()
     }
 
 }

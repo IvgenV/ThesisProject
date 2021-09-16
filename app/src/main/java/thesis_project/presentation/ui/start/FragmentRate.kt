@@ -1,26 +1,22 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import thesis_project.Constnsts
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.adapter.RateAdapter
 import thesis_project.presentation.adapter.ToFragmentFilials
 import thesis_project.presentation.viewmodel.MyViewModel
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentRate : BaseStartFragment(), ToFragmentFilials {
+class FragmentRate : BaseStartFragments(), ToFragmentFilials {
 
     lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
