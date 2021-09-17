@@ -1,16 +1,19 @@
 package thesis_project.presentation.ui.start
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 
-open class BaseStartDrawerLayoutFragments: Fragment() {
+open class BaseStartDrawerLayoutFragments : Fragment() {
 
-    var startActivity:startActivityControlInterface? = null
+    var startActivity: StartActivityControlInterface? = null
     val callbackBackPressed = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            startActivity?.checkDrawerMenu()
+            if(startActivity?.checkDrawerMenu() == true){
+                startActivity?.isBottomNavigationVisible(true)
+            }
         }
     }
 
@@ -27,13 +30,6 @@ open class BaseStartDrawerLayoutFragments: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         startActivity = null
-        startActivity?.isBottomNavigationVisible(true)
-    }
-
-    override fun onDestroy() {
-        startActivity = null
-        startActivity?.isBottomNavigationVisible(true)
-        super.onDestroy()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +42,7 @@ open class BaseStartDrawerLayoutFragments: Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        startActivity = requireActivity() as startActivityControlInterface
+        startActivity = requireActivity() as StartActivityControlInterface
         startActivity?.isBottomNavigationVisible(false)
     }
 

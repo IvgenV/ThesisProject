@@ -1,9 +1,9 @@
 package thesis_project.presentation.ui.start
 
-interface startActivityControlInterface {
+interface StartActivityControlInterface {
 
     fun isBottomNavigationVisible(isVisible:Boolean)
-    fun checkDrawerMenu()
+    fun checkDrawerMenu():Boolean
     fun setStartTheme():Boolean
 
 }

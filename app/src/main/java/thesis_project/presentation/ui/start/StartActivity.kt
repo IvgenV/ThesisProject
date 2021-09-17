@@ -2,11 +2,14 @@ package thesis_project.presentation.ui.start
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -20,7 +23,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.FirebaseDatabase
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class StartActivity : AppCompatActivity(),startActivityControlInterface {
+class StartActivity : AppCompatActivity(),StartActivityControlInterface {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var myViewModel: MyViewModel
@@ -35,7 +38,7 @@ class StartActivity : AppCompatActivity(),startActivityControlInterface {
         setContentView(R.layout.activity_start)
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
-
+        
         materialToolbar = findViewById(R.id.materialToolBar)
 
         materialToolbar.setNavigationOnClickListener {
@@ -99,14 +102,16 @@ class StartActivity : AppCompatActivity(),startActivityControlInterface {
         bottomNavigationView.isVisible = isVisible
     }
 
-    override fun checkDrawerMenu() {
+    override fun checkDrawerMenu():Boolean {
         if(drawerLayout.isOpen){
             drawerLayout.closeDrawer(GravityCompat.START)
+            return false
         }else{
-            ///так не сбрасывает чек
-            ////navigationView.checkedItem?.isChecked = false
-            navigationView.menu.getItem(0).isChecked = false
+            for(i in 0 until navigationView.menu.size){
+                navigationView.menu.getItem(i).isChecked = false
+            }
             supportFragmentManager.popBackStack()
+            return true
         }
     }
 
