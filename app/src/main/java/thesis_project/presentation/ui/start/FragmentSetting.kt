@@ -14,7 +14,6 @@ import thesis_project.presentation.viewmodel.MyViewModel
 class FragmentSetting : BaseFragment() {
 
     lateinit var switchSetting: SwitchMaterial
-    lateinit var myViewModel: MyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +30,6 @@ class FragmentSetting : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         switchSetting.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 myViewModel.setTheme(
@@ -50,7 +48,6 @@ class FragmentSetting : BaseFragment() {
             }
         }
         checkedSwitch()
-        startActivity.setBottomNavigationVisible(false)
     }
 
     fun checkedSwitch(){

@@ -22,16 +22,13 @@ import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentNews : BaseFragment(), ToFragmentNews {
 
-    lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()
-    lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-        startActivity.setBottomNavigationVisible(true)
 
         myViewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
@@ -60,7 +57,6 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
             adapter.setHasStableIds(true)
         }
         checkDeviceType(newsList)
-        navigation = Navigation.findNavController(view)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             myViewModel.getNews()

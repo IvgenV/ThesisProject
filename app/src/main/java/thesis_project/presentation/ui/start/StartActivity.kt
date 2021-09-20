@@ -47,11 +47,6 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
         fragment = findViewById(R.id.nav_host_fragment_start)
-        snackBar = Snackbar.make(
-            window.decorView.rootView,
-            "Еще раз для закрытия",
-            Snackbar.LENGTH_SHORT
-        )
 
         AppCompatDelegate.setDefaultNightMode(myViewModel.getTheme())
 
@@ -92,9 +87,6 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
 
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
-        navigationView.setOnClickListener{
-            bottomNavigationView.isVisible = false
-        }
         NavigationUI.setupWithNavController(navigationView, navController)
 
 
@@ -124,35 +116,38 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
     }
 
     override fun onBackPressed() {
-        if(bottomNavigationView.isVisible){
-            checkDrawerMenuBaseStart()
-        }else{
-            checkDrawerMenuBaseStartNext()
-        }
-    }
-
-    override fun checkDrawerMenuBaseStart() {
-        if (drawerLayout.isOpen) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            if(snackBar.isShown){
-                finish()
-            }else{
-                snackBar.anchorView = findViewById(R.id.bottomNavigation)
-                snackBar.show()
+        when {
+            drawerLayout.isOpen -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            bottomNavigationView.isVisible -> {
+                checkDrawerMenuBaseStart()
+            }
+            else -> {
+                checkDrawerMenuBaseStartNext()
             }
         }
     }
 
-    override fun checkDrawerMenuBaseStartNext() {
-        if (drawerLayout.isOpen) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }else{
+    fun checkDrawerMenuBaseStart() {
+            if(snackBar.isShown){
+                finish()
+            }else{
+                snackBar = Snackbar.make(
+                    window.decorView.rootView,
+                    "Еще раз для закрытия",
+                    Snackbar.LENGTH_SHORT
+                )
+                snackBar.anchorView = findViewById(R.id.bottomNavigation)
+                snackBar.show()
+            }
+    }
+
+    fun checkDrawerMenuBaseStartNext() {
             for (i in 0 until navigationView.menu.size) {
                 navigationView.menu.getItem(i).isChecked = false
             }
             navController.popBackStack()
-        }
     }
 
 }

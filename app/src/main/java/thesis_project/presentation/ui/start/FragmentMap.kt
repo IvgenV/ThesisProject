@@ -15,14 +15,7 @@ class FragmentMap : BaseFragment(), OnMapReadyCallback {
 
     lateinit var mapView: MapView
     lateinit var googleMap: GoogleMap
-    lateinit var myViewModel: MyViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-        startActivity.setBottomNavigationVisible(false)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

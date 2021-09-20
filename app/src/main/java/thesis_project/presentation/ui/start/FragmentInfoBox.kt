@@ -30,18 +30,18 @@ import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var myViewModel: MyViewModel
     lateinit var infoBoxList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var tvText: TextView
     lateinit var buttonRefresh: Button
-    lateinit var navigation: NavController
     lateinit var progressInfoBox: ProgressBar
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
     var isGPSEnabled = false
     var isNetworkEnabled = false
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -56,9 +56,7 @@ class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
-        startActivity.setBottomNavigationVisible(true)
         createLocationManager()
         initialization()
 
@@ -70,12 +68,6 @@ class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
             adapter.setData(it)
         })
 
-       /* viewModel.initial.observe(viewLifecycleOwner,{initial ->
-            if(initial is Initial.Error){
-                Toast.makeText(requireContext(),"Server error! Try later!",Toast.LENGTH_SHORT).show()
-                tvText.text = "Not current data"
-            }
-        })*/
 
         buttonRefresh.setOnClickListener {
             initialization()
@@ -99,7 +91,6 @@ class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
         progressInfoBox = view.findViewById(R.id.progressInfoBox)
         infoBoxList.layoutManager = LinearLayoutManager(requireContext())
         infoBoxList.adapter = adapter
-        navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
 

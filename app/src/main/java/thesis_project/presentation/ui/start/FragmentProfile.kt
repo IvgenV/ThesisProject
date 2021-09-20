@@ -15,7 +15,6 @@ class FragmentProfile : BaseFragment() {
     lateinit var name: TextView
     lateinit var surname: TextView
     lateinit var email: TextView
-    lateinit var myViewModel: MyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,11 +33,9 @@ class FragmentProfile : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
         name.text = myViewModel.name
         surname.text = myViewModel.surname
         email.text = myViewModel.email
-        startActivity.setBottomNavigationVisible(false)
     }
 
 }

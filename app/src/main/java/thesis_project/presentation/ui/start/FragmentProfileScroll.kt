@@ -168,8 +168,7 @@ class FragmentProfileScroll : Fragment() {
             myViewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
             myViewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
 
-            if ((switchRub.isChecked == true) || (switchUsd.isChecked == true) ||
-                (switchUah.isChecked == true) || (switchEur.isChecked == true)
+            if (switchRub.isChecked || switchUsd.isChecked || switchUah.isChecked || switchEur.isChecked
             ) {
                 myViewModel.startNotificationRate()
             } else {

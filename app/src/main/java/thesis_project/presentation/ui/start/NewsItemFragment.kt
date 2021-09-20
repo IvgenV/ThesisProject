@@ -15,12 +15,15 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.example.thesis_project.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
@@ -29,22 +32,13 @@ import thesis_project.presentation.viewmodel.MyViewModel
 
 class NewsItemFragment : BaseFragment() {
 
-    lateinit var myViewModel: MyViewModel
     lateinit var webView: WebView
     var snackbar: Snackbar? = null
-    lateinit var navigation: NavController
-//    val callbackBackPressed = object : OnBackPressedCallback(false){
-//        override fun handleOnBackPressed() {
-//            myViewModel.setStateNews(StateNews("","",""))
-//            requireActivity().supportFragmentManager.popBackStack()
-//        }
-//
-//    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-        myViewModel.getStateNews().observe(viewLifecycleOwner,{
+        myViewModel.getStateNews().observe(viewLifecycleOwner, {
             val bodyNews = it.html_ru
             val bodyTitle = it.name_ru
             val bodyDate = it.start_date
@@ -69,7 +63,6 @@ class NewsItemFragment : BaseFragment() {
 
             loadUrl(html)
         })
-        startActivity.setBottomNavigationVisible(false)
     }
 
     override fun onCreateView(
@@ -84,19 +77,8 @@ class NewsItemFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.news_text)
-        Navigation.findNavController(view)
-       /// requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callbackBackPressed)
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        callbackBackPressed.isEnabled = true
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        callbackBackPressed.isEnabled = false
-//    }
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadUrl(url: String) {
@@ -108,14 +90,14 @@ class NewsItemFragment : BaseFragment() {
         webSettings.builtInZoomControls = true
         webSettings.displayZoomControls = false
         webSettings.javaScriptEnabled = true
-
-        /*if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
-        }else{
-            webSettings.defaultFontSize = resources.getDimension(R.dimen.txtWebViewSize).toInt()
-        }*/
-
         webSettings.textZoom = 300
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)){
+            if(myViewModel.getTheme() == AppCompatDelegate.MODE_NIGHT_YES){
+                WebSettingsCompat.setForceDark(webSettings,WebSettingsCompat.FORCE_DARK_ON)
+            }else{
+                WebSettingsCompat.setForceDark(webSettings,WebSettingsCompat.FORCE_DARK_OFF)
+            }
+        }
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -127,14 +109,6 @@ class NewsItemFragment : BaseFragment() {
                         childFragmentManager.commit {
                             setReorderingAllowed(true)
                         }
-//                        data = Uri.parse(url)
-//                        or
-//                        data = Uri.parse("mailto:")
-//                        putExtra(Intent.EXTRA_EMAIL, url.substringAfter("mailto:"))
-//
-//                        also can use:
-//                        putExtra(Intent.EXTRA_SUBJECT, "subject")
-//                        putExtra(Intent.EXTRA_TEXT, "text")
                     }
                     return resolveActivity(intent)
                 }

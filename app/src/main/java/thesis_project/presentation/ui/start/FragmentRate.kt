@@ -18,22 +18,20 @@ import thesis_project.sealed.CurrencyOperation
 
 class FragmentRate : BaseFragment(), ToFragmentFilials {
 
-    lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
     lateinit var rateList: RecyclerView
     lateinit var rateNP: NumberPicker
     lateinit var switch: SwitchMaterial
-    lateinit var navigation: NavController
     lateinit var progressBar: ProgressBar
     val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
     var check: CurrencyOperation = CurrencyOperation.Buy
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
         initialCountryRate()
-        startActivity.setBottomNavigationVisible(true)
 
         myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressBar.visibility = it
@@ -98,7 +96,6 @@ class FragmentRate : BaseFragment(), ToFragmentFilials {
         rateList.layoutManager = LinearLayoutManager(requireContext())
         rateList.adapter = adapter
         rateNP = view.findViewById(R.id.rateNumberPicker)
-        navigation = Navigation.findNavController(view)
         adapter.setListenerFr2(this)
         switch = view.findViewById(R.id.rateSwitch)
         progressBar = view.findViewById(R.id.progressBarRate)
