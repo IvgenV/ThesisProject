@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentProfile : BaseStartDrawerLayoutFragments() {
+class FragmentProfile : BaseFragment() {
 
     lateinit var name: TextView
     lateinit var surname: TextView
@@ -37,6 +38,7 @@ class FragmentProfile : BaseStartDrawerLayoutFragments() {
         name.text = myViewModel.name
         surname.text = myViewModel.surname
         email.text = myViewModel.email
+        startActivity.setBottomNavigationVisible(false)
     }
 
 }

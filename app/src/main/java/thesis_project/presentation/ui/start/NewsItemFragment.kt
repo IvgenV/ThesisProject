@@ -27,19 +27,19 @@ import com.google.android.material.transition.MaterialContainerTransform
 import thesis_project.StateNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class NewsItemFragment : Fragment() {
+class NewsItemFragment : BaseFragment() {
 
     lateinit var myViewModel: MyViewModel
     lateinit var webView: WebView
     var snackbar: Snackbar? = null
     lateinit var navigation: NavController
-    val callbackBackPressed = object : OnBackPressedCallback(false){
-        override fun handleOnBackPressed() {
-            myViewModel.setStateNews(StateNews("","",""))
-            requireActivity().supportFragmentManager.popBackStack()
-        }
-
-    }
+//    val callbackBackPressed = object : OnBackPressedCallback(false){
+//        override fun handleOnBackPressed() {
+//            myViewModel.setStateNews(StateNews("","",""))
+//            requireActivity().supportFragmentManager.popBackStack()
+//        }
+//
+//    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -69,6 +69,7 @@ class NewsItemFragment : Fragment() {
 
             loadUrl(html)
         })
+        startActivity.setBottomNavigationVisible(false)
     }
 
     override fun onCreateView(
@@ -84,18 +85,18 @@ class NewsItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.news_text)
         Navigation.findNavController(view)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callbackBackPressed)
+       /// requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callbackBackPressed)
     }
 
-    override fun onResume() {
-        super.onResume()
-        callbackBackPressed.isEnabled = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        callbackBackPressed.isEnabled = false
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        callbackBackPressed.isEnabled = true
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        callbackBackPressed.isEnabled = false
+//    }
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadUrl(url: String) {

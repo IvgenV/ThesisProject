@@ -15,13 +15,10 @@ import thesis_project.data.data_base.filials.RateData
 import thesis_project.data.data_base.filials.RateFilialData
 import thesis_project.data.data_base.filials.СoordinatesData
 import thesis_project.data.data_base.news.News
+import thesis_project.domain.use_case.*
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 import java.util.*
-import thesis_project.domain.use_case.SharedPreferencesNewsUseCase
-import thesis_project.domain.use_case.SharedPreferencesRateDoubleUseCase
-import thesis_project.domain.use_case.SharedPreferencesSwitchUseCase
-import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class MyViewModel : ViewModel() {
@@ -70,6 +67,7 @@ class MyViewModel : ViewModel() {
     private val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     private val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }
     private val sharedPreferencesNews: SharedPreferencesNewsUseCase by lazy { Dependencies.getSharedPreferencesNews() }
+    private val sharedPreferencesTheme: SharedPreferencesThemeUseCase by lazy { Dependencies.getSharedPreferencesTheme() }
 
     //Worker
     private val myWorkerController: WorkerControllerUseCase by lazy { Dependencies.getMyWorkerController() }
@@ -578,6 +576,14 @@ class MyViewModel : ViewModel() {
 
     fun getStateNews():LiveData<StateNews>{
         return stateNews
+    }
+
+    fun setTheme(theme:Int){
+        sharedPreferencesTheme.saveCurrentTheme(theme)
+    }
+
+    fun getTheme():Int{
+        return sharedPreferencesTheme.takeCurrentTheme()
     }
 
 }

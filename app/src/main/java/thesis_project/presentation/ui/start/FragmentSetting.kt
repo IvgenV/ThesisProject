@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import com.google.android.material.switchmaterial.SwitchMaterial
+import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentSetting : BaseStartDrawerLayoutFragments() {
+class FragmentSetting : BaseFragment() {
 
-    lateinit var switchSetting:SwitchMaterial
-    lateinit var textSetting:TextView
+    lateinit var switchSetting: SwitchMaterial
+    lateinit var myViewModel: MyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,20 +26,35 @@ class FragmentSetting : BaseStartDrawerLayoutFragments() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        textSetting = view.findViewById(R.id.setting_text)
         switchSetting = view.findViewById(R.id.setting_switch)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        switchSetting.isChecked = startActivity?.setStartTheme()?:false
+        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         switchSetting.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            if (isChecked) {
+                myViewModel.setTheme(
+                    AppCompatDelegate.MODE_NIGHT_YES
+                )
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES
+                )
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                myViewModel.setTheme(
+                    AppCompatDelegate.MODE_NIGHT_NO
+                )
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO
+                )
             }
         }
+        checkedSwitch()
+        startActivity.setBottomNavigationVisible(false)
+    }
+
+    fun checkedSwitch(){
+        switchSetting.isChecked = myViewModel.getTheme()==AppCompatDelegate.MODE_NIGHT_YES
     }
 
 }

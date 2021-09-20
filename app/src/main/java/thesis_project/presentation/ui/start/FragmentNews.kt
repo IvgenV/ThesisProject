@@ -20,7 +20,7 @@ import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentNews : BaseStartFragments(), ToFragmentNews {
+class FragmentNews : BaseFragment(), ToFragmentNews {
 
     lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()
@@ -31,6 +31,8 @@ class FragmentNews : BaseStartFragments(), ToFragmentNews {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        startActivity.setBottomNavigationVisible(true)
+
         myViewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
@@ -60,7 +62,6 @@ class FragmentNews : BaseStartFragments(), ToFragmentNews {
         checkDeviceType(newsList)
         navigation = Navigation.findNavController(view)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-
         swipeRefreshLayout.setOnRefreshListener {
             myViewModel.getNews()
         }

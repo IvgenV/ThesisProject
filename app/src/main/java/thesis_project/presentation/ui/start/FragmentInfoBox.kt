@@ -28,7 +28,7 @@ import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentInfoBox : BaseStartFragments(), ILocationListener, ToFragmentMap {
+class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var infoBoxList: RecyclerView
@@ -58,6 +58,7 @@ class FragmentInfoBox : BaseStartFragments(), ILocationListener, ToFragmentMap {
         super.onActivityCreated(savedInstanceState)
         myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
+        startActivity.setBottomNavigationVisible(true)
         createLocationManager()
         initialization()
 
@@ -80,6 +81,7 @@ class FragmentInfoBox : BaseStartFragments(), ILocationListener, ToFragmentMap {
             initialization()
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

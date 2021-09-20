@@ -13,6 +13,7 @@ import thesis_project.data.data_base.news.NewsData
 import thesis_project.data.sharedPreferences.SharedPreferencesNews
 import thesis_project.data.sharedPreferences.SharedPreferencesRateDouble
 import thesis_project.data.sharedPreferences.SharedPreferencesSwitch
+import thesis_project.data.sharedPreferences.SharedPreferencesTheme
 import thesis_project.data.worker.WorkerControllerUseCaseImpl
 import thesis_project.domain.entity.*
 import thesis_project.domain.repository.*
@@ -108,4 +109,12 @@ object Dependencies {
 
     fun getSharedPreferencesNews():SharedPreferencesNewsUseCase =
         SharedPreferencesNewsUseCaseImpl(sharedPreferencesNews)
+
+    ////SharedPreferencesTheme
+    private val sharedPreferencesTheme:SharedPreferencesThemeRepository by lazy {
+        SharedPreferencesTheme(App.instance)
+    }
+
+    fun getSharedPreferencesTheme():SharedPreferencesThemeUseCase =
+        SharedPreferencesThemeUseCaseImpl(sharedPreferencesTheme)
 }

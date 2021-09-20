@@ -16,7 +16,7 @@ import thesis_project.presentation.adapter.ToFragmentFilials
 import thesis_project.presentation.viewmodel.MyViewModel
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentRate : BaseStartFragments(), ToFragmentFilials {
+class FragmentRate : BaseFragment(), ToFragmentFilials {
 
     lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
@@ -32,8 +32,8 @@ class FragmentRate : BaseStartFragments(), ToFragmentFilials {
         super.onActivityCreated(savedInstanceState)
 
         myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-
         initialCountryRate()
+        startActivity.setBottomNavigationVisible(true)
 
         myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressBar.visibility = it

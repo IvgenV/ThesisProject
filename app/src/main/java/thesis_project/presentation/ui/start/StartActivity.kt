@@ -4,41 +4,57 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.thesis_project.R
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.FirebaseDatabase
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class StartActivity : AppCompatActivity(),StartActivityControlInterface {
+class StartActivity : AppCompatActivity(), StartActivityControlInterface {
 
     lateinit var drawerLayout: DrawerLayout
     lateinit var myViewModel: MyViewModel
     lateinit var navController: NavController
     lateinit var bottomNavigationView: BottomNavigationView
     lateinit var materialToolbar: MaterialToolbar
-    lateinit var navigationView:NavigationView
-
+    lateinit var navigationView: NavigationView
+    lateinit var fragment: View
+    lateinit var snackBar:Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
-        
+        fragment = findViewById(R.id.nav_host_fragment_start)
+        snackBar = Snackbar.make(
+            window.decorView.rootView,
+            "Еще раз для закрытия",
+            Snackbar.LENGTH_SHORT
+        )
+
+        AppCompatDelegate.setDefaultNightMode(myViewModel.getTheme())
+
         materialToolbar = findViewById(R.id.materialToolBar)
 
         materialToolbar.setNavigationOnClickListener {
@@ -76,7 +92,11 @@ class StartActivity : AppCompatActivity(),StartActivityControlInterface {
 
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_start)
+        navigationView.setOnClickListener{
+            bottomNavigationView.isVisible = false
+        }
         NavigationUI.setupWithNavController(navigationView, navController)
+
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             materialToolbar.title = destination.label
@@ -95,29 +115,44 @@ class StartActivity : AppCompatActivity(),StartActivityControlInterface {
                 true
             } ?: false
         }
+
         bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
     }
 
-    override fun isBottomNavigationVisible(isVisible:Boolean) {
+    override fun setBottomNavigationVisible(isVisible: Boolean) {
         bottomNavigationView.isVisible = isVisible
     }
 
-    override fun checkDrawerMenu():Boolean {
-        if(drawerLayout.isOpen){
-            drawerLayout.closeDrawer(GravityCompat.START)
-            return false
+    override fun onBackPressed() {
+        if(bottomNavigationView.isVisible){
+            checkDrawerMenuBaseStart()
         }else{
-            for(i in 0 until navigationView.menu.size){
-                navigationView.menu.getItem(i).isChecked = false
-            }
-            supportFragmentManager.popBackStack()
-            return true
+            checkDrawerMenuBaseStartNext()
         }
     }
 
-    override fun setStartTheme():Boolean {
-        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+    override fun checkDrawerMenuBaseStart() {
+        if (drawerLayout.isOpen) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            if(snackBar.isShown){
+                finish()
+            }else{
+                snackBar.anchorView = findViewById(R.id.bottomNavigation)
+                snackBar.show()
+            }
+        }
     }
 
+    override fun checkDrawerMenuBaseStartNext() {
+        if (drawerLayout.isOpen) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }else{
+            for (i in 0 until navigationView.menu.size) {
+                navigationView.menu.getItem(i).isChecked = false
+            }
+            navController.popBackStack()
+        }
+    }
 
 }

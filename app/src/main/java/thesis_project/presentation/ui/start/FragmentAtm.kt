@@ -15,8 +15,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +29,7 @@ import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
+class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var atmList: RecyclerView
@@ -59,49 +59,16 @@ class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
 
     override fun onStart() {
         super.onStart()
-          myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-          myViewModel.initialAtmDb()
-          createLocationManager()
-
-
-          myViewModel.getProgress().observe(viewLifecycleOwner, {
-              progressAtm.visibility = it
-          })
-
-          myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
-              if (it == true) {
-                  tvText.text = "Current data!"
-              }
-              if (it == false) {
-                  tvText.text = "Not current data!"
-              }
-          })
-
-          lifecycleScope.launchWhenStarted {
-              myViewModel.getAtm().collect {
-                  adapter.setData(it)
-              }
-          }
-
-
-          buttonRefresh.setOnClickListener {
-              initialization()
-          }
-
-      }
-
-   /* override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-        viewModel.initialAtmDb()
+        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        myViewModel.initialAtmDb()
+        startActivity.setBottomNavigationVisible(true)
         createLocationManager()
 
-
-        viewModel.getProgress().observe(viewLifecycleOwner, {
+        myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressAtm.visibility = it
         })
 
-        viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+        myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
             if (it == true) {
                 tvText.text = "Current data!"
             }
@@ -111,7 +78,7 @@ class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
         })
 
         lifecycleScope.launchWhenStarted {
-            viewModel.getAtm().collect {
+            myViewModel.getAtm().collect {
                 adapter.setData(it)
             }
         }
@@ -121,8 +88,42 @@ class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
             initialization()
         }
 
+    }
 
-    }*/
+
+    /* override fun onActivityCreated(savedInstanceState: Bundle?) {
+         super.onActivityCreated(savedInstanceState)
+         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
+         viewModel.initialAtmDb()
+         createLocationManager()
+
+
+         viewModel.getProgress().observe(viewLifecycleOwner, {
+             progressAtm.visibility = it
+         })
+
+         viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+             if (it == true) {
+                 tvText.text = "Current data!"
+             }
+             if (it == false) {
+                 tvText.text = "Not current data!"
+             }
+         })
+
+         lifecycleScope.launchWhenStarted {
+             viewModel.getAtm().collect {
+                 adapter.setData(it)
+             }
+         }
+
+
+         buttonRefresh.setOnClickListener {
+             initialization()
+         }
+
+
+     }*/
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -156,7 +157,6 @@ class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
     override fun onClick(atm: String) {
         val bundle = Bundle()
         bundle.putString("atm", atm)
-        ///viewModel.setAtmInfo(atm)
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
@@ -216,8 +216,7 @@ class FragmentAtm : BaseStartFragments(), ILocationListener, ToFragmentMap {
     }
 
 
-
-    fun getLocation(){
+    fun getLocation() {
         if (isGPSEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),

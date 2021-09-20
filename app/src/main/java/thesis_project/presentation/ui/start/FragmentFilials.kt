@@ -27,7 +27,7 @@ import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
     lateinit var myViewModel: MyViewModel
     lateinit var filialList: RecyclerView
@@ -56,8 +56,8 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        startActivity.setBottomNavigationVisible(false)
         init()
         rate = arguments?.getString("rate")?.toDouble() ?: -1.0
         inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
@@ -68,6 +68,7 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
             adapter.setData(it)
         })
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

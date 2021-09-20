@@ -2,9 +2,9 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="Primary">#2e7d32</color>
-    <color name="PrimaryDark">#005005</color>
-    <color name="PrimaryVariant">#60ad5e</color>
-    <color name="Secondary">#1565c0</color>
-    <color name="SecondaryVariant">#003c8f</color>
+    <color name="primary">#2e7d32</color>
+    <color name="primary_dark">#005005</color>
+    <color name="primary_variant">#60ad5e</color>
+    <color name="secondary">#1565c0</color>
+    <color name="secondary_variant">#003c8f</color>
 </resources>
