@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,11 +57,11 @@ class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
             }
         }
 
-
     override fun onStart() {
         super.onStart()
         myViewModel.initialAtmDb()
         createLocationManager()
+
 
         myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressAtm.visibility = it
@@ -86,7 +87,10 @@ class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
             initialization()
         }
 
+
+
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

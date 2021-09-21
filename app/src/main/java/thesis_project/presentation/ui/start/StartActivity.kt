@@ -39,7 +39,7 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
     lateinit var materialToolbar: MaterialToolbar
     lateinit var navigationView: NavigationView
     lateinit var fragment: View
-    lateinit var snackBar:Snackbar
+    var snackBar: Snackbar?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +47,13 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         drawerLayout = findViewById(R.id.drawerLayout)
         fragment = findViewById(R.id.nav_host_fragment_start)
+
+        snackBar = Snackbar.make(
+            window.decorView.rootView,
+            "Еще раз для закрытия",
+            Snackbar.LENGTH_SHORT
+        )
+
 
         AppCompatDelegate.setDefaultNightMode(myViewModel.getTheme())
 
@@ -115,7 +122,7 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         bottomNavigationView.isVisible = isVisible
     }
 
-    override fun onBackPressed() {
+    override fun pressedBack() {
         when {
             drawerLayout.isOpen -> {
                 drawerLayout.closeDrawer(GravityCompat.START)
@@ -130,24 +137,19 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
     }
 
     fun checkDrawerMenuBaseStart() {
-            if(snackBar.isShown){
-                finish()
-            }else{
-                snackBar = Snackbar.make(
-                    window.decorView.rootView,
-                    "Еще раз для закрытия",
-                    Snackbar.LENGTH_SHORT
-                )
-                snackBar.anchorView = findViewById(R.id.bottomNavigation)
-                snackBar.show()
-            }
+        if (snackBar?.isShown == true) {
+            finish()
+        } else {
+            snackBar?.anchorView = findViewById(R.id.bottomNavigation)
+            snackBar?.show()
+        }
     }
 
     fun checkDrawerMenuBaseStartNext() {
-            for (i in 0 until navigationView.menu.size) {
-                navigationView.menu.getItem(i).isChecked = false
-            }
-            navController.popBackStack()
+        for (i in 0 until navigationView.menu.size) {
+            navigationView.menu.getItem(i).isChecked = false
+        }
+        navController.popBackStack()
     }
 
 }

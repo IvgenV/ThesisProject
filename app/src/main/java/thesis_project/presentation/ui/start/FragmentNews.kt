@@ -3,9 +3,11 @@ package thesis_project.presentation.ui.start
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -26,6 +28,14 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     override val bottomNavigationVisible: Boolean
         get() = true
+    override val callback: OnBackPressedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            Log.d("sdsdsfsfs","onBackPressedOvveride")
+        }
+
+    }
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -46,6 +56,8 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
     ): View? {
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
