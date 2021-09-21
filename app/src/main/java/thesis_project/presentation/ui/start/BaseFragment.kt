@@ -20,18 +20,18 @@ abstract class BaseFragment : Fragment() {
     lateinit var navigation: NavController
     open val callback = object : OnBackPressedCallback(true ) {
         override fun handleOnBackPressed() {
-            startActivity.pressedBack()
+            onBackPressed()
         }
     }
 
-   /* open fun onBackPressed() {
-        (startActivity as StartActivity).onBackPressedDispatcher.addCallback(callback)
-    }*/
+    open fun onBackPressed() {
+
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         startActivity.setBottomNavigationVisible(bottomNavigationVisible)
-        (startActivity as StartActivity).onBackPressedDispatcher.addCallback(callback)
+        (startActivity as StartActivity).onBackPressedDispatcher.addCallback(this.viewLifecycleOwner,callback)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

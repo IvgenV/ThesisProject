@@ -48,11 +48,6 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         drawerLayout = findViewById(R.id.drawerLayout)
         fragment = findViewById(R.id.nav_host_fragment_start)
 
-        snackBar = Snackbar.make(
-            window.decorView.rootView,
-            "Еще раз для закрытия",
-            Snackbar.LENGTH_SHORT
-        )
 
 
         AppCompatDelegate.setDefaultNightMode(myViewModel.getTheme())
@@ -118,11 +113,9 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
     }
 
-    override fun setBottomNavigationVisible(isVisible: Boolean) {
-        bottomNavigationView.isVisible = isVisible
-    }
+    override fun onBackPressed() {
+        super.onBackPressed()
 
-    override fun pressedBack() {
         when {
             drawerLayout.isOpen -> {
                 drawerLayout.closeDrawer(GravityCompat.START)
@@ -136,10 +129,20 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         }
     }
 
+
+    override fun setBottomNavigationVisible(isVisible: Boolean) {
+        bottomNavigationView.isVisible = isVisible
+    }
+
     fun checkDrawerMenuBaseStart() {
         if (snackBar?.isShown == true) {
             finish()
         } else {
+            snackBar = Snackbar.make(
+                window.decorView.rootView,
+                "Еще раз для закрытия",
+                Snackbar.LENGTH_SHORT
+            )
             snackBar?.anchorView = findViewById(R.id.bottomNavigation)
             snackBar?.show()
         }
