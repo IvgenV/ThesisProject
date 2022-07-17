@@ -94,9 +94,8 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
    /* override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-        viewModel.initialAtmDb()
+        viewModel.initialAtmDb(this.requireContext())
         createLocationManager()
-
 
         viewModel.getProgress().observe(viewLifecycleOwner, {
             progressAtm.visibility = it

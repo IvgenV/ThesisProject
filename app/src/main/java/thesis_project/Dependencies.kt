@@ -25,8 +25,8 @@ object Dependencies {
         return RateDb(context)
     }
 
-    fun getRateDbUseCase(context: Context): RateDbUseCase =
-        RateDbUseCaseImpl(getRateDbRepository(context))
+    fun getRateDbUseCase(): RateDbUseCase =
+        RateDbUseCaseImpl(getRateDbRepository())
 
     private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
 
@@ -41,8 +41,8 @@ object Dependencies {
 
     private val apiAtmCloudSource: AtmCloudRepository by lazy { AtmCloudSource(Dispatchers.IO) }
 
-    fun getAtmUseCase(context: Context): AtmUseCase =
-        AtmUseCaseImpl(getAtmDbRepository(context), apiAtmCloudSource)
+    fun getAtmUseCase(): AtmUseCase =
+        AtmUseCaseImpl(getAtmDbRepository(), apiAtmCloudSource)
 
 
     ///infoBox
@@ -50,8 +50,8 @@ object Dependencies {
         return InfoBoxDb(context)
     }
 
-    fun getInfoBoxDbUseCase(context: Context): InfoBoxDbUseCase =
-        InfoBoxDbUseCaseImpl(getInfoBoxDbRepository(context))
+    fun getInfoBoxDbUseCase(): InfoBoxDbUseCase =
+        InfoBoxDbUseCaseImpl(getInfoBoxDbRepository())
 
     private val apiInfoBoxCloudSource:InfoBoxCloudRepository by lazy { InfoBoxCloudSource }
 
@@ -61,23 +61,20 @@ object Dependencies {
 
     ///News
     private val apiNewsCloudSource: NewsCloudRepository by lazy { NewsCloudSource }
+    private lateinit var newsData: NewsData
 
     fun getNewsCloudUseCase(): NewsCloudUseCase =
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
     private fun getNewsDbRepository(): NewsDbRepository {
-        return NewsData(App.instance)
+        return newsData
     }
 
     fun getNewsDbUseCase(): NewsDbUseCase =
         NewsDbUseCaseImpl(getNewsDbRepository())
 
     //SharedPrefenceSwitch
-    private val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy {
-        SharedPreferencesSwitch(
-            App.instance
-        )
-    }
+    private lateinit var sharedPreferencesSwitch: SharedPreferencesSwitchRepository //by lazy { SharedPreferencesSwitch(App.instance) }
 
     fun getSharedPreferenceSwitch(): SharedPreferencesSwitchUseCase =
         SharedPreferencesSwitchUseCaseImpl(
@@ -85,11 +82,7 @@ object Dependencies {
         )
 
     //SharedPrefence
-    private val sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository by lazy {
-        SharedPreferencesRateDouble(
-            App.instance
-        )
-    }
+    private lateinit var sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository //by lazy { SharedPreferencesRateDouble(App.instance) }
 
     fun getSharedPreferenceRate(): SharedPreferencesRateDoubleUseCase =
         SharedPreferencesRateDoubleUseCaseImpl(
@@ -97,7 +90,7 @@ object Dependencies {
         )
 
     ///WorkerNotification
-    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl(App.instance) }
+    private lateinit var workerController: WorkerControllerUseCase// by lazy { WorkerControllerUseCaseImpl(App.instance) }
 
     fun getMyWorkerController(): WorkerControllerUseCase = workerController
 

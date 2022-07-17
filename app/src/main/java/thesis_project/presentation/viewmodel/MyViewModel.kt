@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModel
+import com.example.thesis_project.R
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -25,14 +26,12 @@ import thesis_project.domain.use_case.WorkerControllerUseCase
 
 
 class MyViewModel : ViewModel() {
-    val textError = "Ошибка при подключений"
-    val duration = Toast.LENGTH_SHORT
-    val toast = Toast.makeText(App.instance, textError, duration)
+
     var userKey = ""
 
-    private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
-    private var atmBB = Dependencies.getAtmUseCase(App.instance)
-    private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
+    private var localRateDb = Dependencies.getRateDbUseCase()
+    private var atmBB = Dependencies.getAtmUseCase()
+    private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase()
 
     private var listOfCurrency = MutableLiveData<List<Double>>()
     private var listRateFilial = MutableLiveData<List<ItemDistance>>()
@@ -43,7 +42,6 @@ class MyViewModel : ViewModel() {
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
-
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()
@@ -97,7 +95,7 @@ class MyViewModel : ViewModel() {
         )
     }
 
-    fun initialCountryRate() {
+    fun initialCountryRate(context: Context) {
 
         viewModelScope.launch {
             try {
@@ -213,7 +211,7 @@ class MyViewModel : ViewModel() {
         loc.latitude = rateFilialData.latitude
         loc.longitude = rateFilialData.longitude
         val dist = location.distanceTo(loc)
-        return ItemDistance(dist, rateFilialData.filial)
+        return ItemDistance("Филиал", dist, rateFilialData.filial)
     }
 
     fun updatesFilials(location: Location, compare: (RateFilialData) -> Boolean) {
@@ -411,7 +409,7 @@ class MyViewModel : ViewModel() {
             loc.latitude = it.latitude.toDouble()
             loc.longitude = it.longitude.toDouble()
             val dist = location.distanceTo(loc)
-            list.add(ItemDistance(dist, it.id))
+            list.add(ItemDistance("Инфокиоск", dist, it.id))
         }
         list.sortBy { it.distance }
         if (list.size < 15) {

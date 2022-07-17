@@ -7,43 +7,43 @@
     <fragment
         android:id="@+id/fragment_start"
         android:name="thesis_project.presentation.ui.start.FragmentStart"
-        android:label="FragmentStart"
+        android:label="Главное Меню"
         tools:layout="@layout/fragment_start"/>
     <fragment
         android:id="@+id/fragment_rate"
         android:name="thesis_project.presentation.ui.start.FragmentRate"
-        android:label="FragmentRate"
+        android:label="Валюта"
         tools:layout="@layout/fragment_rate"/>
     <fragment
         android:id="@+id/fragment_filials"
         android:name="thesis_project.presentation.ui.start.FragmentFilials"
-        android:label="FragmentFilials"
+        android:label="Филиалы"
         tools:layout="@layout/fragment_filials"/>
     <fragment
         android:id="@+id/fragment_atm"
         android:name="thesis_project.presentation.ui.start.FragmentAtm"
-        android:label="FragmentAtm"
+        android:label="Банкоматы"
         tools:layout="@layout/fragment_atm"/>
     <fragment
         android:id="@+id/fragment_infoBox"
         android:name="thesis_project.presentation.ui.start.FragmentInfoBox"
-        android:label="FragmentInfoBox"
+        android:label="Инфокиоски"
         tools:layout="@layout/fragment_info_box"/>
     <fragment
         android:id="@+id/fragment_map"
         android:name="thesis_project.presentation.ui.start.FragmentMap"
-        android:label="FragmentMap"
+        android:label="Местоположение"
         tools:layout="@layout/fragment_map"/>
     <fragment
         android:id="@+id/fragment_news"
         android:name="thesis_project.presentation.ui.start.FragmentNews"
-        android:label="NewsFragment"
+        android:label="Новости"
         tools:layout="@layout/news_fragment"/>
 
     <fragment
         android:id="@+id/fragment_profile"
         android:name="thesis_project.presentation.ui.start.FragmentProfile"
-        android:label="Profile"
+        android:label="Профиль"
         tools:layout="@layout/fragment_profile"/>
 
     <fragment
@@ -55,7 +55,7 @@
     <fragment
         android:id="@+id/news_item"
         android:name="thesis_project.presentation.ui.start.NewsItemFragment"
-        android:label="NewsItemFragment" />
+        android:label="Новости" />
 
 
 </navigation>

@@ -1,5 +1,6 @@
 package thesis_project.presentation.ui.start
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import thesis_project.Constnsts

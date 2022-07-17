@@ -22,6 +22,7 @@ class ItemDistanceAdapter: ListAdapter<ItemDistance,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.item.text = getItem(position).item
         holder.distance.text = getItem(position).distance.toString()
+        holder.type.text = getItem(position).type.toString()
         val info = getItem(position).item
         holder.itemView.setOnClickListener {
             listenerToMap?.onClick(info)
@@ -39,7 +40,8 @@ class ItemDistanceAdapter: ListAdapter<ItemDistance,
 
     inner class ViewHolder(view:View): RecyclerView.ViewHolder(view){
         val item: TextView = view.findViewById(R.id.itemId)
-        val distance:TextView = view.findViewById(R.id.itemDistance)
+        val distance: TextView = view.findViewById(R.id.itemDistance)
+        val type: TextView = view.findViewById(R.id.itemType)
     }
 
 
