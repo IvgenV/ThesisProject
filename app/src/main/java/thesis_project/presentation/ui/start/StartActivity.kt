@@ -104,7 +104,7 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
                 R.id.newsBottomMenu -> R.id.fragment_news
                 else -> null
             }?.let { destinationId ->
-                navController.graph.startDestination = destinationId
+                navController.graph.setStartDestination(destinationId)
                 navController.navigate(destinationId)
                 true
             } ?: false

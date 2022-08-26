@@ -264,6 +264,7 @@ class MyViewModel : ViewModel() {
                             it.uah_in == rate
                         }
                     }
+                    else -> {}
                 }
             }
             if (buyOrSell == CurrencyOperation.Sell) {
@@ -288,6 +289,7 @@ class MyViewModel : ViewModel() {
                             it.uah_out == rate
                         }
                     }
+                    else -> {}
                 }
             }
         }
