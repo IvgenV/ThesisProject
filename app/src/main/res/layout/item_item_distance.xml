@@ -51,6 +51,7 @@
         app:layout_constraintStart_toEndOf="@+id/itemId"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <View
         android:id="@+id/bar"
         app:layout_constraintStart_toStartOf="parent"
