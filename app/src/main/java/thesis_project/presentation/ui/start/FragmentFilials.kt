@@ -27,12 +27,10 @@ import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var myViewModel: MyViewModel
     lateinit var filialList: RecyclerView
     val adapter = ItemDistanceAdapter()
-    lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
@@ -56,8 +54,6 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         init()
         rate = arguments?.getString("rate")?.toDouble() ?: -1.0
         inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
@@ -68,6 +64,7 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
             adapter.setData(it)
         })
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,7 +79,6 @@ class FragmentFilials : Fragment(), ILocationListener, ToFragmentMap {
         filialList = view.findViewById(R.id.filials_recycler)
         filialList.layoutManager = LinearLayoutManager(requireContext())
         filialList.adapter = adapter
-        navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
 

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,12 +30,10 @@ import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var myViewModel: MyViewModel
     lateinit var atmList: RecyclerView
     val adapter = ItemAddressDistanceAdapter()
-    lateinit var navigation: NavController
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
@@ -44,6 +42,8 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     lateinit var tvText: TextView
     var isGPSEnabled = false
     var isNetworkEnabled = false
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -57,52 +57,17 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
             }
         }
 
-
     override fun onStart() {
         super.onStart()
-          myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-          myViewModel.initialAtmDb()
-          createLocationManager()
-
-
-          myViewModel.getProgress().observe(viewLifecycleOwner, {
-              progressAtm.visibility = it
-          })
-
-          myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
-              if (it == true) {
-                  tvText.text = "Current data!"
-              }
-              if (it == false) {
-                  tvText.text = "Not current data!"
-              }
-          })
-
-          lifecycleScope.launchWhenStarted {
-              myViewModel.getAtm().collect {
-                  adapter.setData(it)
-              }
-          }
-
-
-          buttonRefresh.setOnClickListener {
-              initialization()
-          }
-
-      }
-
-   /* override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ViewModel::class.java)
-        viewModel.initialAtmDb()
+        myViewModel.initialAtmDb()
         createLocationManager()
 
 
-        viewModel.getProgress().observe(viewLifecycleOwner, {
+        myViewModel.getProgress().observe(viewLifecycleOwner, {
             progressAtm.visibility = it
         })
 
-        viewModel.getCheckLocation().observe(viewLifecycleOwner, {
+        myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
             if (it == true) {
                 tvText.text = "Current data!"
             }
@@ -112,7 +77,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         })
 
         lifecycleScope.launchWhenStarted {
-            viewModel.getAtm().collect {
+            myViewModel.getAtm().collect {
                 adapter.setData(it)
             }
         }
@@ -123,7 +88,9 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         }
 
 
-    }*/
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,7 +108,6 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
         atmList.layoutManager = LinearLayoutManager(requireContext())
         atmList.adapter = adapter
         buttonRefresh = view.findViewById(R.id.buttonRefreshAtm)
-        navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
 
@@ -157,7 +123,6 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     override fun onClick(atm: String) {
         val bundle = Bundle()
         bundle.putString("atm", atm)
-        ///viewModel.setAtmInfo(atm)
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
@@ -217,8 +182,7 @@ class FragmentAtm : Fragment(), ILocationListener, ToFragmentMap {
     }
 
 
-
-    fun getLocation(){
+    fun getLocation() {
         if (isGPSEnabled && activity != null && isAdded) {
             if (ActivityCompat.checkSelfPermission(
                     requireContext(),

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/rateBottomMenu"
+        android:enabled="true"
+        android:icon="@drawable/ic_rate"
+        android:title="@string/text_label_rate"/>
+    <item
+        android:id="@+id/atmBottomMenu"
+        android:enabled="true"
+        android:icon="@drawable/ic_atm"
+        android:title="@string/text_label_atm"/>
+    <item
+        android:id="@+id/infoboxBottomMenu"
+        android:enabled="true"
+        android:icon="@drawable/ic_infobox"
+        android:title="@string/text_label_infobox"/>
+    <item
+        android:id="@+id/newsBottomMenu"
+        android:enabled="true"
+        android:icon="@drawable/ic_news"
+        android:title="@string/text_label_news"/>
+
+</menu>

@@ -3,11 +3,12 @@ package thesis_project.presentation.ui.start
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -22,22 +23,24 @@ import thesis_project.presentation.adapter.NewsAdapter
 import thesis_project.presentation.adapter.ToFragmentNews
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentNews : Fragment(), ToFragmentNews {
+class FragmentNews : BaseFragment(), ToFragmentNews {
 
-    lateinit var myViewModel: MyViewModel
     private val adapter = NewsAdapter()
-    lateinit var navigation: NavController
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    override val bottomNavigationVisible: Boolean
+        get() = true
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+
         myViewModel.getNews().observe(viewLifecycleOwner, {
             adapter.setData(it)
         })
         myViewModel.getProgress().observe(viewLifecycleOwner, {
             swipeRefreshLayout.isRefreshing = it == View.VISIBLE
         })
+
     }
 
     override fun onCreateView(
@@ -45,8 +48,10 @@ class FragmentNews : Fragment(), ToFragmentNews {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.news_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_news, container, false)
     }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,18 +63,13 @@ class FragmentNews : Fragment(), ToFragmentNews {
             adapter.setHasStableIds(true)
         }
         checkDeviceType(newsList)
-        navigation = Navigation.findNavController(view)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        swipeRefreshLayout.setColorSchemeColors(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.greenDark
-            )
-        )
         swipeRefreshLayout.setOnRefreshListener {
             myViewModel.getNews()
         }
+
     }
+
 
     override fun onClick(news: News) {
         openFragmentNews(news)

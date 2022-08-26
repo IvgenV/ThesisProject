@@ -23,7 +23,7 @@ class WorkerNotificationRate(
 
     private var notificationManager: NotificationManager? = null
     private val NOTIFY_ID = 2
-    private val CHANNEL_ID = appContext.getString(R.string.channel_id_Rate)
+    private val CHANNEL_ID = appContext.getString(R.string.channel_id_rate)
     private var eur_in: Double = 0.0
     private var usd_in: Double = 0.0
     private var rub_in: Double = 0.0
@@ -39,19 +39,19 @@ class WorkerNotificationRate(
     private var notificationUah: Boolean = false
     private var notificationEur: Boolean = false
 
-    val key_switchRub = appContext.getString(R.string.key_switchRub)
-    val key_switchUsd = appContext.getString(R.string.key_switchUsd)
-    val key_switchUah = appContext.getString(R.string.key_switchUah)
-    val key_switchEur = appContext.getString(R.string.key_switchEur)
+    val key_switchRub = appContext.getString(R.string.key_switch_rub)
+    val key_switchUsd = appContext.getString(R.string.key_switch_usd)
+    val key_switchUah = appContext.getString(R.string.key_switch_uah)
+    val key_switchEur = appContext.getString(R.string.key_switch_eur)
 
-    val key_BuyRub = appContext.getString(R.string.key_buyRub)
-    val key_BuyUsd = appContext.getString(R.string.key_buyUsd)
-    val key_BuyUah = appContext.getString(R.string.key_buyUah)
-    val key_BuyEur = appContext.getString(R.string.key_buyEur)
-    val key_SaleRub = appContext.getString(R.string.key_saleRub)
-    val key_SaleUsd = appContext.getString(R.string.key_saleUsd)
-    val key_SaleUah = appContext.getString(R.string.key_saleUah)
-    val key_SaleEur = appContext.getString(R.string.key_saleEur)
+    val key_BuyRub = appContext.getString(R.string.key_buy_rub)
+    val key_BuyUsd = appContext.getString(R.string.key_buy_usd)
+    val key_BuyUah = appContext.getString(R.string.key_buy_uah)
+    val key_BuyEur = appContext.getString(R.string.key_buy_eur)
+    val key_SaleRub = appContext.getString(R.string.key_sale_rub)
+    val key_SaleUsd = appContext.getString(R.string.key_sale_usd)
+    val key_SaleUah = appContext.getString(R.string.key_sale_uah)
+    val key_SaleEur = appContext.getString(R.string.key_sale_eur)
 
     val sharedPreferencesSwitch: SharedPreferencesSwitchUseCase by lazy { Dependencies.getSharedPreferenceSwitch() }
     val sharedPreferencesRate: SharedPreferencesRateDoubleUseCase by lazy { Dependencies.getSharedPreferenceRate() }

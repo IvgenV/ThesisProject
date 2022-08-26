@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import thesis_project.Constnsts
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -17,24 +16,20 @@ import thesis_project.presentation.adapter.ToFragmentFilials
 import thesis_project.presentation.viewmodel.MyViewModel
 import thesis_project.sealed.CurrencyOperation
 
-class FragmentRate : Fragment(), ToFragmentFilials {
+class FragmentRate : BaseFragment(), ToFragmentFilials {
 
-    lateinit var myViewModel: MyViewModel
     val adapter = RateAdapter()
     lateinit var rateList: RecyclerView
     lateinit var rateNP: NumberPicker
     lateinit var switch: SwitchMaterial
-    lateinit var navigation: NavController
     lateinit var progressBar: ProgressBar
     val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
     var check: CurrencyOperation = CurrencyOperation.Buy
-    var flag = true
-
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
         initialCountryRate()
 
@@ -95,18 +90,16 @@ class FragmentRate : Fragment(), ToFragmentFilials {
         return inflater.inflate(R.layout.fragment_rate, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         rateList = view.findViewById(R.id.recyclerRate)
         rateList.layoutManager = LinearLayoutManager(requireContext())
         rateList.adapter = adapter
         rateNP = view.findViewById(R.id.rateNumberPicker)
-        navigation = Navigation.findNavController(view)
         adapter.setListenerFr2(this)
         switch = view.findViewById(R.id.rateSwitch)
         progressBar = view.findViewById(R.id.progressBarRate)
+
     }
 
     override fun onClick(rate: String) {

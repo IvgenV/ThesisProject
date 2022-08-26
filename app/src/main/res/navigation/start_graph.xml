@@ -2,13 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/fragment_start">
-
-    <fragment
-        android:id="@+id/fragment_start"
-        android:name="thesis_project.presentation.ui.start.FragmentStart"
-        android:label="FragmentStart"
-        tools:layout="@layout/fragment_start"/>
+    app:startDestination="@id/fragment_rate">
     <fragment
         android:id="@+id/fragment_rate"
         android:name="thesis_project.presentation.ui.start.FragmentRate"
@@ -38,7 +32,7 @@
         android:id="@+id/fragment_news"
         android:name="thesis_project.presentation.ui.start.FragmentNews"
         android:label="NewsFragment"
-        tools:layout="@layout/news_fragment"/>
+        tools:layout="@layout/fragment_news"/>
 
     <fragment
         android:id="@+id/fragment_profile"
@@ -56,6 +50,5 @@
         android:id="@+id/news_item"
         android:name="thesis_project.presentation.ui.start.NewsItemFragment"
         android:label="NewsItemFragment" />
-
 
 </navigation>

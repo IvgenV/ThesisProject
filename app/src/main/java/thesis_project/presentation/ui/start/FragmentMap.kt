@@ -11,18 +11,11 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.MarkerOptions
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentMap : Fragment(), OnMapReadyCallback {
+class FragmentMap : BaseFragment(), OnMapReadyCallback {
 
     lateinit var mapView: MapView
     lateinit var googleMap: GoogleMap
-    lateinit var myViewModel: MyViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

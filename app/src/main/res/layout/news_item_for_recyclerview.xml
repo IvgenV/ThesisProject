@@ -41,9 +41,8 @@
 
         <thesis_project.ExpandableTextView
             android:id="@+id/text_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/text"
             android:padding="16dp"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/bottom_title_expand_barrier"
@@ -58,7 +57,7 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="text_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -76,6 +75,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:src="@drawable/ic_share"
+            app:tint="@color/primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textDate"

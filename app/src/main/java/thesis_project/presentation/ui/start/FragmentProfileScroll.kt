@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
+import com.google.android.material.switchmaterial.SwitchMaterial
 import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentProfileScroll : Fragment() {
@@ -27,11 +27,11 @@ class FragmentProfileScroll : Fragment() {
     private lateinit var saleEur: EditText
 
 
-    private lateinit var switchNotification: Switch
-    private lateinit var switchRub: Switch
-    private lateinit var switchUsd: Switch
-    private lateinit var switchUah: Switch
-    private lateinit var switchEur: Switch
+    private lateinit var switchNotification: SwitchMaterial
+    private lateinit var switchRub: SwitchMaterial
+    private lateinit var switchUsd: SwitchMaterial
+    private lateinit var switchUah: SwitchMaterial
+    private lateinit var switchEur: SwitchMaterial
 
     private lateinit var key_switch: String
     private lateinit var key_switchRub: String
@@ -53,20 +53,20 @@ class FragmentProfileScroll : Fragment() {
         super.onActivityCreated(savedInstanceState)
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
-        key_switch = getString(R.string.key_switchNews)
-        key_switchRub = getString(R.string.key_switchRub)
-        key_switchUsd = getString(R.string.key_switchUsd)
-        key_switchUah = getString(R.string.key_switchUah)
-        key_switchEur = getString(R.string.key_switchEur)
+        key_switch = getString(R.string.key_switch_news)
+        key_switchRub = getString(R.string.key_switch_rub)
+        key_switchUsd = getString(R.string.key_switch_usd)
+        key_switchUah = getString(R.string.key_switch_uah)
+        key_switchEur = getString(R.string.key_switch_eur)
 
-        key_BuyRub = getString(R.string.key_buyRub)
-        key_BuyUsd = getString(R.string.key_buyUsd)
-        key_BuyUah = getString(R.string.key_buyUah)
-        key_BuyEur = getString(R.string.key_buyEur)
-        key_SaleRub = getString(R.string.key_saleRub)
-        key_SaleUsd = getString(R.string.key_saleUsd)
-        key_SaleUah = getString(R.string.key_saleUah)
-        key_SaleEur = getString(R.string.key_saleEur)
+        key_BuyRub = getString(R.string.key_buy_rub)
+        key_BuyUsd = getString(R.string.key_buy_usd)
+        key_BuyUah = getString(R.string.key_buy_uah)
+        key_BuyEur = getString(R.string.key_buy_eur)
+        key_SaleRub = getString(R.string.key_sale_rub)
+        key_SaleUsd = getString(R.string.key_sale_usd)
+        key_SaleUah = getString(R.string.key_sale_uah)
+        key_SaleEur = getString(R.string.key_sale_eur)
 
 
         buyRub.setText(
@@ -168,8 +168,7 @@ class FragmentProfileScroll : Fragment() {
             myViewModel.addRateSharedPreferences(key_BuyEur, buyEur.text.toString().toDouble())
             myViewModel.addRateSharedPreferences(key_SaleEur, saleEur.text.toString().toDouble())
 
-            if ((switchRub.isChecked == true) || (switchUsd.isChecked == true) ||
-                (switchUah.isChecked == true) || (switchEur.isChecked == true)
+            if (switchRub.isChecked || switchUsd.isChecked || switchUah.isChecked || switchEur.isChecked
             ) {
                 myViewModel.startNotificationRate()
             } else {

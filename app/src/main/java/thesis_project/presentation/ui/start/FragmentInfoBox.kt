@@ -16,7 +16,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -29,20 +28,20 @@ import thesis_project.presentation.adapter.ItemDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
+class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var myViewModel: MyViewModel
     lateinit var infoBoxList: RecyclerView
     val adapter = ItemDistanceAdapter()
     lateinit var tvText: TextView
     lateinit var buttonRefresh: Button
-    lateinit var navigation: NavController
     lateinit var progressInfoBox: ProgressBar
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
     var isGPSEnabled = false
     var isNetworkEnabled = false
+    override val bottomNavigationVisible: Boolean
+        get() = true
 
     private val requestMultiplePermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -57,7 +56,6 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
         createLocationManager()
         initialization()
@@ -70,17 +68,12 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
             adapter.setData(it)
         })
 
-       /* viewModel.initial.observe(viewLifecycleOwner,{initial ->
-            if(initial is Initial.Error){
-                Toast.makeText(requireContext(),"Server error! Try later!",Toast.LENGTH_SHORT).show()
-                tvText.text = "Not current data"
-            }
-        })*/
 
         buttonRefresh.setOnClickListener {
             initialization()
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,7 +91,6 @@ class FragmentInfoBox : Fragment(), ILocationListener, ToFragmentMap {
         progressInfoBox = view.findViewById(R.id.progressInfoBox)
         infoBoxList.layoutManager = LinearLayoutManager(requireContext())
         infoBoxList.adapter = adapter
-        navigation = Navigation.findNavController(view)
         adapter.setListenerToMap(this)
     }
 

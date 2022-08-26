@@ -10,23 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.thesis_project.R
 import thesis_project.presentation.viewmodel.MyViewModel
 
-class FragmentProfile:Fragment() {
+class FragmentProfile : BaseFragment() {
 
-    lateinit var name:TextView
-    lateinit var surname:TextView
-    lateinit var email:TextView
-    lateinit var myViewModel: MyViewModel
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        myViewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-
-
-        name.text = myViewModel.name
-        surname.text = myViewModel.surname
-        email.text = myViewModel.email
-    }
+    lateinit var name: TextView
+    lateinit var surname: TextView
+    lateinit var email: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +29,13 @@ class FragmentProfile:Fragment() {
         name = view.findViewById(R.id.name_fragment_profile)
         surname = view.findViewById(R.id.surname_fragment_profile)
         email = view.findViewById(R.id.email_fragment_prohile)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        name.text = myViewModel.name
+        surname.text = myViewModel.surname
+        email.text = myViewModel.email
     }
 
 }
