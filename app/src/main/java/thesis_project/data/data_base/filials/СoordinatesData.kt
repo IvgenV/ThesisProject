@@ -1,8 +1,12 @@
 package thesis_project.data.data_base.filials
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
+@JsonClass(generateAdapter = true)
 data class СoordinatesData(
-    @SerializedName("filial_id") val id:String,
-    @SerializedName("GPS_X") val latitude:String,
-    @SerializedName("GPS_Y") val longitude:String)
+    @Json(name = "filial_id") val id: String,
+    @Json(name = "GPS_X") val latitude: String,
+    @Json(name = "GPS_Y") val longitude: String
+): Serializable

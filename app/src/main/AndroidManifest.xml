@@ -13,7 +13,7 @@
     </queries>
     <application
         android:fullBackupOnly="true"
-        android:name="thesis_project.App"
+        android:name="thesis_project.MainApp"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
         android:label="@string/app_name"

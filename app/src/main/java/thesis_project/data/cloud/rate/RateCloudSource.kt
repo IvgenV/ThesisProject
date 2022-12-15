@@ -12,9 +12,7 @@ import thesis_project.data.data_base.filials.RateData
 import thesis_project.data.data_base.filials.СoordinatesData
 import thesis_project.domain.repository.RateCloudRepository
 
-object RateCloudSource: RateCloudRepository {
-
-    private const val baseUrl = "https://belarusbank.by/api/kursExchange/"
+class RateCloudSource: RateCloudRepository {
 
     private val loginInterception = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -24,7 +22,7 @@ object RateCloudSource: RateCloudRepository {
 
     private val retrofit =
         Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .baseUrl(baseUrl)
+            .baseUrl(Companion.baseUrl)
             .client(okHttpClient)
             .build()
 
@@ -44,6 +42,10 @@ object RateCloudSource: RateCloudRepository {
 
     override suspend fun getFilialsCountry(): Response<List<СoordinatesData>> {
         return rateApiService.getFilialsCountry()
+    }
+
+    companion object {
+        private const val baseUrl = "https://belarusbank.by/api/kursExchange/"
     }
 
 }

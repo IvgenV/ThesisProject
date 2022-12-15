@@ -29,10 +29,6 @@ class FragmentProfile : BaseFragment() {
         name = view.findViewById(R.id.name_fragment_profile)
         surname = view.findViewById(R.id.surname_fragment_profile)
         email = view.findViewById(R.id.email_fragment_prohile)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         name.text = myViewModel.name
         surname.text = myViewModel.surname
         email.text = myViewModel.email

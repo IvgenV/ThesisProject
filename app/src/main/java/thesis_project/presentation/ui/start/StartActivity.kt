@@ -113,6 +113,7 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         bottomNavigationView.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
 
@@ -128,7 +129,6 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
             }
         }
     }
-
 
     override fun setBottomNavigationVisible(isVisible: Boolean) {
         bottomNavigationView.isVisible = isVisible

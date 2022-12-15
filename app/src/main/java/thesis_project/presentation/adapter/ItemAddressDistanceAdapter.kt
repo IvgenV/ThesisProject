@@ -16,8 +16,10 @@ class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_item_distance,
-                parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_item_distance,
+                parent, false
+            )
         return ViewHolder(view)
     }
 
@@ -33,12 +35,12 @@ class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
     }
 
 
-    fun setData(data: List<ItemAdressDistance>){
+    fun setData(data: List<ItemAdressDistance>) {
         submitList(data)
     }
 
 
-    fun setListenerToMap(toFragmentMap: ToFragmentMap){
+    fun setListenerToMap(toFragmentMap: ToFragmentMap) {
         listenerToMap = toFragmentMap
     }
 
@@ -46,7 +48,7 @@ class ItemAddressDistanceAdapter : ListAdapter<ItemAdressDistance,
         val id: TextView = view.findViewById(R.id.itemId)
         val address: TextView = view.findViewById(R.id.itemAdress)
         val distance: TextView = view.findViewById(R.id.itemDistance)
-        val type:TextView  = view.findViewById(R.id.itemType)
+        val type: TextView = view.findViewById(R.id.itemType)
     }
 
 }

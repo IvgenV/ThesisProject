@@ -31,18 +31,6 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
         get() = true
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        myViewModel.getNews().observe(viewLifecycleOwner, {
-            adapter.setData(it)
-        })
-        myViewModel.getProgress().observe(viewLifecycleOwner, {
-            swipeRefreshLayout.isRefreshing = it == View.VISIBLE
-        })
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,8 +38,6 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
     ): View? {
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +53,12 @@ class FragmentNews : BaseFragment(), ToFragmentNews {
         swipeRefreshLayout.setOnRefreshListener {
             myViewModel.getNews()
         }
-
+        myViewModel.getNews().observe(viewLifecycleOwner) {
+            adapter.setData(it)
+        }
+        myViewModel.getProgress().observe(viewLifecycleOwner) {
+            swipeRefreshLayout.isRefreshing = it == View.VISIBLE
+        }
     }
 
 

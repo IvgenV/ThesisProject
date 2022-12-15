@@ -14,16 +14,11 @@ class WorkerControllerUseCaseImpl(appContext: Context) : WorkerControllerUseCase
 
     private val workerTime: Long = appContext.getString(R.string.worker_time).toLong()
 
-    var constraints: Constraints = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    var constraints: Constraints =
         Constraints.Builder()
             .setRequiresDeviceIdle(false)
             .build()
-    } else {
-        Constraints.Builder()
-            .setRequiresCharging(false)
-            .build()
-    }
-    var myWorkNewsRequest = PeriodicWorkRequest.Builder(
+    private var myWorkNewsRequest = PeriodicWorkRequest.Builder(
         WorkerNotificationNews::class.java,
         workerTime,
         java.util.concurrent.TimeUnit.MINUTES
@@ -44,7 +39,7 @@ class WorkerControllerUseCaseImpl(appContext: Context) : WorkerControllerUseCase
     }
 
     override suspend fun StopWorkerNotificationNews() {
-        WorkManager.getInstance().cancelWorkById(myWorkNewsRequest.getId())
+        WorkManager.getInstance().cancelWorkById(myWorkNewsRequest.id)
     }
 
     override suspend fun StartWorkerNotificationRate() {
@@ -52,6 +47,6 @@ class WorkerControllerUseCaseImpl(appContext: Context) : WorkerControllerUseCase
     }
 
     override suspend fun StopWorkerNotificationRate() {
-        WorkManager.getInstance().cancelWorkById(myWorkRateRequest.getId())
+        WorkManager.getInstance().cancelWorkById(myWorkRateRequest.id)
     }
 }

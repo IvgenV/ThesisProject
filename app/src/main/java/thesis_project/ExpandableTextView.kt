@@ -3,18 +3,16 @@ package thesis_project
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.content.Context
 import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.text.SpannableStringBuilder
-import android.text.Spannable
-
-import android.text.style.ForegroundColorSpan
+import androidx.appcompat.widget.AppCompatTextView
 
 class ExpandableTextView : AppCompatTextView, View.OnClickListener {
     private val COLLAPSED_MAX_LINES = 3
@@ -106,7 +104,7 @@ class ExpandableTextView : AppCompatTextView, View.OnClickListener {
         super.setText(mOriginalText)
     }
 
-    fun setTextNoCaching(text: CharSequence?) {
+    private fun setTextNoCaching(text: CharSequence?) {
         super.setText(text, BufferType.NORMAL)
     }
 

@@ -26,10 +26,6 @@ class FragmentSetting : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         switchSetting = view.findViewById(R.id.setting_switch)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         switchSetting.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 myViewModel.setTheme(
@@ -50,7 +46,7 @@ class FragmentSetting : BaseFragment() {
         checkedSwitch()
     }
 
-    fun checkedSwitch(){
+    private fun checkedSwitch(){
         switchSetting.isChecked = myViewModel.getTheme()==AppCompatDelegate.MODE_NIGHT_YES
     }
 

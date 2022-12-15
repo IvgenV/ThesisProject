@@ -49,6 +49,7 @@ class FragmentProfileScroll : Fragment() {
     private lateinit var key_SaleEur: String
 
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         myViewModel = ViewModelProvider(this).get(MyViewModel::class.java)

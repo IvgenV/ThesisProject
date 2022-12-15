@@ -1,4 +1,4 @@
- package thesis_project
+package thesis_project
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -29,14 +29,14 @@ object Dependencies {
     fun getRateDbUseCase(context: Context): RateDbUseCase =
         RateDbUseCaseImpl(getRateDbRepository(context))
 
-    private val apiRateCloudSource:RateCloudRepository by lazy { RateCloudSource }
+    private val apiRateCloudSource: RateCloudRepository by lazy { RateCloudSource() }
 
-    fun getRateCloudUseCase():RateCloudUseCase =
+    fun getRateCloudUseCase(): RateCloudUseCase =
         RateCloudUseCaseImpl(apiRateCloudSource)
 
 
     /////atm
-    private fun getAtmDbRepository(context: Context):AtmDbRepository{
+    private fun getAtmDbRepository(context: Context): AtmDbRepository {
         return AtmDb(context)
     }
 
@@ -47,14 +47,14 @@ object Dependencies {
 
 
     ///infoBox
-    private fun getInfoBoxDbRepository(context: Context): InfoBoxDbRepository{
+    private fun getInfoBoxDbRepository(context: Context): InfoBoxDbRepository {
         return InfoBoxDb(context)
     }
 
     fun getInfoBoxDbUseCase(context: Context): InfoBoxDbUseCase =
         InfoBoxDbUseCaseImpl(getInfoBoxDbRepository(context))
 
-    private val apiInfoBoxCloudSource:InfoBoxCloudRepository by lazy { InfoBoxCloudSource }
+    private val apiInfoBoxCloudSource: InfoBoxCloudRepository by lazy { InfoBoxCloudSource }
 
     fun getInfoBoxCloudUseCase(): InfoBoxCloudUseCase =
         InfoBoxCloudUseCaseImpl(apiInfoBoxCloudSource)
@@ -67,7 +67,7 @@ object Dependencies {
         NewsCloudUseCaseImpl(apiNewsCloudSource)
 
     private fun getNewsDbRepository(): NewsDbRepository {
-        return NewsData(App.instance)
+        return NewsData(MainApp.instance)
     }
 
     fun getNewsDbUseCase(): NewsDbUseCase =
@@ -76,7 +76,7 @@ object Dependencies {
     //SharedPrefenceSwitch
     private val sharedPreferencesSwitch: SharedPreferencesSwitchRepository by lazy {
         SharedPreferencesSwitch(
-            App.instance
+            MainApp.instance
         )
     }
 
@@ -88,7 +88,7 @@ object Dependencies {
     //SharedPrefence
     private val sharedPreferencesRateDouble: SharedPreferencesRateDoubleRepository by lazy {
         SharedPreferencesRateDouble(
-            App.instance
+            MainApp.instance
         )
     }
 
@@ -98,23 +98,27 @@ object Dependencies {
         )
 
     ///WorkerNotification
-    private val workerController: WorkerControllerUseCase by lazy { WorkerControllerUseCaseImpl(App.instance) }
+    private val workerController: WorkerControllerUseCase by lazy {
+        WorkerControllerUseCaseImpl(
+            MainApp.instance
+        )
+    }
 
     fun getMyWorkerController(): WorkerControllerUseCase = workerController
 
     ////SharedPreferencesNews
-    private val sharedPreferencesNews:SharedPreferencesNewsRepository by lazy {
-        SharedPreferencesNews(App.instance)
+    private val sharedPreferencesNews: SharedPreferencesNewsRepository by lazy {
+        SharedPreferencesNews(MainApp.instance)
     }
 
-    fun getSharedPreferencesNews():SharedPreferencesNewsUseCase =
+    fun getSharedPreferencesNews(): SharedPreferencesNewsUseCase =
         SharedPreferencesNewsUseCaseImpl(sharedPreferencesNews)
 
     ////SharedPreferencesTheme
-    private val sharedPreferencesTheme:SharedPreferencesThemeRepository by lazy {
-        SharedPreferencesTheme(App.instance)
+    private val sharedPreferencesTheme: SharedPreferencesThemeRepository by lazy {
+        SharedPreferencesTheme(MainApp.instance)
     }
 
-    fun getSharedPreferencesTheme():SharedPreferencesThemeUseCase =
+    fun getSharedPreferencesTheme(): SharedPreferencesThemeUseCase =
         SharedPreferencesThemeUseCaseImpl(sharedPreferencesTheme)
 }

@@ -44,40 +44,40 @@ class FragmentMap : BaseFragment(), OnMapReadyCallback {
         if (filial != null) {
             myViewModel.createGpsFilial(filial)
             filial.let { myViewModel.createGpsFilial(it) }
-            myViewModel.getGps().observe(viewLifecycleOwner, {
+            myViewModel.getGps().observe(viewLifecycleOwner) {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
                         .title("FILIAL")
 
-                
+
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
-            })
+            }
         }
 
         if (atm != null) {
             myViewModel.createGpsAtm(atm)
-            myViewModel.getGps().observe(viewLifecycleOwner, {
+            myViewModel.getGps().observe(viewLifecycleOwner) {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
                         .title("ATM")
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
-            })
+            }
         }
 
         if (myViewModel.getInfoBoxInfo() != null) {
             myViewModel.createGpsInfoBOx(myViewModel.getInfoBoxInfo()?:"")
-            myViewModel.getGps().observe(viewLifecycleOwner, {
+            myViewModel.getGps().observe(viewLifecycleOwner) {
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(it)
                         .title("InfoBox")
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 18f))
-            })
+            }
             myViewModel.setInfoBoxInfo(null)
         }
     }

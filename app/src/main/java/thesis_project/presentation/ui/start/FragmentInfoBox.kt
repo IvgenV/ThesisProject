@@ -47,32 +47,12 @@ class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (!it.containsValue(false)) {
                 initialization()
-                myViewModel.getInfoBox().observe(viewLifecycleOwner, {
+                myViewModel.getInfoBox().observe(viewLifecycleOwner) {
                     adapter.setData(it)
-                })
+                }
             }
         }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        createLocationManager()
-        initialization()
-
-        myViewModel.getProgress().observe(viewLifecycleOwner, {
-            progressInfoBox.visibility = it
-        })
-
-        myViewModel.getInfoBox().observe(viewLifecycleOwner, {
-            adapter.setData(it)
-        })
-
-
-        buttonRefresh.setOnClickListener {
-            initialization()
-        }
-    }
 
 
     override fun onCreateView(
@@ -92,6 +72,21 @@ class FragmentInfoBox : BaseFragment(), ILocationListener, ToFragmentMap {
         infoBoxList.layoutManager = LinearLayoutManager(requireContext())
         infoBoxList.adapter = adapter
         adapter.setListenerToMap(this)
+        createLocationManager()
+        initialization()
+
+        myViewModel.getProgress().observe(viewLifecycleOwner) {
+            progressInfoBox.visibility = it
+        }
+
+        myViewModel.getInfoBox().observe(viewLifecycleOwner) {
+            adapter.setData(it)
+        }
+
+
+        buttonRefresh.setOnClickListener {
+            initialization()
+        }
     }
 
     override fun onDestroy() {
