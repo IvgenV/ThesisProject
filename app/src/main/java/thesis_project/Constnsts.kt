@@ -1,7 +1,5 @@
 package thesis_project
 
-import java.math.BigDecimal
-
 object Constnsts {
 
     val usd = 0

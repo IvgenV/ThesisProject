@@ -23,63 +23,18 @@ class FragmentRate : BaseFragment(), ToFragmentFilials {
     lateinit var rateNP: NumberPicker
     lateinit var switch: SwitchMaterial
     lateinit var progressBar: ProgressBar
-    val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
+    private val listRate = arrayOf("USD", "EUR", "RUB", "UAH")
     var check: CurrencyOperation = CurrencyOperation.Buy
     override val bottomNavigationVisible: Boolean
         get() = true
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
-        initialCountryRate()
-
-        myViewModel.getProgress().observe(viewLifecycleOwner, {
-            progressBar.visibility = it
-        })
-
-        rateNP.maxValue = Constnsts.uah
-        rateNP.minValue = Constnsts.usd
-        rateNP.displayedValues = listRate
-
-        rateNP.setOnValueChangedListener { picker, oldVal, newVal ->
-            check = if (switch.isChecked) CurrencyOperation.Sell
-            else CurrencyOperation.Buy
-
-                when (newVal) {
-                    Constnsts.usd -> {
-                        myViewModel.createListCurrency(check, newVal)
-                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
-                            adapter.setData(it)
-                        })
-                    }
-                    Constnsts.eur -> {
-                        myViewModel.createListCurrency(check, newVal)
-                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
-                            adapter.setData(it)
-                        })
-                    }
-                    Constnsts.rub -> {
-                        myViewModel.createListCurrency(check, newVal)
-                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
-                            adapter.setData(it)
-                        })
-                    }
-                    Constnsts.uah -> {
-                        myViewModel.createListCurrency(check, newVal)
-                        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
-                            adapter.setData(it)
-                        })
-                    }
-                }
-        }
-    }
-
-    fun initialCountryRate() {
+    private fun initialCountryRate() {
         myViewModel.initialCountryRate()
         myViewModel.createListCurrency(CurrencyOperation.Buy, 0)
-        myViewModel.getListCurrency().observe(viewLifecycleOwner, {
+        myViewModel.getListCurrency().observe(viewLifecycleOwner) {
             adapter.setData(it)
-        })
+        }
     }
 
     override fun onCreateView(
@@ -99,7 +54,47 @@ class FragmentRate : BaseFragment(), ToFragmentFilials {
         adapter.setListenerFr2(this)
         switch = view.findViewById(R.id.rateSwitch)
         progressBar = view.findViewById(R.id.progressBarRate)
+        initialCountryRate()
 
+        myViewModel.getProgress().observe(viewLifecycleOwner) {
+            progressBar.visibility = it
+        }
+
+        rateNP.maxValue = Constnsts.uah
+        rateNP.minValue = Constnsts.usd
+        rateNP.displayedValues = listRate
+
+        rateNP.setOnValueChangedListener { picker, oldVal, newVal ->
+            check = if (switch.isChecked) CurrencyOperation.Sell
+            else CurrencyOperation.Buy
+
+            when (newVal) {
+                Constnsts.usd -> {
+                    myViewModel.createListCurrency(check, newVal)
+                    myViewModel.getListCurrency().observe(viewLifecycleOwner) {
+                        adapter.setData(it)
+                    }
+                }
+                Constnsts.eur -> {
+                    myViewModel.createListCurrency(check, newVal)
+                    myViewModel.getListCurrency().observe(viewLifecycleOwner) {
+                        adapter.setData(it)
+                    }
+                }
+                Constnsts.rub -> {
+                    myViewModel.createListCurrency(check, newVal)
+                    myViewModel.getListCurrency().observe(viewLifecycleOwner) {
+                        adapter.setData(it)
+                    }
+                }
+                Constnsts.uah -> {
+                    myViewModel.createListCurrency(check, newVal)
+                    myViewModel.getListCurrency().observe(viewLifecycleOwner) {
+                        adapter.setData(it)
+                    }
+                }
+            }
+        }
     }
 
     override fun onClick(rate: String) {

@@ -2,7 +2,7 @@ package thesis_project
 
 import android.app.Application
 
-class App: Application() {
+class MainApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -10,7 +10,7 @@ class App: Application() {
     }
 
     companion object {
-        lateinit var instance: App
+        lateinit var instance: MainApp
             private set
     }
 

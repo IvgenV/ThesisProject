@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
 import thesis_project.MapDescription
 
-class MapDescriptionAdapter:ListAdapter<MapDescription,
+class MapDescriptionAdapter : ListAdapter<MapDescription,
         MapDescriptionAdapter.ViewHolder>(MapDescriptionCompareCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_map_description,parent,false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_map_description, parent, false)
         return ViewHolder(view)
     }
 
@@ -22,11 +23,11 @@ class MapDescriptionAdapter:ListAdapter<MapDescription,
         holder.description.text = getItem(position).description
     }
 
-    fun setData(data:List<MapDescription>){
+    fun setData(data: List<MapDescription>) {
         submitList(data)
     }
 
-    inner class ViewHolder(view:View): RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val headline = view.findViewById<TextView>(R.id.map_headline)
         val description = view.findViewById<TextView>(R.id.map_description)
     }

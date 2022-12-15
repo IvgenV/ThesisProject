@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +15,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
-import kotlinx.coroutines.flow.collect
 import thesis_project.location.GpsLocation
 import thesis_project.location.ILocationListener
 import thesis_project.presentation.adapter.ItemAddressDistanceAdapter
 import thesis_project.presentation.adapter.ToFragmentMap
-import thesis_project.presentation.viewmodel.MyViewModel
 
 class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
 
@@ -57,41 +52,6 @@ class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
             }
         }
 
-    override fun onStart() {
-        super.onStart()
-        myViewModel.initialAtmDb()
-        createLocationManager()
-
-
-        myViewModel.getProgress().observe(viewLifecycleOwner, {
-            progressAtm.visibility = it
-        })
-
-        myViewModel.getCheckLocation().observe(viewLifecycleOwner, {
-            if (it == true) {
-                tvText.text = "Current data!"
-            }
-            if (it == false) {
-                tvText.text = "Not current data!"
-            }
-        })
-
-        lifecycleScope.launchWhenStarted {
-            myViewModel.getAtm().collect {
-                adapter.setData(it)
-            }
-        }
-
-
-        buttonRefresh.setOnClickListener {
-            initialization()
-        }
-
-
-
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -109,6 +69,31 @@ class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
         atmList.adapter = adapter
         buttonRefresh = view.findViewById(R.id.buttonRefreshAtm)
         adapter.setListenerToMap(this)
+        myViewModel.initialAtmDb()
+        createLocationManager()
+
+        myViewModel.getProgress().observe(viewLifecycleOwner) {
+            progressAtm.visibility = it
+        }
+
+        myViewModel.getCheckLocation().observe(viewLifecycleOwner) {
+            if (it) {
+                tvText.text = "Current data!"
+            }
+            if (!it) {
+                tvText.text = "Not current data!"
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            myViewModel.getAtm().collect {
+                adapter.setData(it)
+            }
+        }
+
+        buttonRefresh.setOnClickListener {
+            initialization()
+        }
     }
 
     override fun onDestroy() {
@@ -126,7 +111,7 @@ class FragmentAtm : BaseFragment(), ILocationListener, ToFragmentMap {
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
-    fun createLocationManager() {
+    private fun createLocationManager() {
         if (activity != null && isAdded) {
             locationManager =
                 requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager

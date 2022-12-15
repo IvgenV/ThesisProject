@@ -12,11 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import thesis_project.presentation.viewmodel.MyViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thesis_project.R
@@ -29,20 +24,20 @@ import thesis_project.sealed.CurrencyOperation
 
 class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
-    lateinit var filialList: RecyclerView
+    private lateinit var filialList: RecyclerView
     val adapter = ItemDistanceAdapter()
     private var locationManager: LocationManager? = null
     private var location: Location? = null
     private lateinit var gpsLocation: GpsLocation
-    var isGPSEnabled = false
-    var isNetworkEnabled = false
+    private var isGPSEnabled = false
+    private var isNetworkEnabled = false
     var rate: Double = 0.0
-    lateinit var inOut:CurrencyOperation
-    lateinit var currency:Currency
+    private lateinit var inOut: CurrencyOperation
+    lateinit var currency: Currency
 
 
     private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { it ->
             var bol = false
             it.entries.forEach {
                 bol = it.value
@@ -51,19 +46,6 @@ class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
                 checkPermission()
             } else Toast.makeText(requireContext(), "NEED PERMISSION!", Toast.LENGTH_SHORT).show()
         }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        init()
-        rate = arguments?.getString("rate")?.toDouble() ?: -1.0
-        inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
-        currency = Currency.fromValue(arguments?.getInt("currency") ?: -1)
-
-        myViewModel.createListFilial(rate, inOut, currency, location)
-        myViewModel.getRatFilials().observe(viewLifecycleOwner, {
-            adapter.setData(it)
-        })
-    }
 
 
     override fun onCreateView(
@@ -76,6 +58,15 @@ class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
+        rate = arguments?.getString("rate")?.toDouble() ?: -1.0
+        inOut = CurrencyOperation.fromValue(arguments?.getInt("in_out") ?: -1)
+        currency = Currency.fromValue(arguments?.getInt("currency") ?: -1)
+
+        myViewModel.createListFilial(rate, inOut, currency, location)
+        myViewModel.getRatFilials().observe(viewLifecycleOwner) {
+            adapter.setData(it)
+        }
         filialList = view.findViewById(R.id.filials_recycler)
         filialList.layoutManager = LinearLayoutManager(requireContext())
         filialList.adapter = adapter
@@ -84,7 +75,7 @@ class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
     override fun onClick(filial: String) {
         val bundle = Bundle()
-        bundle.putString("filial",filial)
+        bundle.putString("filial", filial)
         navigation.navigate(R.id.fragment_map, bundle)
     }
 
@@ -97,17 +88,18 @@ class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
 
     }
 
-    fun init() {
+    private fun init() {
         locationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
-        isNetworkEnabled = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
+        isNetworkEnabled =
+            locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ?: false
         gpsLocation = GpsLocation()
         gpsLocation.setLocalListenerInterface(this)
         checkPermission()
     }
 
-    fun checkPermission() {
+    private fun checkPermission() {
 
         if (isGPSEnabled) {
             if (ActivityCompat.checkSelfPermission(
@@ -160,7 +152,8 @@ class FragmentFilials : BaseFragment(), ILocationListener, ToFragmentMap {
                     gpsLocation
                 )
                 if (locationManager != null) {
-                    location = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    location =
+                        locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 }
             }
         }

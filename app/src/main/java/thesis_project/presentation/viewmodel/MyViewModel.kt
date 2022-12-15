@@ -18,18 +18,17 @@ import thesis_project.data.data_base.news.News
 import thesis_project.domain.use_case.*
 import thesis_project.sealed.Currency
 import thesis_project.sealed.CurrencyOperation
-import java.util.*
 
 
 class MyViewModel : ViewModel() {
     val textError = "Ошибка при подключений"
     val duration = Toast.LENGTH_SHORT
-    val toast = Toast.makeText(App.instance, textError, duration)
+    val toast = Toast.makeText(MainApp.instance, textError, duration)
     var userKey = ""
 
-    private var localRateDb = Dependencies.getRateDbUseCase(App.instance)
-    private var atmBB = Dependencies.getAtmUseCase(App.instance)
-    private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(App.instance)
+    private var localRateDb = Dependencies.getRateDbUseCase(MainApp.instance)
+    private var atmBB = Dependencies.getAtmUseCase(MainApp.instance)
+    private var localInfoBoxDb = Dependencies.getInfoBoxDbUseCase(MainApp.instance)
 
     private var listOfCurrency = MutableLiveData<List<Double>>()
     private var listRateFilial = MutableLiveData<List<ItemDistance>>()
@@ -40,7 +39,6 @@ class MyViewModel : ViewModel() {
     private var listInfoBox = MutableLiveData<List<ItemDistance>>()
     private var latLng = MutableLiveData<LatLng>()
     private var infoBoxInfo: String? = null
-
 
     //News
     private var localNewsDb = Dependencies.getNewsDbUseCase()

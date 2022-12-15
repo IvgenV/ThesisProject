@@ -129,7 +129,6 @@ class StartActivity : AppCompatActivity(), StartActivityControlInterface {
         }
     }
 
-
     override fun setBottomNavigationVisible(isVisible: Boolean) {
         bottomNavigationView.isVisible = isVisible
     }

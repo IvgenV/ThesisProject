@@ -36,9 +36,19 @@ class NewsItemFragment : BaseFragment() {
     var snackbar: Snackbar? = null
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        myViewModel.getStateNews().observe(viewLifecycleOwner, {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.news_item, container, false)
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        webView = view.findViewById(R.id.news_text)
+        myViewModel.getStateNews().observe(viewLifecycleOwner) {
             val bodyNews = it.html_ru
             val bodyTitle = it.name_ru
             val bodyDate = it.start_date
@@ -62,21 +72,7 @@ class NewsItemFragment : BaseFragment() {
                     "</HTML>"
 
             loadUrl(html)
-        })
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.news_item, container, false)
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        webView = view.findViewById(R.id.news_text)
+        }
     }
 
 
